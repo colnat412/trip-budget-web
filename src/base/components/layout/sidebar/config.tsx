@@ -31,6 +31,6 @@ export const DEFAULT_SIDEBAR_TRIP: SidebarTrip = {
 
 export const DEFAULT_SIDEBAR_USER: Partial<SidebarUser> = {
   name: "Tan Loc",
-  // role: "OWNER",
+  role: "IT",
   initials: "TL",
 };

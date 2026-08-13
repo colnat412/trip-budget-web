@@ -18,7 +18,7 @@ export default function SidebarTripCard({ trip }: SidebarTripCardProps) {
     >
       <Box
         sx={{
-          minHeight: 120,
+          // minHeight: 120,
           p: "12px",
           overflow: "hidden",
           color: "common.white",
@@ -31,27 +31,26 @@ export default function SidebarTripCard({ trip }: SidebarTripCardProps) {
         }}
       >
         <Box>
-          <Typography variant="caption" sx={{ opacity: 0.78 }}>
+          <Typography variant="caption" sx={{ opacity: 0.8 }}>
             Đang đi
           </Typography>
           <Typography
             sx={{
-              mt: 0.25,
               fontFamily: "var(--font-display)",
               fontWeight: 400,
-              lineHeight: 1.2,
+              lineHeight: 1,
             }}
           >
             {trip.title}
           </Typography>
           <Typography
             variant="caption"
-            sx={{ display: "block", opacity: 0.78 }}
+            sx={{ opacity: 0.8 }}
           >
             {trip.dateRange} · {trip.companionCount} khoản chi
           </Typography>
 
-          <Stack direction="row" sx={{ mt: 1.25 }}>
+          <Stack direction="row">
             {trip.members.map((member, index) => (
               <Avatar
                 key={`${member.initials}-${index}`}
