@@ -43,10 +43,7 @@ export default function SidebarTripCard({ trip }: SidebarTripCardProps) {
           >
             {trip.title}
           </Typography>
-          <Typography
-            variant="caption"
-            sx={{ opacity: 0.8 }}
-          >
+          <Typography variant="caption" sx={{ opacity: 0.8 }}>
             {trip.dateRange} · {trip.companionCount} khoản chi
           </Typography>
 
@@ -55,8 +52,8 @@ export default function SidebarTripCard({ trip }: SidebarTripCardProps) {
               <Avatar
                 key={`${member.initials}-${index}`}
                 sx={{
-                  width: 23,
-                  height: 23,
+                  width: 24,
+                  height: 24,
                   ml: index === 0 ? 0 : "-5px",
                   border: "1.5px solid white",
                   bgcolor: member.color,
@@ -71,7 +68,7 @@ export default function SidebarTripCard({ trip }: SidebarTripCardProps) {
         </Box>
       </Box>
 
-      <Box sx={{ p: "12px 14px 11px" }}>
+      <Box sx={{ p: "12px" }}>
         <Stack
           direction="row"
           sx={{ justifyContent: "space-between", mb: 0.75 }}

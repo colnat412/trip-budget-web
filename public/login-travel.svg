@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1400" role="img" aria-labelledby="title desc">
+  <title id="title">Phong cảnh du lịch</title>
+  <desc id="desc">Núi, hồ nước, cây thông và khinh khí cầu vào lúc bình minh</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#77c9df"/>
+      <stop offset=".52" stop-color="#c9e6dc"/>
+      <stop offset="1" stop-color="#f4c98d"/>
+    </linearGradient>
+    <linearGradient id="lake" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4c9ba9"/>
+      <stop offset="1" stop-color="#123f5a"/>
+    </linearGradient>
+    <linearGradient id="balloon" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#ffd56b"/>
+      <stop offset="1" stop-color="#ed6f4f"/>
+    </linearGradient>
+    <filter id="blur"><feGaussianBlur stdDeviation="18"/></filter>
+  </defs>
+  <rect width="1200" height="1400" fill="url(#sky)"/>
+  <circle cx="865" cy="315" r="112" fill="#ffe6a8" opacity=".82" filter="url(#blur)"/>
+  <circle cx="865" cy="315" r="72" fill="#fff2bd" opacity=".9"/>
+  <g fill="#fff" opacity=".55">
+    <ellipse cx="225" cy="285" rx="145" ry="34"/><ellipse cx="335" cy="275" rx="110" ry="40"/>
+    <ellipse cx="825" cy="565" rx="135" ry="30"/><ellipse cx="945" cy="555" rx="105" ry="36"/>
+  </g>
+  <path d="M0 710 225 470l128 140 170-206 263 306z" fill="#537b83"/>
+  <path d="m205 492 20-22 128 140 58-70-59 118-84-82z" fill="#e8f3ec" opacity=".9"/>
+  <path d="M420 710 725 366l335 344z" fill="#2f6874"/>
+  <path d="m671 427 54-61 335 344-213-162-75 35z" fill="#edf6ef" opacity=".95"/>
+  <path d="M0 700q250-65 430 14t770-18v704H0z" fill="url(#lake)"/>
+  <path d="M0 790q270-60 505 3t695-12" fill="none" stroke="#c9ede3" stroke-width="10" opacity=".45"/>
+  <path d="M135 990q290-100 517 5t438-20" fill="none" stroke="#fff3cf" stroke-width="7" opacity=".25"/>
+  <g transform="translate(270 350)">
+    <path d="M0 0c0-91 68-155 147-155S294-91 294 0c0 105-91 184-147 228C91 184 0 105 0 0z" fill="url(#balloon)"/>
+    <path d="M62-118q85 112 0 246M232-118q-85 112 0 246" fill="none" stroke="#fff3ce" stroke-width="13" opacity=".7"/>
+    <path d="M147-155v383" stroke="#9d473e" stroke-width="10" opacity=".58"/>
+    <path d="M118 239h58l-9 40h-40z" fill="#71452e"/>
+  </g>
+  <g fill="#123d43">
+    <path d="m76 1050 88-225 88 225h-51l78 184H43l78-184z"/>
+    <path d="m962 1058 77-198 77 198h-44l68 158H936l68-158z"/>
+    <path d="m790 1140 58-150 58 150h-34l52 122H771l51-122z" opacity=".8"/>
+  </g>
+  <path d="M0 1260q225-105 430 3t770-17v154H0z" fill="#0a293a"/>
+  <g fill="none" stroke="#174e68" stroke-width="5" opacity=".35">
+    <path d="M450 880q145 50 320 0"/><path d="M390 1080q180 66 392 0"/>
+  </g>
+</svg>

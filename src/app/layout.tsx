@@ -31,7 +31,7 @@ export const metadata: Metadata = {
 };
 
 // add path name to hide sidebar here
-const sidebarDisabledPaths: readonly string[] = [];
+const sidebarDisabledPaths: readonly string[] = ["/login"];
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
