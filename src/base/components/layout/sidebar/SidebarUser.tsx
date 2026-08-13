@@ -3,7 +3,7 @@ import { Avatar, Box, Stack, Typography } from "@mui/material";
 import type { SidebarUser as SidebarUserData } from "./types";
 
 export interface SidebarUserProps {
-  user: SidebarUserData;
+  user: Partial<SidebarUserData>;
 }
 
 export default function SidebarUser({ user }: SidebarUserProps) {
@@ -14,22 +14,28 @@ export default function SidebarUser({ user }: SidebarUserProps) {
       sx={{ height: "100%", alignItems: "center", px: 0.5, minWidth: 0 }}
     >
       <Avatar
+        src="/avatar.jpg"
         sx={{
           width: 34,
           height: 34,
-          bgcolor: "#7C6CF2",
+          bgcolor: "primary.light",
           fontSize: 12,
-          fontWeight: 700,
-          boxShadow: "0 4px 12px rgba(124, 108, 242, 0.28)",
+          fontWeight: 400,
         }}
-      >
-        {user.initials}
-      </Avatar>
+      />
       <Box sx={{ minWidth: 0 }}>
-        <Typography variant="body2" noWrap sx={{ fontWeight: 700, color: "text.primary" }}>
+        <Typography
+          variant="body2"
+          noWrap
+          sx={{ fontWeight: 800, color: "primary.dark" }}
+        >
           {user.name}
         </Typography>
-        <Typography variant="caption" noWrap sx={{ display: "block", color: "text.secondary" }}>
+        <Typography
+          variant="caption"
+          noWrap
+          sx={{ display: "block", color: "text.secondary" }}
+        >
           {user.role}
         </Typography>
       </Box>

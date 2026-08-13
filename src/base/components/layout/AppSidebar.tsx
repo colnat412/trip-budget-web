@@ -66,7 +66,7 @@ export default function AppSidebar({
 
       <Box
         component="nav"
-        aria-label="Điều hướng chính"
+        aria-label="Navigation"
         sx={{
           flex: 1,
           overflowY: "auto",

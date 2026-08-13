@@ -29,8 +29,8 @@ export const DEFAULT_SIDEBAR_TRIP: SidebarTrip = {
   ],
 };
 
-export const DEFAULT_SIDEBAR_USER: SidebarUser = {
-  name: "Minh Anh",
-  role: "Người tạo chuyến",
-  initials: "MA",
+export const DEFAULT_SIDEBAR_USER: Partial<SidebarUser> = {
+  name: "Tan Loc",
+  // role: "OWNER",
+  initials: "TL",
 };

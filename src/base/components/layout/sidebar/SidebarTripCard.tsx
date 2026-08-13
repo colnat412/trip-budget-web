@@ -77,14 +77,17 @@ export default function SidebarTripCard({ trip }: SidebarTripCardProps) {
           direction="row"
           sx={{ justifyContent: "space-between", mb: 0.75 }}
         >
-          <Typography variant="caption" color="text.secondary">
+          <Typography variant="caption" sx={{ color: "text.primary" }}>
             Ngân sách
           </Typography>
-          <Typography variant="caption" sx={{ color: "#F97316" }}>
+          <Typography variant="caption" sx={{ color: "secondary.dark" }}>
             {trip.budgetProgress}%
           </Typography>
         </Stack>
-        <AppLinearProgress value={trip.budgetProgress} barColor="#F97316" />
+        <AppLinearProgress
+          value={trip.budgetProgress}
+          barColor="secondary.dark"
+        />
         <Stack
           direction="row"
           sx={{ justifyContent: "space-between", mt: 0.6 }}

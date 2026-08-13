@@ -18,7 +18,7 @@ const appTheme = createTheme({
     secondary: {
       main: "#F59E0B",
       light: "#FCD34D",
-      dark: "#D97706",
+      dark: "#F97316",
       contrastText: "#1F2937",
     },
 

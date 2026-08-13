@@ -1,4 +1,4 @@
-import { Box, ButtonBase, Stack, Typography } from "@mui/material";
+import { ButtonBase, Stack, Typography } from "@mui/material";
 
 import type { SidebarMenuItem } from "./types";
 
@@ -14,7 +14,7 @@ export default function SidebarMenu({
   onChange,
 }: SidebarMenuProps) {
   return (
-    <Stack component="nav" aria-label="Điều hướng chính" spacing={0.5}>
+    <Stack component="nav" aria-label="Main navigation" spacing={0.5}>
       {items.map((item) => {
         const selected = item.id === selectedId;
 
@@ -25,11 +25,11 @@ export default function SidebarMenu({
             aria-current={selected ? "page" : undefined}
             sx={{
               width: "100%",
-              minHeight: 47,
+              minHeight: 48,
               justifyContent: "flex-start",
-              gap: 1.4,
-              px: 1.5,
-              borderRadius: "13px",
+              gap: 2,
+              px: 2,
+              borderRadius: "12px",
               color: selected ? "primary.main" : "text.secondary",
               bgcolor: selected ? "#EFF6FF" : "transparent",
               transition:
@@ -38,14 +38,14 @@ export default function SidebarMenu({
                 color: "primary.main",
                 bgcolor: selected ? "#EFF6FF" : "action.hover",
               },
-              "& svg": { fontSize: 19 },
+              "& svg": { fontSize: 16 },
             }}
           >
             {item.icon}
             <Typography
               variant="body2"
               sx={{
-                flex: 1,
+                // flex: 1,
                 textAlign: "left",
                 fontWeight: selected ? 800 : 600,
               }}

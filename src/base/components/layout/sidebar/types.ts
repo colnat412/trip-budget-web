@@ -31,6 +31,6 @@ export interface AppSidebarProps {
   activeMenuId?: string;
   menuItems?: SidebarMenuItem[];
   trip?: SidebarTrip;
-  currentUser?: SidebarUser;
+  currentUser?: Partial<SidebarUser>;
   onMenuChange?: (menuId: string) => void;
 }
