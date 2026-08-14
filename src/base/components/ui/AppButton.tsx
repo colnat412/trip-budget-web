@@ -208,7 +208,7 @@ export default function AppButton({
         ...(Array.isArray(sx) ? sx : [sx]),
       ]}
     >
-      {children}
+      {!loading ? children : undefined}
     </Button>
   );
 }
