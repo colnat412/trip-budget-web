@@ -7,10 +7,10 @@ import SmartToyOutlinedIcon from "@mui/icons-material/SmartToyOutlined";
 import type { SidebarMenuItem, SidebarTrip, SidebarUser } from "./types";
 
 export const DEFAULT_SIDEBAR_MENU: SidebarMenuItem[] = [
-  { id: "overview", label: "Tổng quan", icon: <HomeOutlinedIcon /> },
-  { id: "expenses", label: "Chi tiêu", icon: <SavingsOutlinedIcon /> },
-  { id: "scan", label: "Quét hóa đơn", icon: <DocumentScannerOutlinedIcon /> },
-  { id: "settlement", label: "Quyết toán", icon: <HandshakeOutlinedIcon /> },
+  { id: "overview", label: "Tổng quan", messageKey: "overview", icon: <HomeOutlinedIcon /> },
+  { id: "expenses", label: "Chi tiêu", messageKey: "expenses", icon: <SavingsOutlinedIcon /> },
+  { id: "scan", label: "Quét hóa đơn", messageKey: "scan", icon: <DocumentScannerOutlinedIcon /> },
+  { id: "settlement", label: "Quyết toán", messageKey: "settlement", icon: <HandshakeOutlinedIcon /> },
   { id: "ai", label: "AI", icon: <SmartToyOutlinedIcon /> },
 ];
 

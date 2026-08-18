@@ -2,18 +2,21 @@ import { Avatar, Box, Stack, Typography } from "@mui/material";
 
 import { AppLinearProgress } from "../../ui";
 import type { SidebarTrip } from "./types";
+import { useTranslations } from "next-intl";
 
 export interface SidebarTripCardProps {
   trip: SidebarTrip;
 }
 
 export default function SidebarTripCard({ trip }: SidebarTripCardProps) {
+  const t = useTranslations("sidebar");
+
   return (
     <Box
       sx={{
         overflow: "hidden",
         borderRadius: "14px",
-        bgcolor: "#f1f4f7",
+        bgcolor: "action.hover",
       }}
     >
       <Box
@@ -22,17 +25,15 @@ export default function SidebarTripCard({ trip }: SidebarTripCardProps) {
           p: "12px",
           overflow: "hidden",
           color: "common.white",
-          background: (theme) =>
-            `linear-gradient(
-            135deg,
-            ${theme.palette.primary.main},
-            ${theme.palette.primary.light}
-          )`,
+          background: (theme) => {
+            const palette = theme.vars?.palette ?? theme.palette;
+            return `linear-gradient(135deg, ${palette.primary.main}, ${palette.primary.light})`;
+          },
         }}
       >
         <Box>
           <Typography variant="caption" sx={{ opacity: 0.8 }}>
-            Đang đi
+            {t("currentTrip")}
           </Typography>
           <Typography
             sx={{
@@ -44,17 +45,16 @@ export default function SidebarTripCard({ trip }: SidebarTripCardProps) {
             {trip.title}
           </Typography>
           <Typography variant="caption" sx={{ opacity: 0.8 }}>
-            {trip.dateRange} · {trip.companionCount} khoản chi
+            {trip.dateRange} · {trip.companionCount} {t("expenseCount")}
           </Typography>
 
-          <Stack direction="row">
-            {trip.members.map((member, index) => (
+          <Stack direction="row" spacing={0.5}>
+            {trip.members.map((member) => (
               <Avatar
-                key={`${member.initials}-${index}`}
+                key={member.initials}
                 sx={{
                   width: 24,
                   height: 24,
-                  ml: index === 0 ? 0 : "-5px",
                   border: "1.5px solid white",
                   bgcolor: member.color,
                   fontSize: 8,
@@ -71,10 +71,10 @@ export default function SidebarTripCard({ trip }: SidebarTripCardProps) {
       <Box sx={{ p: "12px" }}>
         <Stack
           direction="row"
-          sx={{ justifyContent: "space-between", mb: 0.75 }}
+          sx={{ justifyContent: "space-between", pb: 0.75 }}
         >
           <Typography variant="caption" sx={{ color: "text.primary" }}>
-            Ngân sách
+            {t("budget")}
           </Typography>
           <Typography variant="caption" sx={{ color: "secondary.dark" }}>
             {trip.budgetProgress}%
@@ -86,17 +86,17 @@ export default function SidebarTripCard({ trip }: SidebarTripCardProps) {
         />
         <Stack
           direction="row"
-          sx={{ justifyContent: "space-between", mt: 0.6 }}
+          sx={{ justifyContent: "space-between", pt: 0.6 }}
         >
           <Typography
             variant="caption"
-            sx={{ color: "#94A3B8", fontFamily: "var(--font-mono)" }}
+            sx={{ color: "text.secondary", fontFamily: "var(--font-mono)" }}
           >
             {trip.spentLabel}
           </Typography>
           <Typography
             variant="caption"
-            sx={{ color: "#94A3B8", fontFamily: "var(--font-mono)" }}
+            sx={{ color: "text.secondary", fontFamily: "var(--font-mono)" }}
           >
             {trip.budgetLabel}
           </Typography>

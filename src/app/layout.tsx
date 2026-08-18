@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import { DM_Mono, DM_Serif_Display, Outfit } from "next/font/google";
+import InitColorSchemeScript from "@mui/material/InitColorSchemeScript";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale } from "next-intl/server";
 
 import { AppShell } from "@/base/components/layout";
 import AppThemeProvider from "@/base/providers/AppThemProvider";
@@ -33,18 +36,24 @@ export const metadata: Metadata = {
 // add path name to hide sidebar here
 const sidebarDisabledPaths: readonly string[] = ["/login"];
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const locale = await getLocale();
+
   return (
     <html
-      lang="vi"
+      lang={locale}
+      suppressHydrationWarning
       className={`${bodyFont.variable} ${displayFont.variable} ${monoFont.variable}`}
     >
       <body>
-        <AppThemeProvider>
-          <AppShell sidebarDisabledPaths={sidebarDisabledPaths}>
-            {children}
-          </AppShell>
-        </AppThemeProvider>
+        <InitColorSchemeScript attribute="data" defaultMode="light" />
+        <NextIntlClientProvider>
+          <AppThemeProvider>
+            <AppShell sidebarDisabledPaths={sidebarDisabledPaths}>
+              {children}
+            </AppShell>
+          </AppThemeProvider>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

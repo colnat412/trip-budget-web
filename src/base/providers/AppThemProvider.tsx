@@ -12,7 +12,7 @@ type AppThemeProviderProps = {
 export default function AppThemeProvider({ children }: AppThemeProviderProps) {
   return (
     <AppRouterCacheProvider options={{ enableCssLayer: true }}>
-      <ThemeProvider theme={appTheme}>
+      <ThemeProvider theme={appTheme} defaultMode="light">
         <CssBaseline />
         {children}
       </ThemeProvider>

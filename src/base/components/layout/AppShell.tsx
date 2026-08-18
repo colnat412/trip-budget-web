@@ -23,6 +23,7 @@ export default function AppShell({
       sx={{
         display: "flex",
         bgcolor: "background.default",
+        minHeight: "100dvh",
       }}
     >
       {showSidebar && <AppSidebar />}

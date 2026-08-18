@@ -1,0 +1,47 @@
+{
+  "preferences": {
+    "language": "Language",
+    "theme": "Theme",
+    "light": "Light mode",
+    "dark": "Dark mode",
+    "changeError": "Unable to change language. Please try again."
+  },
+  "sidebar": {
+    "navigation": "Main navigation",
+    "overview": "Overview",
+    "expenses": "Expenses",
+    "scan": "Scan receipt",
+    "settlement": "Settlement",
+    "currentTrip": "Current trip",
+    "expenseCount": "expenses",
+    "budget": "Budget"
+  },
+  "login": {
+    "slogan": "Go further, spend smarter.",
+    "sloganDescription": "Plan your budget and fully enjoy every journey.",
+    "title": "Welcome back",
+    "description": "Sign in to continue managing your trips.",
+    "email": "Email",
+    "password": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "rememberMe": "Remember me",
+    "forgotPassword": "Forgot password?",
+    "submit": "Login",
+    "noAccount": "Don't have an account yet?",
+    "createAccount": "Create an account"
+  },
+  "validation": {
+    "emailRequired": "Please enter your email.",
+    "emailInvalid": "Invalid email format.",
+    "passwordRequired": "Please enter your password."
+  },
+  "demo": {
+    "input": "Input",
+    "inputPlaceholder": "Enter content",
+    "textArea": "Notes",
+    "textAreaPlaceholder": "Enter your notes",
+    "hello": "HELLO 2026"
+  }
+}

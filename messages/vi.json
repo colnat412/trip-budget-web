@@ -1,0 +1,47 @@
+{
+  "preferences": {
+    "language": "Ngôn ngữ",
+    "theme": "Giao diện",
+    "light": "Chế độ sáng",
+    "dark": "Chế độ tối",
+    "changeError": "Không thể đổi ngôn ngữ. Vui lòng thử lại."
+  },
+  "sidebar": {
+    "navigation": "Điều hướng chính",
+    "overview": "Tổng quan",
+    "expenses": "Chi tiêu",
+    "scan": "Quét hóa đơn",
+    "settlement": "Quyết toán",
+    "currentTrip": "Đang đi",
+    "expenseCount": "khoản chi",
+    "budget": "Ngân sách"
+  },
+  "login": {
+    "slogan": "Đi xa hơn, chi tiêu thông minh hơn.",
+    "sloganDescription": "Lập kế hoạch ngân sách và tận hưởng trọn vẹn mọi hành trình.",
+    "title": "Chào mừng bạn trở lại",
+    "description": "Đăng nhập để tiếp tục quản lý các chuyến đi.",
+    "email": "Email",
+    "password": "Mật khẩu",
+    "passwordPlaceholder": "Nhập mật khẩu",
+    "showPassword": "Hiện mật khẩu",
+    "hidePassword": "Ẩn mật khẩu",
+    "rememberMe": "Ghi nhớ đăng nhập",
+    "forgotPassword": "Quên mật khẩu?",
+    "submit": "Đăng nhập",
+    "noAccount": "Bạn chưa có tài khoản?",
+    "createAccount": "Tạo tài khoản"
+  },
+  "validation": {
+    "emailRequired": "Vui lòng nhập email.",
+    "emailInvalid": "Email không đúng định dạng.",
+    "passwordRequired": "Vui lòng nhập mật khẩu."
+  },
+  "demo": {
+    "input": "Ô nhập liệu",
+    "inputPlaceholder": "Nhập nội dung",
+    "textArea": "Ghi chú",
+    "textAreaPlaceholder": "Nhập ghi chú của bạn",
+    "hello": "XIN CHÀO 2026"
+  }
+}

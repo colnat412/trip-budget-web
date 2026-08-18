@@ -1,6 +1,6 @@
 "use client";
 
-import { Box } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import { useState } from "react";
 
 import {
@@ -13,6 +13,8 @@ import SidebarMenu from "./sidebar/SidebarMenu";
 import SidebarTripCard from "./sidebar/SidebarTripCard";
 import SidebarUser from "./sidebar/SidebarUser";
 import type { AppSidebarProps } from "./sidebar/types";
+import AppPreferences from "../preferences/AppPreferences";
+import { useTranslations } from "next-intl";
 
 export type {
   AppSidebarProps,
@@ -29,6 +31,7 @@ export default function AppSidebar({
   currentUser = DEFAULT_SIDEBAR_USER,
   onMenuChange,
 }: AppSidebarProps) {
+  const t = useTranslations("sidebar");
   const [internalActiveMenuId, setInternalActiveMenuId] = useState(
     menuItems[0]?.id ?? "",
   );
@@ -66,7 +69,7 @@ export default function AppSidebar({
 
       <Box
         component="nav"
-        aria-label="Navigation"
+        aria-label={t("navigation")}
         sx={{
           flex: 1,
           overflowY: "auto",
@@ -80,7 +83,8 @@ export default function AppSidebar({
         />
       </Box>
 
-      <Box
+      <Stack
+        spacing={2}
         sx={{
           borderTop: 1,
           borderColor: "divider",
@@ -88,7 +92,8 @@ export default function AppSidebar({
         }}
       >
         <SidebarUser user={currentUser} />
-      </Box>
+        <AppPreferences />
+      </Stack>
     </Box>
   );
 }

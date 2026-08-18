@@ -27,7 +27,7 @@ export default function SidebarUser({ user }: SidebarUserProps) {
         <Typography
           variant="body2"
           noWrap
-          sx={{ fontWeight: 800, color: "primary.dark" }}
+          sx={{ fontWeight: 800, color: "text.primary" }}
         >
           {user.name}
         </Typography>

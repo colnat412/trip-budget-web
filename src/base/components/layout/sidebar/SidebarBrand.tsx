@@ -8,13 +8,16 @@ export default function SidebarBrand() {
         sx={{
           width: 38,
           height: 38,
-          display: "grid",
-          placeItems: "center",
-          // flexShrink: 0,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexShrink: 0,
           borderRadius: "12px",
           color: "common.white",
-          background: (theme) =>
-            `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.primary.light})`,
+          background: (theme) => {
+            const palette = theme.vars?.palette ?? theme.palette;
+            return `linear-gradient(135deg, ${palette.primary.main}, ${palette.primary.light})`;
+          },
           boxShadow: "0 7px 16px rgba(14, 165, 233, 0.3)",
         }}
       >

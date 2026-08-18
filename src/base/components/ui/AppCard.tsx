@@ -2,7 +2,7 @@
 
 import { Box, Card, CardProps } from "@mui/material";
 
-import { alpha, type Theme } from "@mui/material/styles";
+import type { Theme } from "@mui/material/styles";
 import type { SxProps } from "@mui/system";
 import type { ReactNode } from "react";
 
@@ -28,27 +28,28 @@ function getCardStyles(
   hasIcon: boolean,
 ): SxProps<Theme> {
   return (theme) => {
+    const palette = theme.vars?.palette ?? theme.palette;
     const variantStyles = {
       elevated: {
-        backgroundColor: theme.palette.background.paper,
-        color: theme.palette.text.primary,
+        backgroundColor: palette.background.paper,
+        color: palette.text.primary,
         border: "none",
         boxShadow:
           "rgba(0, 0, 0, 0.05) 0px 1px 3px, rgba(0, 0, 0, 0.04) 0px 0px 0px 1px",
       },
 
       primary: {
-        color: theme.palette.primary.contrastText,
-        background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.primary.light})`,
+        color: palette.primary.contrastText,
+        background: `linear-gradient(135deg, ${palette.primary.main}, ${palette.primary.light})`,
         border: "none",
-        boxShadow: `0 8px 24px ${alpha(theme.palette.primary.main, 0.18)}`,
+        boxShadow: `0 8px 24px color-mix(in srgb, ${palette.primary.main} 18%, transparent)`,
       },
 
       danger: {
-        color: theme.palette.primary.contrastText,
-        background: `linear-gradient(135deg, ${theme.palette.secondary.dark}, ${theme.palette.secondary.main})`,
+        color: palette.primary.contrastText,
+        background: `linear-gradient(135deg, ${palette.secondary.dark}, ${palette.secondary.main})`,
         border: "none",
-        boxShadow: `0 8px 24px ${alpha(theme.palette.primary.main, 0.18)}`,
+        boxShadow: `0 8px 24px color-mix(in srgb, ${palette.primary.main} 18%, transparent)`,
       },
 
       transparent: {
@@ -59,13 +60,13 @@ function getCardStyles(
       },
 
       outlined: {
-        backgroundColor: theme.palette.background.paper,
-        border: `1px solid ${theme.palette.divider}`,
+        backgroundColor: palette.background.paper,
+        border: `1px solid ${palette.divider}`,
         boxShadow: "none",
       },
 
       flat: {
-        backgroundColor: alpha(theme.palette.primary.light, 0.08),
+        backgroundColor: `color-mix(in srgb, ${palette.primary.light} 8%, transparent)`,
         border: "none",
         boxShadow: "none",
       },
@@ -98,8 +99,8 @@ function getCardStyles(
 
         "&:hover": {
           transform: "translateY(-1px)",
-          borderColor: theme.palette.primary.main,
-          boxShadow: `0 8px 24px ${alpha(theme.palette.primary.main, 0.14)}`,
+          borderColor: palette.primary.main,
+          boxShadow: `0 8px 24px color-mix(in srgb, ${palette.primary.main} 14%, transparent)`,
         },
 
         "&:active": {
@@ -107,7 +108,7 @@ function getCardStyles(
         },
 
         "&:focus-visible": {
-          outline: `3px solid ${alpha(theme.palette.primary.light, 0.35)}`,
+          outline: `3px solid color-mix(in srgb, ${palette.primary.light} 35%, transparent)`,
           outlineOffset: 2,
         },
       }),

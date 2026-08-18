@@ -10,15 +10,11 @@
   --font-body: var(--font-outfit), 'Outfit', system-ui, sans-serif;
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
-  --spacing: 0.25rem;
   --default-transition-duration: 0.15s;
   --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-html {
-  height: 100%;
-  color-scheme: light;
-}
+html { height: 100%; }
 
 html,
 body {
@@ -30,8 +26,6 @@ body {
   min-height: 100%;
   display: flex;
   flex-direction: column;
-  color: var(--foreground);
-  background: var(--background);
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

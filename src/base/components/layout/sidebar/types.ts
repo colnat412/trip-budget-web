@@ -1,8 +1,15 @@
 import type { ReactNode } from "react";
 
+export type SidebarMessageKey =
+  | "overview"
+  | "expenses"
+  | "scan"
+  | "settlement";
+
 export interface SidebarMenuItem {
   id: string;
   label: string;
+  messageKey?: SidebarMessageKey;
   icon: ReactNode;
 }
 

@@ -13,7 +13,7 @@ export interface AppLinearProgressProps
 export default function AppLinearProgress({
   value,
   height = 4,
-  trackColor = "#E2E8F0",
+  trackColor = "action.selected",
   barColor = "primary.main",
   sx,
   ...progressProps

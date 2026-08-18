@@ -1,6 +1,7 @@
 import { ButtonBase, Stack, Typography } from "@mui/material";
 
 import type { SidebarMenuItem } from "./types";
+import { useTranslations } from "next-intl";
 
 export interface SidebarMenuProps {
   items: SidebarMenuItem[];
@@ -13,6 +14,8 @@ export default function SidebarMenu({
   selectedId,
   onChange,
 }: SidebarMenuProps) {
+  const t = useTranslations("sidebar");
+
   return (
     <Stack component="nav" aria-label="Main navigation" spacing={0.5}>
       {items.map((item) => {
@@ -31,12 +34,12 @@ export default function SidebarMenu({
               px: 2,
               borderRadius: "12px",
               color: selected ? "primary.main" : "text.secondary",
-              bgcolor: selected ? "#EFF6FF" : "transparent",
+              bgcolor: selected ? "action.selected" : "transparent",
               transition:
                 "background-color 0.15s, color 0.15s, border-color 0.15s",
               "&:hover": {
                 color: "primary.main",
-                bgcolor: selected ? "#EFF6FF" : "action.hover",
+                bgcolor: selected ? "action.selected" : "action.hover",
               },
               "& svg": { fontSize: 16 },
             }}
@@ -50,7 +53,7 @@ export default function SidebarMenu({
                 fontWeight: selected ? 800 : 600,
               }}
             >
-              {item.label}
+              {item.messageKey ? t(item.messageKey) : item.label}
             </Typography>
             {/* {selected && (
               <Box

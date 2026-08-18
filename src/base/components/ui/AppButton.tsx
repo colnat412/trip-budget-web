@@ -22,23 +22,27 @@ export type AppButtonProps = Omit<ButtonProps, "color" | "variant"> & {
 function getSelectedStyles(selected: boolean): SxProps<Theme> {
   if (!selected) return {};
 
-  return (theme) => ({
-    color: theme.palette.primary.contrastText,
-    background: theme.palette.background.default,
-    borderColor: theme.palette.background.default,
+  return (theme) => {
+    const palette = theme.vars?.palette ?? theme.palette;
 
-    "&:hover": {
-      color: theme.palette.primary.contrastText,
-      background: theme.palette.background.default,
-      borderColor: theme.palette.background.default,
-      filter: "brightness(0.92)",
-    },
+    return {
+      color: palette.primary.contrastText,
+      background: palette.background.default,
+      borderColor: palette.background.default,
 
-    "&:active": {
-      background: theme.palette.background.default,
-      filter: "brightness(0.85)",
-    },
-  });
+      "&:hover": {
+        color: palette.primary.contrastText,
+        background: palette.background.default,
+        borderColor: palette.background.default,
+        filter: "brightness(0.92)",
+      },
+
+      "&:active": {
+        background: palette.background.default,
+        filter: "brightness(0.85)",
+      },
+    };
+  };
 }
 
 function getButtonStyles(
@@ -46,9 +50,10 @@ function getButtonStyles(
   round: boolean,
 ): SxProps<Theme> {
   return (theme) => {
-    const primaryGradient = `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.primary.light})`;
+    const palette = theme.vars?.palette ?? theme.palette;
+    const primaryGradient = `linear-gradient(135deg, ${palette.primary.main}, ${palette.primary.light})`;
     const commonStyles = {
-      // borderRadius: 1,
+      ...(round && { borderRadius: "999px" }),
     };
 
     switch (intent) {
@@ -56,7 +61,7 @@ function getButtonStyles(
         return {
           ...commonStyles,
 
-          color: theme.palette.primary.contrastText,
+          color: palette.primary.contrastText,
           background: primaryGradient,
 
           "&:hover": {
@@ -70,8 +75,8 @@ function getButtonStyles(
           },
 
           "&.Mui-disabled": {
-            color: theme.palette.primary.contrastText,
-            background: theme.palette.action.disabledBackground,
+            color: palette.primary.contrastText,
+            background: palette.action.disabledBackground,
             filter: "none",
           },
         };
@@ -80,24 +85,23 @@ function getButtonStyles(
         return {
           ...commonStyles,
 
-          color: theme.palette.primary.dark,
-          backgroundColor: theme.palette.background.paper,
-          border: `1px solid ${theme.palette.primary.main}`,
+          color: palette.primary.main,
+          backgroundColor: palette.background.paper,
+          border: `1px solid ${palette.primary.main}`,
 
           "&:hover": {
-            color: theme.palette.primary.dark,
-            // backgroundColor: theme.palette.primary.light,
-            borderColor: theme.palette.primary.light,
+            color: palette.primary.main,
+            borderColor: palette.primary.light,
           },
 
           "&:active": {
-            backgroundColor: theme.palette.primary.light,
+            backgroundColor: `color-mix(in srgb, ${palette.primary.main} 12%, transparent)`,
           },
 
           "&.Mui-disabled": {
-            color: theme.palette.action.disabled,
-            backgroundColor: theme.palette.background.paper,
-            borderColor: theme.palette.action.disabled,
+            color: palette.action.disabled,
+            backgroundColor: palette.background.paper,
+            borderColor: palette.action.disabled,
           },
         };
 
@@ -105,24 +109,24 @@ function getButtonStyles(
         return {
           ...commonStyles,
 
-          color: theme.palette.success.main,
-          backgroundColor: theme.palette.background.paper,
-          border: `1px solid ${theme.palette.success.main}`,
+          color: palette.success.main,
+          backgroundColor: palette.background.paper,
+          border: `1px solid ${palette.success.main}`,
 
           "&:hover": {
-            color: theme.palette.success.dark,
-            backgroundColor: theme.palette.success.light,
-            borderColor: theme.palette.success.dark,
+            color: palette.success.dark,
+            backgroundColor: `color-mix(in srgb, ${palette.success.main} 12%, transparent)`,
+            borderColor: palette.success.dark,
           },
 
           "&:active": {
-            backgroundColor: theme.palette.success.light,
+            backgroundColor: `color-mix(in srgb, ${palette.success.main} 18%, transparent)`,
           },
 
           "&.Mui-disabled": {
-            color: theme.palette.action.disabled,
-            backgroundColor: theme.palette.background.paper,
-            borderColor: theme.palette.action.disabled,
+            color: palette.action.disabled,
+            backgroundColor: palette.background.paper,
+            borderColor: palette.action.disabled,
           },
         };
 
@@ -130,24 +134,24 @@ function getButtonStyles(
         return {
           ...commonStyles,
 
-          color: theme.palette.error.main,
-          backgroundColor: theme.palette.background.paper,
-          border: `1px solid ${theme.palette.error.main}`,
+          color: palette.error.main,
+          backgroundColor: palette.background.paper,
+          border: `1px solid ${palette.error.main}`,
 
           "&:hover": {
-            color: theme.palette.error.dark,
-            backgroundColor: theme.palette.error.light,
-            borderColor: theme.palette.error.dark,
+            color: palette.error.dark,
+            backgroundColor: `color-mix(in srgb, ${palette.error.main} 12%, transparent)`,
+            borderColor: palette.error.dark,
           },
 
           "&:active": {
-            backgroundColor: theme.palette.error.light,
+            backgroundColor: `color-mix(in srgb, ${palette.error.main} 18%, transparent)`,
           },
 
           "&.Mui-disabled": {
-            color: theme.palette.action.disabled,
-            backgroundColor: theme.palette.background.paper,
-            borderColor: theme.palette.action.disabled,
+            color: palette.action.disabled,
+            backgroundColor: palette.background.paper,
+            borderColor: palette.action.disabled,
           },
         };
 
@@ -155,20 +159,20 @@ function getButtonStyles(
         return {
           ...commonStyles,
 
-          color: theme.palette.primary.main,
+          color: palette.primary.main,
           backgroundColor: "transparent",
 
           "&:hover": {
-            color: theme.palette.primary.dark,
-            backgroundColor: theme.palette.primary.light,
+            color: palette.primary.main,
+            backgroundColor: `color-mix(in srgb, ${palette.primary.main} 12%, transparent)`,
           },
 
           "&:active": {
-            backgroundColor: theme.palette.primary.light,
+            backgroundColor: `color-mix(in srgb, ${palette.primary.main} 18%, transparent)`,
           },
 
           "&.Mui-disabled": {
-            color: theme.palette.action.disabled,
+            color: palette.action.disabled,
           },
         };
     }

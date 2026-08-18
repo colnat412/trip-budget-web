@@ -1,7 +1,6 @@
 'use client';
 
 import { type FormEvent, useRef, useState } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import {
   Box,
@@ -22,6 +21,8 @@ import {
 import { AppButton, AppTextField, AppToast } from '@/base/components/ui';
 import SidebarBrand from '@/base/components/layout/sidebar/SidebarBrand';
 import useLogin from '@/features/auth/hooks/useLogin';
+import AppPreferences from '@/base/components/preferences/AppPreferences';
+import { useTranslations } from 'next-intl';
 
 interface LoginFormErrors {
   email?: string;
@@ -37,6 +38,7 @@ const Login = () => {
   const emailInputRef = useRef<HTMLInputElement>(null);
   const passwordInputRef = useRef<HTMLInputElement>(null);
   const { loginMutation } = useLogin();
+  const t = useTranslations();
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -45,13 +47,13 @@ const Login = () => {
     const nextErrors: LoginFormErrors = {};
 
     if (!normalizedEmail) {
-      nextErrors.email = 'Please enter the email.';
+      nextErrors.email = t('validation.emailRequired');
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
-      nextErrors.email = 'Invalid email format.';
+      nextErrors.email = t('validation.emailInvalid');
     }
 
     if (!password) {
-      nextErrors.password = 'Please enter the password.';
+      nextErrors.password = t('validation.passwordRequired');
     }
 
     setFormErrors(nextErrors);
@@ -88,8 +90,8 @@ const Login = () => {
       component="section"
       sx={{
         minHeight: '100svh',
-        display: 'grid',
-        gridTemplateColumns: 'minmax(0, 1.15fr) minmax(440px, 0.85fr)',
+        display: 'flex',
+        flexDirection: { xs: 'column', md: 'row' },
         bgcolor: 'background.paper',
       }}
     >
@@ -102,67 +104,47 @@ const Login = () => {
 
       <Box
         sx={{
-          position: 'relative',
+          display: 'flex',
+          flexDirection: 'column',
+          flexGrow: 1.15,
+          flexShrink: 1,
+          flexBasis: 0,
+          minWidth: 0,
+          minHeight: { xs: '340px', md: '100svh' },
           overflow: 'hidden',
-          // borderRadius: 4,
           bgcolor: 'primary.dark',
+          justifyContent: 'space-between',
+          p: { xs: 3, md: 4 },
+          color: 'common.white',
+          backgroundImage:
+            'linear-gradient(180deg, rgba(6, 28, 68, 0.48) 0%, rgba(6, 28, 68, 0.08) 42%, rgba(6, 28, 68, 0.78) 100%), url("/login-travel.svg")',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          '& .MuiTypography-root': { color: 'inherit' },
         }}
       >
-        <Image
-          src="/login-travel.svg"
-          alt="Image"
-          fill
-          preload
-          style={{ objectFit: 'cover' }}
-        />
+        <SidebarBrand />
 
-        <Box
-          sx={{
-            position: 'absolute',
-            inset: 0,
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'space-between',
-            p: 4,
-            color: 'common.white',
-            background:
-              'linear-gradient(180deg, rgba(6, 28, 68, 0.48) 0%, rgba(6, 28, 68, 0.08) 42%, rgba(6, 28, 68, 0.78) 100%)',
-            '& .MuiTypography-root': {
-              color: 'inherit',
-            },
-          }}
-        >
-          <Stack>
-            <SidebarBrand />
-          </Stack>
-
-          <Box sx={{ maxWidth: 560 }}>
-            <Typography
-              component="p"
-              sx={{
-                fontSize: '40px',
-                fontFamily: 'var(--font-display)',
-              }}
-            >
-              Go further, spend smarter.
-            </Typography>
-            <Typography
-              sx={{
-                color: 'rgba(255,255,255,.82) !important',
-                fontSize: '16px',
-              }}
-            >
-              Plan your budget and fully enjoy every journey.
-            </Typography>
-          </Box>
-        </Box>
+        <Stack spacing={1} sx={{ maxWidth: 560 }}>
+          <Typography component="p" sx={{ fontSize: '40px', fontFamily: 'var(--font-display)' }}>
+            {t('login.slogan')}
+          </Typography>
+          <Typography sx={{ color: 'rgba(255,255,255,.82) !important', fontSize: '16px' }}>
+            {t('login.sloganDescription')}
+          </Typography>
+        </Stack>
       </Box>
 
       <Box
         sx={{
           display: 'flex',
+          flexGrow: 0.85,
+          flexShrink: 1,
+          flexBasis: 0,
+          minWidth: { xs: 0, md: '440px' },
           alignItems: 'center',
           justifyContent: 'center',
+          p: { xs: 3, sm: 5 },
         }}
       >
         <Box
@@ -174,6 +156,9 @@ const Login = () => {
             gap: '14px',
           }}
         >
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <AppPreferences />
+          </Box>
           <Typography
             component="h1"
             sx={{
@@ -183,10 +168,10 @@ const Login = () => {
               fontWeight: 600,
             }}
           >
-            Welcome back
+            {t('login.title')}
           </Typography>
           <Typography color="text.secondary">
-            Sign in to continue managing your trips.
+            {t('login.description')}
           </Typography>
 
           <Stack
@@ -196,7 +181,7 @@ const Login = () => {
             onSubmit={handleSubmit}
           >
             <AppTextField
-              label="Email"
+              label={t('login.email')}
               name="email"
               type="email"
               placeholder="user@example.com"
@@ -227,10 +212,10 @@ const Login = () => {
             />
 
             <AppTextField
-              label="Password"
+              label={t('login.password')}
               name="password"
               type={showPassword ? 'text' : 'password'}
-              placeholder="Enter the password"
+              placeholder={t('login.passwordPlaceholder')}
               autoComplete="current-password"
               required
               value={password}
@@ -257,7 +242,9 @@ const Login = () => {
                     <InputAdornment position="end">
                       <IconButton
                         aria-label={
-                          showPassword ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'
+                          showPassword
+                            ? t('login.hidePassword')
+                            : t('login.showPassword')
                         }
                         edge="end"
                         onClick={() => setShowPassword((current) => !current)}
@@ -287,7 +274,7 @@ const Login = () => {
                     onChange={(event) => setRememberMe(event.target.checked)}
                   />
                 }
-                label="Remember me"
+                label={t('login.rememberMe')}
                 sx={{
                   '& .MuiFormControlLabel-label': { fontSize: '14px' },
                 }}
@@ -302,7 +289,7 @@ const Login = () => {
                   whiteSpace: 'nowrap',
                 }}
               >
-                Forgot password?
+                {t('login.forgotPassword')}
               </Typography>
             </Stack>
 
@@ -312,7 +299,7 @@ const Login = () => {
               loading={loginMutation.isPending}
               sx={{ minHeight: 54 }}
             >
-              Login
+              {t('login.submit')}
             </AppButton>
           </Stack>
           <Stack
@@ -321,14 +308,14 @@ const Login = () => {
             sx={{ justifyContent: 'center' }}
           >
             <Typography align="center" color="text.secondary">
-              {"Don't have an account yet?"}
+              {t('login.noAccount')}
             </Typography>
             <Box
               component={Link}
               href="#"
               sx={{ color: 'primary.main', fontWeight: 700 }}
             >
-              Create an account
+              {t('login.createAccount')}
             </Box>
           </Stack>
         </Box>
