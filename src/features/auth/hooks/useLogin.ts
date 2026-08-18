@@ -1,18 +1,20 @@
 'use client';
 
-import { axiosClient, type ApiResponse } from '@/base/api';
-import { useApiRequest } from '@/base/hooks';
+import type { ApiResponse } from '@/base/api';
+import { useMutationPost } from '@/base/hooks';
+import { authMutationKeys } from '../constants/auth-keys';
 import type { LoginData, LoginPayload } from '../types';
 
-async function login(payload: LoginPayload): Promise<LoginData> {
-  const response = await axiosClient.post<ApiResponse<LoginData>>(
-    '/auth/login',
-    payload,
-  );
-
-  return response.data.data;
-}
-
 export default function useLogin() {
-  return useApiRequest(login);
+  const loginMutation = useMutationPost<
+    ApiResponse<LoginData>,
+    LoginPayload
+  >({
+    mutationKey: authMutationKeys.login,
+    endPoint: '/auth/login',
+  });
+
+  return {
+    loginMutation,
+  };
 }

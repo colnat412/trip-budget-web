@@ -36,9 +36,9 @@ const Login = () => {
   const [formErrors, setFormErrors] = useState<LoginFormErrors>({});
   const emailInputRef = useRef<HTMLInputElement>(null);
   const passwordInputRef = useRef<HTMLInputElement>(null);
-  const { error, loading, execute, clearError } = useLogin();
+  const { loginMutation } = useLogin();
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const normalizedEmail = email.trim().toLowerCase();
@@ -66,11 +66,21 @@ const Login = () => {
       return;
     }
 
-    await execute({
-      email: normalizedEmail,
-      password,
-      rememberMe,
-    });
+    loginMutation.mutate(
+      {
+        email: normalizedEmail,
+        password,
+        rememberMe,
+      },
+      {
+        onSuccess: () => {
+          console.error('SUCCESS');
+        },
+        onError: () => {
+          console.error('ERROR');
+        },
+      },
+    );
   };
 
   return (
@@ -84,17 +94,17 @@ const Login = () => {
       }}
     >
       <AppToast
-        open={Boolean(error)}
+        open={Boolean(loginMutation.error)}
         severity="error"
-        message={error?.message ?? ''}
-        onClose={clearError}
+        message={loginMutation.error?.message ?? ''}
+        onClose={loginMutation.clearError}
       />
 
       <Box
         sx={{
           position: 'relative',
           overflow: 'hidden',
-          borderRadius: 4,
+          // borderRadius: 4,
           bgcolor: 'primary.dark',
         }}
       >
@@ -196,14 +206,14 @@ const Login = () => {
               error={Boolean(formErrors.email)}
               helperText={formErrors.email}
               inputRef={emailInputRef}
-              disabled={loading}
+              disabled={loginMutation.isPending}
               onChange={(event) => {
                 setEmail(event.target.value);
                 setFormErrors((current) => ({
                   ...current,
                   email: undefined,
                 }));
-                clearError();
+                loginMutation.clearError();
               }}
               slotProps={{
                 input: {
@@ -227,14 +237,14 @@ const Login = () => {
               error={Boolean(formErrors.password)}
               helperText={formErrors.password}
               inputRef={passwordInputRef}
-              disabled={loading}
+              disabled={loginMutation.isPending}
               onChange={(event) => {
                 setPassword(event.target.value);
                 setFormErrors((current) => ({
                   ...current,
                   password: undefined,
                 }));
-                clearError();
+                loginMutation.clearError();
               }}
               slotProps={{
                 input: {
@@ -273,7 +283,7 @@ const Login = () => {
                   <Checkbox
                     size="small"
                     checked={rememberMe}
-                    disabled={loading}
+                    disabled={loginMutation.isPending}
                     onChange={(event) => setRememberMe(event.target.checked)}
                   />
                 }
@@ -299,7 +309,7 @@ const Login = () => {
             <AppButton
               type="submit"
               fullWidth
-              loading={loading}
+              loading={loginMutation.isPending}
               sx={{ minHeight: 54 }}
             >
               Login
