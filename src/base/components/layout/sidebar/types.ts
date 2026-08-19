@@ -8,6 +8,7 @@ export type SidebarMessageKey =
 
 export interface SidebarMenuItem {
   id: string;
+  href: string;
   label: string;
   messageKey?: SidebarMessageKey;
   icon: ReactNode;

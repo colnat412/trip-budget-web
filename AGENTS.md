@@ -889,6 +889,26 @@ Recommended responsibility split:
 
 Avoid placing a new `ThemeProvider`/`ConfigProvider` inside every component instance. Use one root MUI provider and read tokens from the shared theme.
 
+### Reuse existing components before creating UI
+
+Before implementing any UI element, search the repository for an existing project component that already provides the same responsibility. If a suitable component exists, use it instead of rebuilding the behavior with raw MUI components, `Box`, HTML, or duplicated styles.
+
+For example:
+
+- use `AppLinearProgress` instead of manually composing a progress track and bar with nested `Box` components;
+- use `AppButton` instead of styling a raw MUI `Button` for an existing project intent;
+- use `AppTextField`, `AppTextArea`, `AppCard`, and `AppToast` when their existing APIs satisfy the feature requirement.
+
+Before creating a new shared component or feature-local replacement:
+
+1. Inspect `src/base/components/ui` and the relevant feature component folders.
+2. Read the existing component API and implementation, not only its filename.
+3. Reuse the component when its responsibility matches the requirement.
+4. Extend the existing component narrowly when the missing behavior is reusable and does not break current consumers.
+5. Create a new component only when the responsibility is genuinely different; explain why the existing component is unsuitable.
+
+Do not keep two components that represent the same UI responsibility under different names. A small feature component remains appropriate when it composes existing primitives into a distinct business concept, such as a trip summary metric; it must not duplicate an existing shared primitive.
+
 For custom Button variants, prefer a project prop such as:
 
 ```ts

@@ -1,11 +1,19 @@
 import { cookies } from "next/headers";
 import { getRequestConfig } from "next-intl/server";
 
+import enMessages from "../../messages/en.json";
+import viMessages from "../../messages/vi.json";
+
 import {
   defaultLocale,
   isAppLocale,
   localeCookieName,
 } from "./config";
+
+const messagesByLocale = {
+  vi: viMessages,
+  en: enMessages,
+} as const;
 
 export default getRequestConfig(async () => {
   const cookieStore = await cookies();
@@ -14,6 +22,6 @@ export default getRequestConfig(async () => {
 
   return {
     locale,
-    messages: (await import(`../../messages/${locale}.json`)).default,
+    messages: messagesByLocale[locale],
   };
 });

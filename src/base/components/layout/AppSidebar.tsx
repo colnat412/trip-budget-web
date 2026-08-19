@@ -1,7 +1,7 @@
 "use client";
 
 import { Box, Stack } from "@mui/material";
-import { useState } from "react";
+import { usePathname } from "next/navigation";
 
 import {
   DEFAULT_SIDEBAR_MENU,
@@ -32,19 +32,14 @@ export default function AppSidebar({
   onMenuChange,
 }: AppSidebarProps) {
   const t = useTranslations("sidebar");
-  const [internalActiveMenuId, setInternalActiveMenuId] = useState(
-    menuItems[0]?.id ?? "",
+  const pathname = usePathname();
+  const routeMenuItem = menuItems.find(
+    (item) =>
+      (pathname === '/' && item.id === 'overview') ||
+      pathname === item.href ||
+      pathname.startsWith(`${item.href}/`),
   );
-
-  const selectedMenuId = activeMenuId ?? internalActiveMenuId;
-
-  const handleMenuChange = (menuId: string) => {
-    if (activeMenuId === undefined) {
-      setInternalActiveMenuId(menuId);
-    }
-
-    onMenuChange?.(menuId);
-  };
+  const selectedMenuId = activeMenuId ?? routeMenuItem?.id ?? "";
 
   return (
     <Box
@@ -79,7 +74,7 @@ export default function AppSidebar({
         <SidebarMenu
           items={menuItems}
           selectedId={selectedMenuId}
-          onChange={handleMenuChange}
+          onChange={onMenuChange}
         />
       </Box>
 

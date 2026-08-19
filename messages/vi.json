@@ -6,6 +6,44 @@
     "dark": "Chế độ tối",
     "changeError": "Không thể đổi ngôn ngữ. Vui lòng thử lại."
   },
+  "topBar": {
+    "addExpense": "Thêm khoản chi",
+    "inviteMember": "Mời thành viên"
+  },
+  "tripFeature": {
+    "description": "Trang đã được kết nối route và đang chờ phát triển giao diện nghiệp vụ.",
+    "expenses": { "title": "Chi tiêu" },
+    "scan": { "title": "Quét hóa đơn" },
+    "settlement": { "title": "Quyết toán" },
+    "ai": { "title": "Trợ lý AI" }
+  },
+  "overview": {
+    "activeTrip": "Chuyến đi đang diễn ra",
+    "live": "Đang đi",
+    "tripMeta": "4 – 8 tháng 8, 2025 · 5 ngày · 4 thành viên",
+    "spent": "Đã chi",
+    "remaining": "Còn lại",
+    "averagePerDay": "Trung bình/ngày",
+    "expenseCount": "Số khoản",
+    "spendingByCategory": "Chi tiêu theo danh mục",
+    "recentTitle": "Gần đây",
+    "viewAll": "Xem tất cả",
+    "categories": {
+      "flight": "Vé máy bay",
+      "stay": "Lưu trú",
+      "food": "Ăn uống",
+      "sightseeing": "Tham quan",
+      "shopping": "Mua sắm",
+      "transport": "Di chuyển"
+    },
+    "recent": {
+      "returnFlight": "Vé máy bay khứ hồi",
+      "hotel": "Khách sạn Đà Nẵng 3 đêm",
+      "baNaHills": "Tham quan Bà Nà Hills",
+      "dinner": "Ăn tối Nhà hàng Madame Lân",
+      "motorbike": "Thuê xe máy 2 ngày"
+    }
+  },
   "sidebar": {
     "navigation": "Điều hướng chính",
     "overview": "Tổng quan",

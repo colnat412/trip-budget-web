@@ -6,6 +6,44 @@
     "dark": "Dark mode",
     "changeError": "Unable to change language. Please try again."
   },
+  "topBar": {
+    "addExpense": "Add expense",
+    "inviteMember": "Invite member"
+  },
+  "tripFeature": {
+    "description": "This route is connected and ready for its business UI to be developed.",
+    "expenses": { "title": "Expenses" },
+    "scan": { "title": "Scan receipt" },
+    "settlement": { "title": "Settlement" },
+    "ai": { "title": "AI assistant" }
+  },
+  "overview": {
+    "activeTrip": "Trip in progress",
+    "live": "Live",
+    "tripMeta": "4 – 8 August, 2025 · 5 days · 4 members",
+    "spent": "Spent",
+    "remaining": "Remaining",
+    "averagePerDay": "Average/day",
+    "expenseCount": "Expenses",
+    "spendingByCategory": "Spending by category",
+    "recentTitle": "Recent",
+    "viewAll": "View all",
+    "categories": {
+      "flight": "Flights",
+      "stay": "Accommodation",
+      "food": "Food",
+      "sightseeing": "Sightseeing",
+      "shopping": "Shopping",
+      "transport": "Transport"
+    },
+    "recent": {
+      "returnFlight": "Round-trip flight tickets",
+      "hotel": "Da Nang hotel · 3 nights",
+      "baNaHills": "Ba Na Hills visit",
+      "dinner": "Dinner at Madame Lan",
+      "motorbike": "Motorbike rental · 2 days"
+    }
+  },
   "sidebar": {
     "navigation": "Main navigation",
     "overview": "Overview",

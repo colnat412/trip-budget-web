@@ -1,7 +1,7 @@
-import DemoPage from "./demo/page";
+import OverviewPage from "./overview/page";
 
 const HomePage = () => {
-  return <DemoPage></DemoPage>;
+  return <OverviewPage />;
 };
 
 export default HomePage;
