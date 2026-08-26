@@ -10,8 +10,8 @@ export type { AppTextAreaProps } from './AppTextArea';
 export { default as AppCard } from './AppCard';
 export type { AppCardProps, AppCardVariant } from './AppCard';
 
-export { default as AppLinearProgress } from "./AppLinearProgress";
-export type { AppLinearProgressProps } from "./AppLinearProgress";
+export { default as AppLinearProgress } from './AppLinearProgress';
+export type { AppLinearProgressProps } from './AppLinearProgress';
 
 export { default as AppToast } from './AppToast';
 export type {

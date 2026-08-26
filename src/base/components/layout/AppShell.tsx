@@ -1,11 +1,13 @@
-"use client";
+'use client';
 
-import { Box } from "@mui/material";
-import { usePathname } from "next/navigation";
-import type { ReactNode } from "react";
+import { Box } from '@mui/material';
+import { usePathname } from 'next/navigation';
+import type { ReactNode } from 'react';
 
-import AppSidebar from "./AppSidebar";
-import AppTopBar from "./AppTopBar";
+import AppSidebar from './AppSidebar';
+import AppTopBar from './AppTopBar';
+import CreateTripHost from './CreateTripHost';
+import { TripProvider } from '@/features/trip/context/TripContext';
 
 export interface AppShellProps {
   children: ReactNode;
@@ -19,21 +21,44 @@ export default function AppShell({
   const pathname = usePathname();
   const showSidebar = !sidebarDisabledPaths.includes(pathname);
 
+  if (!showSidebar) {
+    return <>{children}</>;
+  }
+
   return (
-    <Box
-      sx={{
-        display: "flex",
-        bgcolor: "background.paper",
-        minHeight: "100dvh",
-      }}
-    >
-      {showSidebar && <AppSidebar />}
-      <Box sx={{ minWidth: 0, minHeight: "100dvh", display: "flex", flexDirection: "column", flex: 1 }}>
-        {showSidebar && <AppTopBar />}
-        <Box component="main" sx={{ minWidth: 0, minHeight: 0, flexGrow: 1, overflow: "auto" }}>
-          {children}
+    <TripProvider>
+      <Box
+        sx={{
+          display: 'flex',
+          bgcolor: 'background.paper',
+          minHeight: '100dvh',
+        }}
+      >
+        <AppSidebar />
+        <Box
+          sx={{
+            minWidth: 0,
+            minHeight: '100dvh',
+            display: 'flex',
+            flexDirection: 'column',
+            flex: 1,
+          }}
+        >
+          <AppTopBar />
+          <Box
+            component="main"
+            sx={{
+              minWidth: 0,
+              minHeight: 0,
+              flexGrow: 1,
+              overflow: 'auto',
+            }}
+          >
+            {children}
+          </Box>
         </Box>
+        <CreateTripHost />
       </Box>
-    </Box>
+    </TripProvider>
   );
 }

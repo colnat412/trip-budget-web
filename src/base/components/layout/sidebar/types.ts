@@ -1,10 +1,11 @@
-import type { ReactNode } from "react";
+import type { ReactNode } from 'react';
 
 export type SidebarMessageKey =
-  | "overview"
-  | "expenses"
-  | "scan"
-  | "settlement";
+  | 'overview'
+  | 'trips'
+  | 'expenses'
+  | 'scan'
+  | 'settlement';
 
 export interface SidebarMenuItem {
   id: string;

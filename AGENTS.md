@@ -919,7 +919,7 @@ Using `intent` avoids conflicting with MUI's built-in `color` and `variant` prop
 
 ### Component organization
 
-Do not put the entire Login page in one file. A reasonable feature-first structure is:
+Do not put the entire Login page or complex feature views in one file. A reasonable feature-first structure is:
 
 ```text
 src/
@@ -937,6 +937,36 @@ src/
 ```
 
 Follow the actual repository structure if it differs. Do not move files merely to match this example unless the user asks for a refactor.
+
+### Quy tắc 1 Component / 1 File (Single Responsibility per File)
+
+Tuyệt đối **không định nghĩa nhiều components trong cùng 1 file** (ví dụ: không khai báo các helper components, sub-views, modal hosts, metric cards, hoặc danh sách phụ bên trong file component chính như `AppShell.tsx`, `Overview.tsx`, `Login.tsx`).
+
+- Mỗi component phải nằm trong một file riêng biệt có tên tương ứng với component đó (`PascalCase.tsx`).
+- Cấu trúc thư mục phải phân cấp rõ ràng: component cha import các component con từ các file độc lập hoặc thư mục con tương ứng (ví dụ: `src/features/trip/components/overview/ActiveTripBanner.tsx`, `CategoryList.tsx`, `RecentExpenseList.tsx`, `TripSummaryMetric.tsx`, `EmptyTripState.tsx`).
+- Tách riêng các Host/Wrapper component (ví dụ: `CreateTripHost.tsx` tách khỏi `AppShell.tsx`).
+- Giúp code rõ ràng, giảm độ phức tạp của từng file, dễ bảo trì, dễ viết unit test và tái sử dụng độc lập.
+
+### Quy tắc Sử dụng Palette Theme Cho Màu Sắc & Trạng Thái (Theme-First Palette Tokenization)
+
+Nghiêm cấm **hardcode mã màu hex tĩnh** (`#15803D`, `#3B82F6`, `#F97316`...) trực tiếp vào component, badges, status chips, hoặc styles.
+
+- **Luôn bám theo Theme Palette**: Mọi màu sắc cho trạng thái (status chip, indicator, border, background mờ) phải được lấy từ Theme Palette thông qua hàm theme callback trong `sx`:
+  ```tsx
+  bgcolor: (theme) => {
+    const palette = theme.vars?.palette ?? theme.palette;
+    return palette.success.main;
+  };
+  ```
+- **Phân loại Variant chuẩn**: Sử dụng hệ thống variant ngữ nghĩa chuẩn (`success`, `primary`, `secondary`, `error`, `neutral`/`action`, `warning`, `info`) ánh xạ tương ứng vào theme tokens để đảm bảo giao diện luôn hiển thị đồng bộ và tương thích 100% với cả Light Mode lẫn Dark Mode.
+
+### Quy tắc Tập Trung Helpers & Utilities Chung (`src/base/utils/`)
+
+Mọi hàm xử lý logic chung, định dạng dữ liệu (date, currency, number, string) phải được đặt tập trung trong thư mục `src/base/utils/` và export qua `src/base/utils/index.ts`.
+
+- **Không viết hàm format cục bộ**: Tuyệt đối không tự viết các hàm format riêng lẻ (như `formatDateRange`, `formatCurrency`...) bên trong các file component.
+- **Có tham số mặc định rõ ràng**: Các hàm tiện ích phải thiết kế linh hoạt với giá trị mặc định chuẩn dự án (ví dụ: `formatDate(date, format = 'DD-MM-YYYY')`, `formatDateRange(start, end, format = 'DD-MM-YYYY', separator = ' – ')`).
+- Giúp dễ bảo trì, tái sử dụng trên toàn bộ codebase và dễ dàng viết unit test độc lập.
 
 ## 8. Current frontend direction
 
@@ -1120,16 +1150,19 @@ If the user has already supplied a specific task, do not block on a broad questi
 
 ## 14. Current project progress & next tasks
 
-### Completed authentication steps:
+### Completed steps:
 
 1. Giao diện Login với validation thủ công đầy đủ (email regex, password presence, focus & field errors).
-2. Shared Axios browser client (`src/base/api/axios-client.ts`), normalized error types (`src/base/api/api-error.ts`, `types.ts`), và reusable mutation hooks (`src/base/hooks/use-mutation-post.ts`).
+2. Shared Axios browser client (`src/base/api/axios-client.ts`), normalized error types (`src/base/api/api-error.ts`, `types.ts`), và reusable mutation hooks (`src/base/hooks/use-mutation-post.ts`, `use-query-get.ts`).
 3. Next.js BFF Login Route Handler (`src/app/api/auth/login/route.ts`) tích hợp với NestJS Identity Service (`POST /api/auth/login`), thiết lập HttpOnly cookies (`access_token`, `refresh_token`) an toàn.
 4. Hook `useLogin` (`src/features/auth/hooks/useLogin.ts`) kết nối với Login form và xử lý redirect về `/overview` khi thành công.
 5. Edge Route Protection với Next.js Middleware (`src/middleware.ts`) kiểm tra HttpOnly cookies (`access_token`, `refresh_token`,...).
+6. Next.js BFF Trip Route Handlers (`src/app/api/trip/my-trips/route.ts`, `src/app/api/trip/create/route.ts`) gắn `access_token` từ cookie gọi sang Spring Boot `TripController` (`GET /api/trip/my-trips`, `POST /api/trip/create`).
+7. Tích hợp Trip Context (`TripContext.tsx`), custom hooks (`useMyTrips`, `useCreateTrip`), popup tạo chuyến đi (`CreateTripDialog`), tự động nhận diện và hiển thị chuyến đi đang diễn ra (`IN_PROGRESS`), hỗ trợ dropdown chuyển đổi chuyến đi và nút tạo mới ở Sidebar & TopBar.
+8. Trang danh sách toàn bộ chuyến đi "My Trips" (`/trips`) hiển thị dưới dạng bảng dữ liệu có phân trang (`PageResponse<Trip>`), tích hợp menu Sidebar "Chuyến đi", tuân thủ nghiêm ngặt quy tắc "1 Component / 1 File" (`src/features/trip/components/my-trips/`).
 
 ### Immediate likely next tasks:
 
 1. Implement BFF Token Refresh route handler (`/api/auth/refresh`) and Axios interceptor for automatic silent token refresh.
 2. Implement BFF Logout route handler (`/api/auth/logout`) and clear cookies on both BFF and NestJS/Redis session.
-3. Authenticated BFF calls to Spring Boot Core service for Trip management.
+3. Expenses & Spending management integration with Spring Boot Core.

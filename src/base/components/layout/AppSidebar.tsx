@@ -1,20 +1,15 @@
-"use client";
+'use client';
 
-import { Box, Stack } from "@mui/material";
-import { usePathname } from "next/navigation";
+import { Box, Stack } from '@mui/material';
+import { usePathname } from 'next/navigation';
 
-import {
-  DEFAULT_SIDEBAR_MENU,
-  DEFAULT_SIDEBAR_TRIP,
-  DEFAULT_SIDEBAR_USER,
-} from "./sidebar/config";
-import SidebarBrand from "./sidebar/SidebarBrand";
-import SidebarMenu from "./sidebar/SidebarMenu";
-import SidebarTripCard from "./sidebar/SidebarTripCard";
-import SidebarUser from "./sidebar/SidebarUser";
-import type { AppSidebarProps } from "./sidebar/types";
-import AppPreferences from "../preferences/AppPreferences";
-import { useTranslations } from "next-intl";
+import { DEFAULT_SIDEBAR_MENU, DEFAULT_SIDEBAR_USER } from './sidebar/config';
+import SidebarBrand from './sidebar/SidebarBrand';
+import SidebarMenu from './sidebar/SidebarMenu';
+import SidebarTripCard from './sidebar/SidebarTripCard';
+import SidebarUser from './sidebar/SidebarUser';
+import type { AppSidebarProps } from './sidebar/types';
+import { useTranslations } from 'next-intl';
 
 export type {
   AppSidebarProps,
@@ -22,16 +17,15 @@ export type {
   SidebarTrip,
   SidebarTripMember,
   SidebarUser,
-} from "./sidebar/types";
+} from './sidebar/types';
 
 export default function AppSidebar({
   activeMenuId,
   menuItems = DEFAULT_SIDEBAR_MENU,
-  trip = DEFAULT_SIDEBAR_TRIP,
   currentUser = DEFAULT_SIDEBAR_USER,
   onMenuChange,
 }: AppSidebarProps) {
-  const t = useTranslations("sidebar");
+  const t = useTranslations('sidebar');
   const pathname = usePathname();
   const routeMenuItem = menuItems.find(
     (item) =>
@@ -39,19 +33,19 @@ export default function AppSidebar({
       pathname === item.href ||
       pathname.startsWith(`${item.href}/`),
   );
-  const selectedMenuId = activeMenuId ?? routeMenuItem?.id ?? "";
+  const selectedMenuId = activeMenuId ?? routeMenuItem?.id ?? '';
 
   return (
     <Box
       component="aside"
       sx={{
         width: 240,
-        display: "flex",
-        flexDirection: "column",
-        bgcolor: "background.paper",
+        display: 'flex',
+        flexDirection: 'column',
+        bgcolor: 'background.paper',
         borderRight: 1,
-        borderColor: "divider",
-        overflow: "hidden",
+        borderColor: 'divider',
+        overflow: 'hidden',
       }}
     >
       <Box sx={{ p: 2 }}>
@@ -59,15 +53,15 @@ export default function AppSidebar({
       </Box>
 
       <Box sx={{ p: 1 }}>
-        <SidebarTripCard trip={trip} />
+        <SidebarTripCard />
       </Box>
 
       <Box
         component="nav"
-        aria-label={t("navigation")}
+        aria-label={t('navigation')}
         sx={{
           flex: 1,
-          overflowY: "auto",
+          overflowY: 'auto',
           p: 1,
         }}
       >
@@ -82,12 +76,12 @@ export default function AppSidebar({
         spacing={2}
         sx={{
           borderTop: 1,
-          borderColor: "divider",
+          borderColor: 'divider',
           p: 2,
         }}
       >
         <SidebarUser user={currentUser} />
-        <AppPreferences />
+        {/* <AppPreferences /> */}
       </Stack>
     </Box>
   );
