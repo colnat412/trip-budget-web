@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { type FormEvent, useRef, useState } from 'react';
 import Link from 'next/link';
 import {
@@ -18,6 +19,7 @@ import {
   VisibilityOutlined,
 } from '@mui/icons-material';
 
+import { DEFAULT_AUTH_REDIRECT_PATH } from '@/base/constants';
 import { AppButton, AppTextField, AppToast } from '@/base/components/ui';
 import SidebarBrand from '@/base/components/layout/sidebar/SidebarBrand';
 import useLogin from '@/features/auth/hooks/useLogin';
@@ -30,6 +32,7 @@ interface LoginFormErrors {
 }
 
 const Login = () => {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -76,10 +79,11 @@ const Login = () => {
       },
       {
         onSuccess: () => {
-          console.error('SUCCESS');
+          router.push(DEFAULT_AUTH_REDIRECT_PATH);
+          router.refresh();
         },
         onError: () => {
-          console.error('ERROR');
+          passwordInputRef.current?.focus();
         },
       },
     );
@@ -126,10 +130,15 @@ const Login = () => {
         <SidebarBrand />
 
         <Stack spacing={1} sx={{ maxWidth: 560 }}>
-          <Typography component="p" sx={{ fontSize: '40px', fontFamily: 'var(--font-display)' }}>
+          <Typography
+            component="p"
+            sx={{ fontSize: '40px', fontFamily: 'var(--font-display)' }}
+          >
             {t('login.slogan')}
           </Typography>
-          <Typography sx={{ color: 'rgba(255,255,255,.82) !important', fontSize: '16px' }}>
+          <Typography
+            sx={{ color: 'rgba(255,255,255,.82) !important', fontSize: '16px' }}
+          >
             {t('login.sloganDescription')}
           </Typography>
         </Stack>

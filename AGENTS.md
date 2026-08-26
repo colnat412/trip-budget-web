@@ -962,10 +962,21 @@ The next authentication implementation should be incremental:
 7. Store tokens securely using the agreed HttpOnly-cookie design.
 8. Add authenticated BFF calls to Spring Boot.
 9. Add refresh handling.
-10. Add logout and route protection.
+10. Add logout and route protection (configured via `src/middleware.ts` to redirect unauthenticated users to `/login` and authenticated users to `/overview`).
 11. Test browser cookies, Redis keys, refresh rotation, and revoked sessions.
 
 Axios is the selected request library, but do not jump straight to a refresh interceptor before the BFF cookie contract and refresh behavior are defined.
+
+### Route protection and Middleware
+
+Route protection is implemented at the Edge/Server level using Next.js Middleware (`src/middleware.ts`):
+
+- **Protected routes**: All standard application paths (`/`, `/overview`, `/expenses`, `/settlement`, `/scan`, `/ai`, `/demo`, etc.) require authentication.
+- **Public routes**: `/login` (and `/register`, `/forgot-password` when added).
+- **Unauthenticated access**: Any request to a protected route without valid auth cookies (`access_token`, `refresh_token`, `auth_token`, `session_token`) is immediately redirected to `/login`.
+- **Authenticated access**: A request to `/login` from an already authenticated user is redirected to `/overview`.
+- **Root path (`/`)**: Redirects to `/overview` if authenticated, or `/login` if unauthenticated.
+- **Static assets & APIs**: Excluded from redirection via the middleware `matcher`.
 
 ## 9. Manual validation direction
 
@@ -1107,19 +1118,18 @@ Start by asking for or inspecting the actual repository/project path. Then provi
 
 If the user has already supplied a specific task, do not block on a broad questionnaire. Inspect the relevant files and proceed within that task's scope.
 
-## 14. Immediate likely next task
+## 14. Current project progress & next tasks
 
-Unless the user asks for something else, the likely next task is to complete Login integration while preserving SSR-first architecture:
+### Completed authentication steps:
 
-1. Refactor the current monolithic Login Client Component into server/static and client/interactive components.
-2. Keep the existing visual appearance.
-3. Add manual form validation.
-4. Add a shared Axios browser client that targets the Next.js BFF.
-5. Add normalized shared API response/error types.
-6. Define the exact NestJS Login response/cookie contract.
-7. Implement the Next.js BFF Login route.
-8. Create the feature `useLogin` hook and extract a shared hook only for truly common request state.
-9. Connect Login form submission and loading/error UI.
-10. Verify cookie and Redis behavior before implementing refresh.
+1. Giao diện Login với validation thủ công đầy đủ (email regex, password presence, focus & field errors).
+2. Shared Axios browser client (`src/base/api/axios-client.ts`), normalized error types (`src/base/api/api-error.ts`, `types.ts`), và reusable mutation hooks (`src/base/hooks/use-mutation-post.ts`).
+3. Next.js BFF Login Route Handler (`src/app/api/auth/login/route.ts`) tích hợp với NestJS Identity Service (`POST /api/auth/login`), thiết lập HttpOnly cookies (`access_token`, `refresh_token`) an toàn.
+4. Hook `useLogin` (`src/features/auth/hooks/useLogin.ts`) kết nối với Login form và xử lý redirect về `/overview` khi thành công.
+5. Edge Route Protection với Next.js Middleware (`src/middleware.ts`) kiểm tra HttpOnly cookies (`access_token`, `refresh_token`,...).
 
-Before doing this, inspect the actual code and do not assume that proposed filenames or components already exist.
+### Immediate likely next tasks:
+
+1. Implement BFF Token Refresh route handler (`/api/auth/refresh`) and Axios interceptor for automatic silent token refresh.
+2. Implement BFF Logout route handler (`/api/auth/logout`) and clear cookies on both BFF and NestJS/Redis session.
+3. Authenticated BFF calls to Spring Boot Core service for Trip management.
