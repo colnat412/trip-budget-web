@@ -127,5 +127,29 @@
     "emptyTitle": "No trips found",
     "emptyDescription": "Create your first trip to start budgeting and tracking expenses!",
     "createNew": "Create New Trip"
+  },
+  "profile": {
+    "title": "User Profile",
+    "description": "View and manage your personal information",
+    "fullName": "Full Name",
+    "fullNamePlaceholder": "Enter full name",
+    "fullNameRequired": "Please enter full name.",
+    "email": "Email",
+    "phone": "Phone Number",
+    "phonePlaceholder": "e.g. +84 912 345 678",
+    "role": "Role",
+    "rolePlaceholder": "e.g. Team Lead, IT...",
+    "bio": "About Me / Bio",
+    "bioPlaceholder": "Write a brief description about yourself...",
+    "changeAvatar": "Change Avatar",
+    "saveChanges": "Save Changes",
+    "cancel": "Cancel",
+    "saveSuccess": "Profile updated successfully!",
+    "saveNote": "Note: Profile update API is being completed on the backend."
+  },
+  "userMenu": {
+    "profile": "My Profile",
+    "logout": "Log Out",
+    "loggingOut": "Logging out..."
   }
 }

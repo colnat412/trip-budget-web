@@ -127,5 +127,29 @@
     "emptyTitle": "Bạn chưa có chuyến đi nào",
     "emptyDescription": "Hãy tạo chuyến đi đầu tiên để bắt đầu lên kế hoạch và quản lý chi tiêu!",
     "createNew": "Tạo chuyến đi mới"
+  },
+  "profile": {
+    "title": "Thông tin tài khoản",
+    "description": "Xem và quản lý thông tin cá nhân của bạn",
+    "fullName": "Họ và tên",
+    "fullNamePlaceholder": "Nhập họ và tên",
+    "fullNameRequired": "Vui lòng nhập họ và tên.",
+    "email": "Email",
+    "phone": "Số điện thoại",
+    "phonePlaceholder": "Ví dụ: 0912 345 678",
+    "role": "Vai trò",
+    "rolePlaceholder": "Ví dụ: Trưởng nhóm, IT...",
+    "bio": "Giới thiệu bản thân",
+    "bioPlaceholder": "Viết đôi lời giới thiệu về bạn...",
+    "changeAvatar": "Đổi ảnh",
+    "saveChanges": "Lưu thay đổi",
+    "cancel": "Hủy",
+    "saveSuccess": "Cập nhật thông tin thành công!",
+    "saveNote": "Lưu ý: API cập nhật thông tin đang được hoàn thiện ở backend."
+  },
+  "userMenu": {
+    "profile": "Thông tin tài khoản",
+    "logout": "Đăng xuất",
+    "loggingOut": "Đang đăng xuất..."
   }
 }

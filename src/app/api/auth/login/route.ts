@@ -68,6 +68,7 @@ export async function POST(request: NextRequest) {
     const identityData = identityResponse.data;
     const accessToken =
       identityData?.data?.accessToken || identityData?.accessToken;
+    const user = identityData?.data?.user || identityData?.user || null;
 
     const response = NextResponse.json(
       {
@@ -75,6 +76,7 @@ export async function POST(request: NextRequest) {
         message: 'Login successful',
         data: {
           accessToken,
+          user,
         },
       },
       { status: 200 },

@@ -7,7 +7,9 @@ import type { ReactNode } from 'react';
 import AppSidebar from './AppSidebar';
 import AppTopBar from './AppTopBar';
 import CreateTripHost from './CreateTripHost';
+import GlobalLoadingHost from './GlobalLoadingHost';
 import { TripProvider } from '@/features/trip/context/TripContext';
+import { UserProvider } from '@/features/user/context/UserContext';
 
 export interface AppShellProps {
   children: ReactNode;
@@ -26,39 +28,42 @@ export default function AppShell({
   }
 
   return (
-    <TripProvider>
-      <Box
-        sx={{
-          display: 'flex',
-          bgcolor: 'background.paper',
-          minHeight: '100dvh',
-        }}
-      >
-        <AppSidebar />
+    <UserProvider>
+      <TripProvider>
         <Box
           sx={{
-            minWidth: 0,
-            minHeight: '100dvh',
             display: 'flex',
-            flexDirection: 'column',
-            flex: 1,
+            bgcolor: 'background.paper',
+            minHeight: '100dvh',
           }}
         >
-          <AppTopBar />
+          <AppSidebar />
           <Box
-            component="main"
             sx={{
               minWidth: 0,
-              minHeight: 0,
-              flexGrow: 1,
-              overflow: 'auto',
+              minHeight: '100dvh',
+              display: 'flex',
+              flexDirection: 'column',
+              flex: 1,
             }}
           >
-            {children}
+            <AppTopBar />
+            <Box
+              component="main"
+              sx={{
+                minWidth: 0,
+                minHeight: 0,
+                flexGrow: 1,
+                overflow: 'auto',
+              }}
+            >
+              {children}
+            </Box>
           </Box>
+          <CreateTripHost />
+          <GlobalLoadingHost />
         </Box>
-        <CreateTripHost />
-      </Box>
-    </TripProvider>
+      </TripProvider>
+    </UserProvider>
   );
 }

@@ -32,8 +32,10 @@ export interface SidebarTrip {
 
 export interface SidebarUser {
   name: string;
-  role: string;
-  initials: string;
+  role?: string;
+  email?: string;
+  initials?: string;
+  avatarUrl?: string | null;
 }
 
 export interface AppSidebarProps {

@@ -1160,9 +1160,13 @@ If the user has already supplied a specific task, do not block on a broad questi
 6. Next.js BFF Trip Route Handlers (`src/app/api/trip/my-trips/route.ts`, `src/app/api/trip/create/route.ts`) gắn `access_token` từ cookie gọi sang Spring Boot `TripController` (`GET /api/trip/my-trips`, `POST /api/trip/create`).
 7. Tích hợp Trip Context (`TripContext.tsx`), custom hooks (`useMyTrips`, `useCreateTrip`), popup tạo chuyến đi (`CreateTripDialog`), tự động nhận diện và hiển thị chuyến đi đang diễn ra (`IN_PROGRESS`), hỗ trợ dropdown chuyển đổi chuyến đi và nút tạo mới ở Sidebar & TopBar.
 8. Trang danh sách toàn bộ chuyến đi "My Trips" (`/trips`) hiển thị dưới dạng bảng dữ liệu có phân trang (`PageResponse<Trip>`), tích hợp menu Sidebar "Chuyến đi", tuân thủ nghiêm ngặt quy tắc "1 Component / 1 File" (`src/features/trip/components/my-trips/`).
+9. Next.js BFF Logout Route Handler (`src/app/api/auth/logout/route.ts`) tích hợp với NestJS Identity (`POST /api/auth/logout`), hủy session Redis, xóa sạch HttpOnly cookies (`access_token`, `refresh_token`), và hook `useLogout` tự động điều hướng về `/login`.
+10. Menu người dùng tại `SidebarUser` (`SidebarUserMenu.tsx`) tích hợp Popup Profile (`ProfileDialog.tsx`) xem & chỉnh sửa thông tin cá nhân (Họ tên, Email, SĐT, Role, Bio, Avatar) tái sử dụng toàn bộ UI primitives có sẵn (`AppTextField`, `AppTextArea`, `AppButton`, `AppToast`).
+11. NestJS Identity Service (`tripbudget-identity`) đã cập nhật trả về đầy đủ thông tin User (`id`, `email`, `name`, `avatarUrl`, loại trừ `password` và `status`) tại endpoint `POST /api/auth/login` và bổ sung endpoint `GET /api/auth/me` để lấy thông tin profile người dùng hiện tại qua token.
+12. Tích hợp User Profile toàn cục (`UserContext.tsx`, `useCurrentUser.ts`, helper `getUserInitials`), tự động fetch thông tin người dùng từ BFF `GET /api/auth/me`, hiển thị tên thật, email thật, avatar initials trên `SidebarUser` và form `ProfileDialog`.
 
 ### Immediate likely next tasks:
 
 1. Implement BFF Token Refresh route handler (`/api/auth/refresh`) and Axios interceptor for automatic silent token refresh.
-2. Implement BFF Logout route handler (`/api/auth/logout`) and clear cookies on both BFF and NestJS/Redis session.
+2. User Profile update API backend integration when ready.
 3. Expenses & Spending management integration with Spring Boot Core.

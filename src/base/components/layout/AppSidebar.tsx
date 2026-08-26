@@ -3,13 +3,15 @@
 import { Box, Stack } from '@mui/material';
 import { usePathname } from 'next/navigation';
 
-import { DEFAULT_SIDEBAR_MENU, DEFAULT_SIDEBAR_USER } from './sidebar/config';
+import { DEFAULT_SIDEBAR_MENU } from './sidebar/config';
 import SidebarBrand from './sidebar/SidebarBrand';
 import SidebarMenu from './sidebar/SidebarMenu';
 import SidebarTripCard from './sidebar/SidebarTripCard';
 import SidebarUser from './sidebar/SidebarUser';
 import type { AppSidebarProps } from './sidebar/types';
 import { useTranslations } from 'next-intl';
+import { useUserContext } from '@/features/user/context/UserContext';
+import type { UserProfile } from '@/features/auth/types';
 
 export type {
   AppSidebarProps,
@@ -22,11 +24,18 @@ export type {
 export default function AppSidebar({
   activeMenuId,
   menuItems = DEFAULT_SIDEBAR_MENU,
-  currentUser = DEFAULT_SIDEBAR_USER,
+  currentUser: customUser,
   onMenuChange,
 }: AppSidebarProps) {
   const t = useTranslations('sidebar');
   const pathname = usePathname();
+  const { user: contextUser } = useUserContext();
+  const currentUser =
+    customUser ??
+    (contextUser as { data?: UserProfile })?.data ??
+    contextUser ??
+    undefined;
+
   const routeMenuItem = menuItems.find(
     (item) =>
       (pathname === '/' && item.id === 'overview') ||
