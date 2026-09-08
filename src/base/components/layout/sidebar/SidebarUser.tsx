@@ -38,7 +38,7 @@ export default function SidebarUser({ user: defaultUser }: SidebarUserProps) {
     currentUser;
 
   const displayName = rawUser?.name || 'User';
-  const displayEmailOrRole = rawUser?.email || rawUser?.role || 'Member';
+  const displayEmailOrRole = rawUser?.role || 'Member';
   const displayInitials = getUserInitials(rawUser?.name);
   const avatarSrc = rawUser?.avatarUrl || '/avatar.jpg';
 

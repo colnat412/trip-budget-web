@@ -23,7 +23,7 @@ import {
   AppToast,
 } from '@/base/components/ui';
 import { useTripContext } from '../context/TripContext';
-import useCreateTrip from '../hooks/useCreateTrip';
+import { useCreateTrip } from '../hooks/useTripMutation';
 
 interface CreateTripDialogProps {
   open: boolean;

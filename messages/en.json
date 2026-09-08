@@ -126,7 +126,17 @@
     "rowsPerPage": "Rows per page",
     "emptyTitle": "No trips found",
     "emptyDescription": "Create your first trip to start budgeting and tracking expenses!",
-    "createNew": "Create New Trip"
+    "createNew": "Create New Trip",
+    "edit": "Edit Trip",
+    "delete": "Delete Trip",
+    "select": "Select this trip",
+    "editTitle": "Edit Trip",
+    "editDescription": "Update the details for your journey",
+    "saveChanges": "Save Changes",
+    "updateSuccess": "Trip updated successfully!",
+    "deleteTitle": "Confirm Delete Trip",
+    "deleteConfirm": "Are you sure you want to delete trip \"{name}\"? All related expenses and data will be removed and cannot be undone.",
+    "deleteSuccess": "Trip deleted successfully!"
   },
   "profile": {
     "title": "User Profile",

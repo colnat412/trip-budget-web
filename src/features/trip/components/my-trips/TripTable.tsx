@@ -22,6 +22,8 @@ interface TripTableProps {
   activeTripId: number | null;
   onSelectTrip: (trip: Trip) => void;
   onCreateTrip: () => void;
+  onEditTrip?: (trip: Trip) => void;
+  onDeleteTrip?: (trip: Trip) => void;
 }
 
 export default function TripTable({
@@ -30,6 +32,8 @@ export default function TripTable({
   activeTripId,
   onSelectTrip,
   onCreateTrip,
+  onEditTrip,
+  onDeleteTrip,
 }: TripTableProps) {
   const t = useTranslations('myTrips');
 
@@ -160,6 +164,8 @@ export default function TripTable({
                 trip={trip}
                 isSelected={trip.id === activeTripId}
                 onSelectTrip={onSelectTrip}
+                onEditTrip={onEditTrip}
+                onDeleteTrip={onDeleteTrip}
               />
             ))
           )}

@@ -126,7 +126,17 @@
     "rowsPerPage": "Số dòng mỗi trang",
     "emptyTitle": "Bạn chưa có chuyến đi nào",
     "emptyDescription": "Hãy tạo chuyến đi đầu tiên để bắt đầu lên kế hoạch và quản lý chi tiêu!",
-    "createNew": "Tạo chuyến đi mới"
+    "createNew": "Tạo chuyến đi mới",
+    "edit": "Chỉnh sửa chuyến đi",
+    "delete": "Xóa chuyến đi",
+    "select": "Chọn chuyến đi này",
+    "editTitle": "Chỉnh sửa chuyến đi",
+    "editDescription": "Cập nhật thông tin chi tiết cho chuyến hành trình của bạn",
+    "saveChanges": "Lưu thay đổi",
+    "updateSuccess": "Cập nhật chuyến đi thành công!",
+    "deleteTitle": "Xác nhận xóa chuyến đi",
+    "deleteConfirm": "Bạn có chắc chắn muốn xóa chuyến đi \"{name}\"? Dữ liệu chi tiêu và thông tin liên quan sẽ bị xóa và không thể khôi phục.",
+    "deleteSuccess": "Xóa chuyến đi thành công!"
   },
   "profile": {
     "title": "Thông tin tài khoản",

@@ -48,3 +48,12 @@ export interface CreateTripPayload {
     role: string;
   }>;
 }
+
+export interface UpdateTripPayload {
+  name?: string;
+  destination?: string;
+  description?: string;
+  startDate?: string;
+  endDate?: string;
+  baseCurrency?: string;
+}

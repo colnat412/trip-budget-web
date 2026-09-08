@@ -3,10 +3,13 @@
 import { Box, Stack, TableCell, TableRow, Typography } from '@mui/material';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
+import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded';
+import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
+import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import FlightTakeoffRoundedIcon from '@mui/icons-material/FlightTakeoffRounded';
 import { useTranslations } from 'next-intl';
 
-import { AppButton } from '@/base/components/ui';
+import { AppActionMenu, AppButton } from '@/base/components/ui';
 import { formatDateRange } from '@/base/utils';
 import TripStatusChip from './TripStatusChip';
 import type { Trip } from '../../types';
@@ -15,15 +18,41 @@ interface TripTableRowProps {
   trip: Trip;
   isSelected: boolean;
   onSelectTrip: (trip: Trip) => void;
+  onEditTrip?: (trip: Trip) => void;
+  onDeleteTrip?: (trip: Trip) => void;
 }
 
 export default function TripTableRow({
   trip,
   isSelected,
   onSelectTrip,
+  onEditTrip,
+  onDeleteTrip,
 }: TripTableRowProps) {
   const t = useTranslations('myTrips');
   const dateRangeStr = formatDateRange(trip.startDate, trip.endDate);
+
+  const actionMenuItems = [
+    {
+      id: 'select',
+      label: isSelected ? t('selected') : t('select'),
+      icon: <CheckCircleOutlineRoundedIcon fontSize="small" />,
+      onClick: () => onSelectTrip(trip),
+    },
+    {
+      id: 'edit',
+      label: t('edit'),
+      icon: <EditRoundedIcon fontSize="small" />,
+      onClick: () => onEditTrip?.(trip),
+    },
+    {
+      id: 'delete',
+      label: t('delete'),
+      icon: <DeleteOutlineRoundedIcon fontSize="small" />,
+      danger: true,
+      onClick: () => onDeleteTrip?.(trip),
+    },
+  ];
 
   return (
     <TableRow
@@ -119,24 +148,35 @@ export default function TripTableRow({
       </TableCell>
 
       <TableCell align="right" sx={{ py: 2 }}>
-        <AppButton
-          size="small"
-          intent={isSelected ? 'secondary' : 'primary'}
-          endIcon={
-            isSelected ? (
-              <CheckCircleRoundedIcon fontSize="small" />
-            ) : (
-              <ArrowForwardRoundedIcon fontSize="small" />
-            )
-          }
-          onClick={(e) => {
-            e.stopPropagation();
-            onSelectTrip(trip);
-          }}
-          sx={{ minHeight: 32, fontSize: '12px' }}
+        <Stack
+          direction="row"
+          spacing={1}
+          sx={{ alignItems: 'center', justifyContent: 'flex-end' }}
         >
-          {isSelected ? t('selected') : t('viewTrip')}
-        </AppButton>
+          <AppButton
+            size="small"
+            intent={isSelected ? 'secondary' : 'primary'}
+            endIcon={
+              isSelected ? (
+                <CheckCircleRoundedIcon fontSize="small" />
+              ) : (
+                <ArrowForwardRoundedIcon fontSize="small" />
+              )
+            }
+            onClick={(e) => {
+              e.stopPropagation();
+              onSelectTrip(trip);
+            }}
+            sx={{ minHeight: 32, fontSize: '12px' }}
+          >
+            {isSelected ? t('selected') : t('viewTrip')}
+          </AppButton>
+
+          <AppActionMenu
+            items={actionMenuItems}
+            ariaLabel={`Actions for ${trip.name}`}
+          />
+        </Stack>
       </TableCell>
     </TableRow>
   );

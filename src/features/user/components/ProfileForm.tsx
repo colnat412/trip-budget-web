@@ -40,12 +40,12 @@ export default function ProfileForm({ onClose, user }: ProfileFormProps) {
     currentUser;
 
   const currentEmail = rawUser?.email || 'admin@gmail.com';
-  const initialName = rawUser?.name || 'Admin';
+  const initialName = rawUser?.name || 'Member';
 
-  const [fullName, setFullName] = useState(initialName);
-  const [phone, setPhone] = useState('0912 345 678');
-  const [role, setRole] = useState(user?.role || 'Member');
-  const [bio, setBio] = useState('Bio.');
+  const [fullName, setFullName] = useState<string>(initialName);
+  const [phone, setPhone] = useState<string>('');
+  const [role, setRole] = useState<string>(user?.role || 'Member');
+  const [bio, setBio] = useState<string>('Bio.');
   const [fullNameError, setFullNameError] = useState<string | undefined>();
   const [toastOpen, setToastOpen] = useState(false);
 
@@ -87,7 +87,6 @@ export default function ProfileForm({ onClose, user }: ProfileFormProps) {
             gap: 2.5,
           }}
         >
-          {/* Avatar Section */}
           <Stack
             direction="row"
             spacing={2.5}
@@ -138,7 +137,7 @@ export default function ProfileForm({ onClose, user }: ProfileFormProps) {
                 variant="caption"
                 sx={{ color: 'text.secondary', display: 'block' }}
               >
-                {role} · {currentEmail}
+                {role}
               </Typography>
               <Typography
                 variant="caption"
@@ -187,6 +186,7 @@ export default function ProfileForm({ onClose, user }: ProfileFormProps) {
             />
 
             <AppTextField
+              disabled
               label={t('role')}
               placeholder={t('rolePlaceholder')}
               value={role}

@@ -968,6 +968,27 @@ Mọi hàm xử lý logic chung, định dạng dữ liệu (date, currency, num
 - **Có tham số mặc định rõ ràng**: Các hàm tiện ích phải thiết kế linh hoạt với giá trị mặc định chuẩn dự án (ví dụ: `formatDate(date, format = 'DD-MM-YYYY')`, `formatDateRange(start, end, format = 'DD-MM-YYYY', separator = ' – ')`).
 - Giúp dễ bảo trì, tái sử dụng trên toàn bộ codebase và dễ dàng viết unit test độc lập.
 
+### Quy tắc Thiết Kế Base-First & Tối Đa Hóa Tái Sử Dụng (Base-First & Reusability Rule)
+
+Trước khi tạo bất kỳ UI component, dialog, menu thao tác, hay logic xử lý nào ở tầng Feature, luôn xem xét: _"Cái này có thể trừu tượng hóa thành Base để dùng lại được không?"_.
+
+- **Đưa vào `src/base/`**: Bất kỳ pattern nào có tính chất lặp lại hoặc có thể tái sử dụng trong tương lai (như `AppConfirmDialog`, `AppDialog`, `AppActionMenu`, popup scaffolds, helper format, custom hooks chung...) **bắt buộc phải đưa vào `src/base/`** (`src/base/components/ui/`, `src/base/hooks/`, `src/base/utils/`) và export tập trung qua `index.ts`.
+- **Tuyệt đối không viết rời rạc**: Nghiêm cấm viết lặp lại cùng một cấu trúc (scaffold) ở nhiều feature khác nhau (ví dụ: không tự dựng lại modal với `DialogTitle`, `DialogContent`, `DialogActions`, icon cảnh báo và nút Hủy/Xác nhận ở nhiều nơi; thay vào đó tạo `AppConfirmDialog` ở base và các feature chỉ việc truyền props).
+- **Tầng Feature chỉ làm nghiệp vụ**: Các file trong `src/features/` chỉ tập trung kết nối API và truyền dữ liệu/callback vào Base Components.
+
+### Quy tắc Duy Trì & Cập Nhật Tài Liệu Markdown Liên Tục (Continuous Markdown Synchronization)
+
+Mỗi khi có bất kỳ thay đổi cần thiết nào về:
+
+1. Kiến trúc hệ thống hoặc luồng dữ liệu (BFF, Gateway, Backend APIs, Cookies, Token).
+2. Quy tắc lập trình mới, quy ước đặt tên hoặc cấu trúc thư mục được thống nhất với người dùng.
+3. Tiến độ dự án (các bước đã hoàn thành và các task tiếp theo).
+
+**Bắt buộc phải cập nhật ngay vào tài liệu markdown (`AGENTS.md`, `walkthrough.md`)**:
+
+- Giúp lưu giữ ngữ cảnh đầy đủ, không bị quên hoặc vi phạm quy tắc khi chuyển giao qua các phiên làm việc tiếp theo.
+- Luôn đọc lại file markdown trước khi bắt tay vào triển khai bất kỳ module mới nào.
+
 ## 8. Current frontend direction
 
 The static Login UI has been developed or discussed with:
@@ -1164,9 +1185,10 @@ If the user has already supplied a specific task, do not block on a broad questi
 10. Menu người dùng tại `SidebarUser` (`SidebarUserMenu.tsx`) tích hợp Popup Profile (`ProfileDialog.tsx`) xem & chỉnh sửa thông tin cá nhân (Họ tên, Email, SĐT, Role, Bio, Avatar) tái sử dụng toàn bộ UI primitives có sẵn (`AppTextField`, `AppTextArea`, `AppButton`, `AppToast`).
 11. NestJS Identity Service (`tripbudget-identity`) đã cập nhật trả về đầy đủ thông tin User (`id`, `email`, `name`, `avatarUrl`, loại trừ `password` và `status`) tại endpoint `POST /api/auth/login` và bổ sung endpoint `GET /api/auth/me` để lấy thông tin profile người dùng hiện tại qua token.
 12. Tích hợp User Profile toàn cục (`UserContext.tsx`, `useCurrentUser.ts`, helper `getUserInitials`), tự động fetch thông tin người dùng từ BFF `GET /api/auth/me`, hiển thị tên thật, email thật, avatar initials trên `SidebarUser` và form `ProfileDialog`.
+13. Xây dựng bộ Base UI Primitives dùng chung (`AppConfirmDialog`, `AppDialog`, `AppActionMenu`, `AppLoadingOverlay`) theo quy tắc **Base-First & Reusability**. Hoàn thiện **Module Quản Lý Chuyến Đi** tích hợp với Spring Boot `TripController`: BFF routes (`GET /api/trip/[id]`, `PUT /api/trip/[id]`, `PUT /api/trip/delete/[id]`), gộp các mutation hooks (`useCreateTrip`, `useUpdateTrip`, `useDeleteTrip`) tập trung trong file [`useTripMutation.ts`](file:///home/hanbiro/lou/trip-budget-web/src/features/trip/hooks/useTripMutation.ts), hook chi tiết `useTripDetail`, popup chỉnh sửa (`EditTripDialog.tsx`, `EditTripForm.tsx`), popup xác nhận xóa (`DeleteTripDialog.tsx`), và menu thao tác dòng (`TripTableRow.tsx`, `TripTable.tsx`, `MyTrips.tsx`).
 
 ### Immediate likely next tasks:
 
-1. Implement BFF Token Refresh route handler (`/api/auth/refresh`) and Axios interceptor for automatic silent token refresh.
-2. User Profile update API backend integration when ready.
-3. Expenses & Spending management integration with Spring Boot Core.
+1. **Lựa chọn 2**: Triển khai cơ chế tự động làm mới Token (Silent Token Refresh) qua BFF route `POST /api/auth/refresh` và Axios response interceptor trong `src/base/api/axios-client.ts`.
+2. Module Quản lý Chi tiêu & Ngân sách (Expenses & Budgeting) tích hợp Spring Boot Core.
+3. Module Quản lý Thành viên chuyến đi (Trip Members & Invitations).
