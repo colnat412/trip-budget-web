@@ -91,7 +91,9 @@ export default function ProfileDialog({
         </IconButton>
       </DialogTitle>
 
-      {open && <ProfileForm onClose={onClose} user={user} />}
+      {open && (
+        <ProfileForm key={user?.name ?? 'user'} onClose={onClose} user={user} />
+      )}
     </Dialog>
   );
 }

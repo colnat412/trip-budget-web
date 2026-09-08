@@ -44,7 +44,7 @@ export default function ProfileForm({ onClose, user }: ProfileFormProps) {
 
   const [fullName, setFullName] = useState<string>(initialName);
   const [phone, setPhone] = useState<string>('');
-  const [role, setRole] = useState<string>(user?.role || 'Member');
+  const [role, setRole] = useState<string>(rawUser?.role || 'Member');
   const [bio, setBio] = useState<string>('Bio.');
   const [fullNameError, setFullNameError] = useState<string | undefined>();
   const [toastOpen, setToastOpen] = useState(false);

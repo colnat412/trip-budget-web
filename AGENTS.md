@@ -1186,9 +1186,13 @@ If the user has already supplied a specific task, do not block on a broad questi
 11. NestJS Identity Service (`tripbudget-identity`) đã cập nhật trả về đầy đủ thông tin User (`id`, `email`, `name`, `avatarUrl`, loại trừ `password` và `status`) tại endpoint `POST /api/auth/login` và bổ sung endpoint `GET /api/auth/me` để lấy thông tin profile người dùng hiện tại qua token.
 12. Tích hợp User Profile toàn cục (`UserContext.tsx`, `useCurrentUser.ts`, helper `getUserInitials`), tự động fetch thông tin người dùng từ BFF `GET /api/auth/me`, hiển thị tên thật, email thật, avatar initials trên `SidebarUser` và form `ProfileDialog`.
 13. Xây dựng bộ Base UI Primitives dùng chung (`AppConfirmDialog`, `AppDialog`, `AppActionMenu`, `AppLoadingOverlay`) theo quy tắc **Base-First & Reusability**. Hoàn thiện **Module Quản Lý Chuyến Đi** tích hợp với Spring Boot `TripController`: BFF routes (`GET /api/trip/[id]`, `PUT /api/trip/[id]`, `PUT /api/trip/delete/[id]`), gộp các mutation hooks (`useCreateTrip`, `useUpdateTrip`, `useDeleteTrip`) tập trung trong file [`useTripMutation.ts`](file:///home/hanbiro/lou/trip-budget-web/src/features/trip/hooks/useTripMutation.ts), hook chi tiết `useTripDetail`, popup chỉnh sửa (`EditTripDialog.tsx`, `EditTripForm.tsx`), popup xác nhận xóa (`DeleteTripDialog.tsx`), và menu thao tác dòng (`TripTableRow.tsx`, `TripTable.tsx`, `MyTrips.tsx`).
+14. Triển khai hoàn chỉnh **Cơ chế Tự Động Làm Mới Token (Silent Token Refresh)**:
+    - Đồng bộ thời hạn: `accessToken` (15 phút), cookie `access_token` (15 phút), `refreshToken` và Redis Session (30 ngày), cookie `refresh_token` (30 ngày).
+    - Cập nhật NestJS Identity: `signOptions: { expiresIn: '15m' }`, `refreshTtlSeconds: 30 ngày`, Token Rotation tự động cấp secret mới và cập nhật hash trong Redis.
+    - Next.js BFF: Route Handler `POST /api/auth/refresh/route.ts` nhận refresh cookie, kết nối NestJS và set lại cặp cookies mới trên trình duyệt.
+    - Axios Client (`src/base/api/axios-client.ts`): Bổ sung 401 Response Interceptor với cơ chế hàng đợi bất đồng bộ (`failedQueue`) xử lý request đồng thời, tự động refresh ngầm và retry request cũ liền mạch, xóa cookie điều hướng về `/login` nếu phiên hết hạn.
 
 ### Immediate likely next tasks:
 
-1. **Lựa chọn 2**: Triển khai cơ chế tự động làm mới Token (Silent Token Refresh) qua BFF route `POST /api/auth/refresh` và Axios response interceptor trong `src/base/api/axios-client.ts`.
-2. Module Quản lý Chi tiêu & Ngân sách (Expenses & Budgeting) tích hợp Spring Boot Core.
-3. Module Quản lý Thành viên chuyến đi (Trip Members & Invitations).
+1. **Module Quản lý Chi tiêu & Ngân sách (Expenses & Budgeting)**: Tạo entity, migration, controller trong Spring Boot Core (`tripbudget-core`) và giao diện `/expenses`, popup thêm khoản chi (`AddExpenseDialog.tsx`) trên Next.js Web.
+2. **Module Quản lý Thành viên chuyến đi (Trip Members & Invitations)**: Quản lý quyền hạn (`OWNER`, `EDITOR`, `MEMBER`, `VIEWER`), mời thành viên qua email/link, hiển thị avatar nhóm.

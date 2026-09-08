@@ -167,11 +167,7 @@ export default function SidebarUser({ user: defaultUser }: SidebarUserProps) {
       <ProfileDialog
         open={profileOpen}
         onClose={() => setProfileOpen(false)}
-        user={{
-          name: displayName,
-          initials: displayInitials,
-          role: displayEmailOrRole,
-        }}
+        user={rawUser ?? undefined}
       />
     </>
   );
