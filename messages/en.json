@@ -161,5 +161,119 @@
     "profile": "My Profile",
     "logout": "Log Out",
     "loggingOut": "Logging out..."
+  },
+  "expense": {
+    "pageTitle": "Expenses & Budget Management",
+    "trip": "Trip",
+    "destination": "Destination",
+    "notUpdated": "Not updated",
+    "setBudget": "Set Budget",
+    "addExpense": "Add Expense",
+    "noTripTitle": "No trip selected",
+    "noTripDesc": "To track your budget and record expenses, please create a new trip or select one from your trips list.",
+    "viewTrips": "View Trips List",
+    "metrics": {
+      "totalBudget": "Total Budget",
+      "setupBudget": "Set budget limit",
+      "entireTripLimit": "Entire trip limit",
+      "actualSpent": "Actual Spent",
+      "percentOfBudget": "{percent}% of budget",
+      "noLimit": "No limit set",
+      "overBudget": "Over Budget",
+      "remainingBudget": "Remaining Balance",
+      "warningNeedCompensation": "Warning: Budget deficit",
+      "underControl": "Well under control"
+    },
+    "progress": {
+      "title": "Budget Consumption Progress",
+      "description": "Spent {spent} out of {total} total budget",
+      "warningOverBudget": "Warning: Trip expenses have exceeded the expected budget! Please control upcoming expenses."
+    },
+    "categoriesList": {
+      "title": "Spending by Category",
+      "limit": "Limit: {amount}"
+    },
+    "table": {
+      "title": "Expense List ({count})",
+      "addExpense": "Add Expense",
+      "emptyTitle": "No expenses yet",
+      "emptyDesc": "Start recording expenses such as flights, hotel, or meals to manage your trip budget effectively!",
+      "addFirst": "Add First Expense",
+      "colDate": "Date",
+      "colExpense": "Expense",
+      "colCategory": "Category",
+      "colSplit": "Split Method",
+      "colAmount": "Amount",
+      "colActions": "Actions",
+      "displayedRows": "{from}–{to} of {count}"
+    },
+    "row": {
+      "edit": "Edit",
+      "delete": "Delete expense",
+      "membersCount": "{count} members"
+    },
+    "splits": {
+      "EQUAL": "Equal",
+      "EXACT_AMOUNT": "Exact amount",
+      "PERCENTAGE": "Percentage",
+      "SHARE": "Shares",
+      "options": {
+        "EQUAL": "Split equally among all members",
+        "PERCENTAGE": "Split by percentage (%)",
+        "SHARE": "Split by number of shares",
+        "EXACT_AMOUNT": "Enter individual amounts manually"
+      }
+    },
+    "categories": {
+      "ACCOMMODATION": "Hotels & Homestays",
+      "TRANSPORTATION": "Transportation & Tickets",
+      "FOOD_BEVERAGE": "Food & Dining",
+      "SIGHTSEEING": "Sightseeing & Tours",
+      "SHOPPING": "Shopping & Souvenirs",
+      "ENTERTAINMENT": "Entertainment & Fun",
+      "OTHER": "Other expenses"
+    },
+    "dialog": {
+      "addTitle": "Add New Expense",
+      "editTitle": "Edit Expense",
+      "deleteTitle": "Confirm Delete Expense",
+      "deleteConfirm": "Are you sure you want to delete expense \"{title}\" amounting to {amount}?",
+      "deleteDesc": "This expense will be removed from the expense ledger and trip budget balances will be recalculated immediately.",
+      "confirmDelete": "Confirm Delete",
+      "setBudgetTitle": "Set Trip Budget",
+      "setBudgetDesc": "Configure total spending limits so the system can automatically monitor, calculate burn rate, and warn when nearing limits.",
+      "totalBudgetLabel": "Expected Total Budget *",
+      "totalBudgetPlaceholder": "e.g. 15,000,000",
+      "categoryLimitsTitle": "Category Limits (Optional)",
+      "saveBudget": "Save Budget"
+    },
+    "form": {
+      "titleLabel": "Expense Title *",
+      "titlePlaceholder": "e.g. Seafood dinner, Cable car ticket...",
+      "amountLabel": "Amount *",
+      "categoryLabel": "Category *",
+      "dateLabel": "Expense Date *",
+      "splitTypeLabel": "Split Method",
+      "noteLabel": "Detailed Notes",
+      "notePlaceholder": "Add notes about location, participants...",
+      "cancel": "Cancel",
+      "submitAdd": "Add Expense",
+      "submitEdit": "Save Changes",
+      "errors": {
+        "titleRequired": "Please enter expense title",
+        "amountPositive": "Amount must be greater than 0",
+        "totalBudgetRequired": "Total budget cannot be empty or negative"
+      }
+    },
+    "toasts": {
+      "createSuccess": "Expense added successfully!",
+      "createError": "Failed to add expense. Please try again.",
+      "updateSuccess": "Expense updated successfully!",
+      "updateError": "Failed to update expense. Please try again.",
+      "deleteSuccess": "Expense deleted successfully!",
+      "deleteError": "Failed to delete expense. Please try again.",
+      "setBudgetSuccess": "Budget limit saved successfully!",
+      "setBudgetError": "Failed to save budget. Please try again."
+    }
   }
 }

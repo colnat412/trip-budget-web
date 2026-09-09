@@ -1,31 +1,33 @@
-"use client";
+'use client';
 
-import { Box, Card, CardProps } from "@mui/material";
+import { Box, Card, CardProps } from '@mui/material';
 
-import type { Theme } from "@mui/material/styles";
-import type { SxProps } from "@mui/system";
-import type { ReactNode } from "react";
+import type { Theme } from '@mui/material/styles';
+import type { SxProps } from '@mui/system';
+import type { ReactNode } from 'react';
 
 export type AppCardVariant =
-  | "elevated"
-  | "primary"
-  | "transparent"
-  | "outlined"
-  | "flat"
-  | "danger";
+  | 'elevated'
+  | 'primary'
+  | 'transparent'
+  | 'outlined'
+  | 'flat'
+  | 'danger';
 
-export interface AppCardProps extends Omit<CardProps, "variant"> {
+export interface AppCardProps extends Omit<CardProps, 'variant'> {
   variant?: AppCardVariant;
   interactive?: boolean;
   icon?: ReactNode;
   iconSize?: number | string;
   contentSx?: SxProps<Theme>;
+  layout?: 'default' | 'row';
 }
 
 function getCardStyles(
   variant: AppCardVariant,
   interactive: boolean,
   hasIcon: boolean,
+  layout: 'default' | 'row' = 'default',
 ): SxProps<Theme> {
   return (theme) => {
     const palette = theme.vars?.palette ?? theme.palette;
@@ -33,81 +35,95 @@ function getCardStyles(
       elevated: {
         backgroundColor: palette.background.paper,
         color: palette.text.primary,
-        border: "none",
+        border: 'none',
         boxShadow:
-          "rgba(0, 0, 0, 0.05) 0px 1px 3px, rgba(0, 0, 0, 0.04) 0px 0px 0px 1px",
+          'rgba(0, 0, 0, 0.05) 0px 1px 3px, rgba(0, 0, 0, 0.04) 0px 0px 0px 1px',
       },
 
       primary: {
         color: palette.primary.contrastText,
         background: `linear-gradient(135deg, ${palette.primary.main}, ${palette.primary.light})`,
-        border: "none",
+        border: 'none',
         boxShadow: `0 8px 24px color-mix(in srgb, ${palette.primary.main} 18%, transparent)`,
       },
 
       danger: {
         color: palette.primary.contrastText,
         background: `linear-gradient(135deg, ${palette.secondary.dark}, ${palette.secondary.main})`,
-        border: "none",
+        border: 'none',
         boxShadow: `0 8px 24px color-mix(in srgb, ${palette.primary.main} 18%, transparent)`,
       },
 
       transparent: {
-        color: "inherit",
-        backgroundColor: "transparent",
-        border: "none",
-        boxShadow: "none",
+        color: 'inherit',
+        backgroundColor: 'transparent',
+        border: 'none',
+        boxShadow: 'none',
       },
 
       outlined: {
         backgroundColor: palette.background.paper,
         border: `1px solid ${palette.divider}`,
-        boxShadow: "none",
+        boxShadow: 'none',
       },
 
       flat: {
         backgroundColor: `color-mix(in srgb, ${palette.primary.light} 8%, transparent)`,
-        border: "none",
-        boxShadow: "none",
+        border: 'none',
+        boxShadow: 'none',
       },
     };
 
     return {
-      display: "grid",
-      gridTemplateColumns: hasIcon ? "auto minmax(0, 1fr)" : "minmax(0, 1fr)",
-      alignItems: "center",
-      columnGap: 2,
+      ...(layout === 'row'
+        ? {
+            display: 'grid',
+            gridTemplateColumns: hasIcon
+              ? 'auto minmax(0, 1fr)'
+              : 'minmax(0, 1fr)',
+            alignItems: 'center',
+            columnGap: 2,
+          }
+        : hasIcon
+          ? {
+              display: 'flex',
+              alignItems: 'center',
+              gap: 2,
+            }
+          : {
+              display: 'block',
+            }),
       padding: {
-        xs: "12px 16px",
-        sm: "14px 20px",
+        xs: '12px 16px',
+        sm: '14px 20px',
       },
-      borderRadius: "14px",
-      overflow: "hidden",
-      cursor: "default",
-      transition: "box-shadow 0.15s",
+      borderRadius: '14px',
+      overflow: 'hidden',
+      cursor: 'default',
+      transition: 'box-shadow 0.15s',
 
       ...variantStyles[variant],
 
       ...(interactive && {
-        cursor: "pointer",
+        cursor: 'pointer',
         transition: theme.transitions.create(
-          ["transform", "box-shadow", "border-color"],
+          ['transform', 'box-shadow', 'border-color'],
           {
             duration: 150,
           },
         ),
 
-        "&:hover": {
-          transform: "translateY(-1px)",
+        '&:hover': {
+          transform: 'translateY(-1px)',
           borderColor: palette.primary.main,
           boxShadow: `0 8px 24px color-mix(in srgb, ${palette.primary.main} 14%, transparent)`,
         },
 
-        "&:active": {
-          transform: "translateY(0)",
+        '&:active': {
+          transform: 'translateY(0)',
         },
 
-        "&:focus-visible": {
+        '&:focus-visible': {
           outline: `3px solid color-mix(in srgb, ${palette.primary.light} 35%, transparent)`,
           outlineOffset: 2,
         },
@@ -118,22 +134,23 @@ function getCardStyles(
 
 export default function AppCard({
   children,
-  variant = "elevated",
+  variant = 'elevated',
   interactive = false,
   icon,
   iconSize = 16,
   contentSx,
+  layout = 'default',
   sx,
   ...cardProps
 }: AppCardProps) {
   const resolvedIconSize =
-    typeof iconSize === "number" ? `${iconSize}px` : iconSize;
+    typeof iconSize === 'number' ? `${iconSize}px` : iconSize;
 
   return (
     <Card
       {...cardProps}
       sx={[
-        getCardStyles(variant, interactive, Boolean(icon)),
+        getCardStyles(variant, interactive, Boolean(icon), layout),
         ...(Array.isArray(sx) ? sx : sx ? [sx] : []),
       ]}
     >
@@ -141,18 +158,18 @@ export default function AppCard({
         <Box
           component="span"
           sx={{
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
             flexShrink: 0,
             width: resolvedIconSize,
             height: resolvedIconSize,
             fontSize: resolvedIconSize,
-            color: "inherit",
-            "& svg": {
+            color: 'inherit',
+            '& svg': {
               width: resolvedIconSize,
               height: resolvedIconSize,
-              fontSize: "inherit",
+              fontSize: 'inherit',
             },
           }}
         >
@@ -162,17 +179,23 @@ export default function AppCard({
 
       <Box
         sx={[
-          {
-            display: "grid",
-            gridTemplateColumns: {
-              xs: "minmax(0, 1fr)",
-              md: "minmax(0, 2fr) repeat(3, minmax(0, 1fr)) 120px",
-            },
-            alignItems: "center",
-            columnGap: 2,
-            rowGap: 1.5,
-            minWidth: 0,
-          },
+          layout === 'row'
+            ? {
+                display: 'grid',
+                gridTemplateColumns: {
+                  xs: 'minmax(0, 1fr)',
+                  md: 'minmax(0, 2fr) repeat(3, minmax(0, 1fr)) 120px',
+                },
+                alignItems: 'center',
+                columnGap: 2,
+                rowGap: 1.5,
+                minWidth: 0,
+              }
+            : {
+                display: 'block',
+                width: '100%',
+                minWidth: 0,
+              },
           ...(Array.isArray(contentSx)
             ? contentSx
             : contentSx

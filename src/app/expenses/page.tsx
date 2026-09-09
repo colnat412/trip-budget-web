@@ -1,5 +1,5 @@
-import TripFeaturePlaceholder from '@/features/trip/components/TripFeaturePlaceholder';
+import ExpenseOverview from '@/features/expense/components/ExpenseOverview';
 
 export default function ExpensesPage() {
-  return <TripFeaturePlaceholder feature="expenses" />;
+  return <ExpenseOverview />;
 }

@@ -12,6 +12,7 @@ import type { AppSidebarProps } from './sidebar/types';
 import { useTranslations } from 'next-intl';
 import { useUserContext } from '@/features/user/context/UserContext';
 import type { UserProfile } from '@/features/auth/types';
+import AppPreferences from '../preferences/AppPreferences';
 
 export type {
   AppSidebarProps,
@@ -90,7 +91,7 @@ export default function AppSidebar({
         }}
       >
         <SidebarUser user={currentUser} />
-        {/* <AppPreferences /> */}
+        <AppPreferences />
       </Stack>
     </Box>
   );

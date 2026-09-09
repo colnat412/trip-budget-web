@@ -31,3 +31,12 @@ export type { AppDialogProps } from './AppDialog';
 
 export { default as AppActionMenu } from './AppActionMenu';
 export type { AppActionMenuProps, AppActionMenuItem } from './AppActionMenu';
+
+export { default as AppSelect } from './AppSelect';
+export type { AppSelectProps, AppSelectOption } from './AppSelect';
+
+export { default as AppCategoryChip } from './AppCategoryChip';
+export type { AppCategoryChipProps, CategoryType } from './AppCategoryChip';
+
+export { default as AppNumberInput } from './AppNumberInput';
+export type { AppNumberInputProps } from './AppNumberInput';

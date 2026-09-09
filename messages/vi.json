@@ -161,5 +161,119 @@
     "profile": "Thông tin tài khoản",
     "logout": "Đăng xuất",
     "loggingOut": "Đang đăng xuất..."
+  },
+  "expense": {
+    "pageTitle": "Quản Lý Chi Tiêu & Ngân Sách",
+    "trip": "Chuyến đi",
+    "destination": "Điểm đến",
+    "notUpdated": "Chưa cập nhật",
+    "setBudget": "Cài đặt ngân sách",
+    "addExpense": "Thêm chi tiêu",
+    "noTripTitle": "Chưa chọn chuyến đi nào",
+    "noTripDesc": "Để theo dõi ngân sách và ghi lại các khoản chi tiêu, vui lòng tạo mới hoặc chọn một chuyến đi từ danh sách chuyến đi của bạn.",
+    "viewTrips": "Xem danh sách chuyến đi",
+    "metrics": {
+      "totalBudget": "Tổng Ngân Sách",
+      "setupBudget": "Thiết lập hạn mức",
+      "entireTripLimit": "Hạn mức toàn chuyến đi",
+      "actualSpent": "Đã Chi Thực Tế",
+      "percentOfBudget": "Chiếm {percent}% ngân sách",
+      "noLimit": "Chưa có hạn mức",
+      "overBudget": "Đã Vượt Ngân Sách",
+      "remainingBudget": "Số Dư Còn Lại",
+      "warningNeedCompensation": "Cảnh báo: Cần bù thâm hụt",
+      "underControl": "Trong vùng kiểm soát"
+    },
+    "progress": {
+      "title": "Tiến Độ Tiêu Hao Ngân Sách",
+      "description": "Đã chi {spent} trên tổng hạn mức {total}",
+      "warningOverBudget": "Cảnh báo: Chuyến đi đã vượt ngân sách dự kiến! Hãy kiểm soát các khoản chi tiếp theo."
+    },
+    "categoriesList": {
+      "title": "Chi Tiêu Theo Hạng Mục",
+      "limit": "Hạn mức: {amount}"
+    },
+    "table": {
+      "title": "Danh Sách Khoản Chi ({count})",
+      "addExpense": "Thêm khoản chi",
+      "emptyTitle": "Chưa có khoản chi tiêu nào",
+      "emptyDesc": "Hãy bắt đầu ghi lại các khoản chi như vé máy bay, khách sạn hoặc bữa ăn để quản lý ngân sách hiệu quả!",
+      "addFirst": "Thêm khoản chi đầu tiên",
+      "colDate": "Ngày",
+      "colExpense": "Khoản chi",
+      "colCategory": "Danh mục",
+      "colSplit": "Cách chia",
+      "colAmount": "Số tiền",
+      "colActions": "Thao tác",
+      "displayedRows": "{from}–{to} trên {count}"
+    },
+    "row": {
+      "edit": "Chỉnh sửa",
+      "delete": "Xóa khoản chi",
+      "membersCount": "{count} thành viên"
+    },
+    "splits": {
+      "EQUAL": "Chia đều",
+      "EXACT_AMOUNT": "Tự nhập tiền",
+      "PERCENTAGE": "Theo %",
+      "SHARE": "Theo suất",
+      "options": {
+        "EQUAL": "Chia đều cho tất cả thành viên",
+        "PERCENTAGE": "Chia theo tỷ lệ phần trăm (%)",
+        "SHARE": "Chia theo số suất / phần",
+        "EXACT_AMOUNT": "Tự nhập số tiền từng người"
+      }
+    },
+    "categories": {
+      "ACCOMMODATION": "Khách sạn & Homestay",
+      "TRANSPORTATION": "Di chuyển & Vé xe/tàu",
+      "FOOD_BEVERAGE": "Ăn uống & Nhà hàng",
+      "SIGHTSEEING": "Vé tham quan & Tour",
+      "SHOPPING": "Mua sắm & Quà lưu niệm",
+      "ENTERTAINMENT": "Vui chơi & Giải trí",
+      "OTHER": "Chi phí khác"
+    },
+    "dialog": {
+      "addTitle": "Thêm Khoản Chi Tiêu Mới",
+      "editTitle": "Chỉnh Sửa Khoản Chi",
+      "deleteTitle": "Xác nhận xóa khoản chi",
+      "deleteConfirm": "Bạn có chắc chắn muốn xóa khoản chi \"{title}\" trị giá {amount} không?",
+      "deleteDesc": "Khoản chi này sẽ được loại khỏi sổ cái chi tiêu và số dư ngân sách của chuyến đi sẽ được tính toán lại ngay lập tức.",
+      "confirmDelete": "Xác nhận xóa",
+      "setBudgetTitle": "Cài Đặt Ngân Sách Chuyến Đi",
+      "setBudgetDesc": "Thiết lập hạn mức ngân sách tổng thể để hệ thống tự động theo dõi, tính toán tỷ lệ tiêu hao và phát cảnh báo khi chi tiêu sắp vượt ngưỡng.",
+      "totalBudgetLabel": "Tổng ngân sách dự kiến *",
+      "totalBudgetPlaceholder": "Ví dụ: 15,000,000",
+      "categoryLimitsTitle": "Hạn mức chi tiết theo từng hạng mục (Tùy chọn)",
+      "saveBudget": "Lưu ngân sách"
+    },
+    "form": {
+      "titleLabel": "Tên khoản chi *",
+      "titlePlaceholder": "Ví dụ: Ăn tối hải sản Cây Bàng, Vé cáp treo...",
+      "amountLabel": "Số tiền *",
+      "categoryLabel": "Danh mục *",
+      "dateLabel": "Ngày chi tiêu *",
+      "splitTypeLabel": "Cách chia tiền",
+      "noteLabel": "Ghi chú chi tiết",
+      "notePlaceholder": "Ghi chú thêm về địa điểm, người tham gia...",
+      "cancel": "Hủy bỏ",
+      "submitAdd": "Thêm khoản chi",
+      "submitEdit": "Lưu thay đổi",
+      "errors": {
+        "titleRequired": "Vui lòng nhập tên khoản chi",
+        "amountPositive": "Số tiền phải lớn hơn 0",
+        "totalBudgetRequired": "Tổng ngân sách không được để trống hoặc âm"
+      }
+    },
+    "toasts": {
+      "createSuccess": "Đã thêm khoản chi tiêu mới thành công!",
+      "createError": "Không thể thêm khoản chi. Vui lòng thử lại.",
+      "updateSuccess": "Đã cập nhật khoản chi tiêu thành công!",
+      "updateError": "Không thể cập nhật khoản chi. Vui lòng thử lại.",
+      "deleteSuccess": "Đã xóa khoản chi tiêu thành công!",
+      "deleteError": "Không thể xóa khoản chi. Vui lòng thử lại.",
+      "setBudgetSuccess": "Đã lưu hạn mức ngân sách thành công!",
+      "setBudgetError": "Không thể lưu ngân sách. Vui lòng thử lại."
+    }
   }
 }

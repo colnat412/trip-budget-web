@@ -989,6 +989,35 @@ Mỗi khi có bất kỳ thay đổi cần thiết nào về:
 - Giúp lưu giữ ngữ cảnh đầy đủ, không bị quên hoặc vi phạm quy tắc khi chuyển giao qua các phiên làm việc tiếp theo.
 - Luôn đọc lại file markdown trước khi bắt tay vào triển khai bất kỳ module mới nào.
 
+### Quy tắc Chuẩn Hóa Đa Ngôn Ngữ VNI / ENG (Internationalization & Localization Standard)
+
+Dự án sử dụng thư viện `next-intl` để hỗ trợ đa ngôn ngữ đầy đủ với hai tùy chọn chính: **VNI** (`vi` - Tiếng Việt) và **ENG** (`en` - Tiếng Anh). Nút chuyển đổi ngôn ngữ nằm tại TopBar (`AppPreferences.tsx`) và lưu trữ locale qua cookie `trip-budget-locale`.
+
+**Nghiêm cấm tuyệt đối việc hardcode text hiển thị (UI strings) trực tiếp trong file mã nguồn**:
+
+1. **Không có ngoại lệ**: Toàn bộ chuỗi văn bản người dùng nhìn thấy (tiêu đề trang, nhãn nút, label/placeholder input, options dropdown, cột bảng dữ liệu, text phân trang, thông báo toast, lỗi validation, tên danh mục, chip trạng thái...) **bắt buộc phải lấy từ từ điển thông qua hook `useTranslations`**.
+2. **Đồng bộ 1:1 giữa hai từ điển**: Mọi key mới được định nghĩa phải tồn tại đồng thời ở cả hai file:
+   - `messages/vi.json` (Bản địa hóa tiếng Việt - VNI)
+   - `messages/en.json` (Bản địa hóa tiếng Anh - ENG)
+3. **Quy ước đặt namespace và key**:
+   - Phân cấp namespace theo domain/tính năng rõ ràng: `preferences`, `topBar`, `sidebar`, `trip`, `myTrips`, `expense`, `profile`, `validation`...
+   - Tên key đặt theo kiểu `camelCase` mô tả đúng ngữ nghĩa (ví dụ: `pageTitle`, `addExpense`, `deleteConfirm`, `totalBudgetLabel`).
+4. **Cách sử dụng chuẩn trong component**:
+
+   ```tsx
+   import { useTranslations } from 'next-intl';
+
+   export default function MyComponent() {
+     const t = useTranslations('expense');
+     return <Typography>{t('pageTitle')}</Typography>;
+   }
+   ```
+
+5. **Tham số hóa chuỗi linh hoạt**: Đối với các thông báo chứa dữ liệu động (số tiền, tên đối tượng, phân trang), sử dụng interpolation cú pháp `{variable}`:
+   - Trong JSON: `"deleteConfirm": "Bạn có chắc chắn muốn xóa {title} trị giá {amount}?"`
+   - Trong component: `t('deleteConfirm', { title: item.title, amount: formatCurrency(...) })`
+6. **Định dạng tiền tệ và ngày tháng**: Luôn truyền đơn vị tiền tệ (`currency`) hoặc định dạng chuẩn qua `formatCurrency(amount, currency)` và `formatDate(date, 'DD/MM/YYYY')` từ `src/base/utils/`.
+
 ## 8. Current frontend direction
 
 The static Login UI has been developed or discussed with:
@@ -1192,7 +1221,54 @@ If the user has already supplied a specific task, do not block on a broad questi
     - Next.js BFF: Route Handler `POST /api/auth/refresh/route.ts` nhận refresh cookie, kết nối NestJS và set lại cặp cookies mới trên trình duyệt.
     - Axios Client (`src/base/api/axios-client.ts`): Bổ sung 401 Response Interceptor với cơ chế hàng đợi bất đồng bộ (`failedQueue`) xử lý request đồng thời, tự động refresh ngầm và retry request cũ liền mạch, xóa cookie điều hướng về `/login` nếu phiên hết hạn.
 
+15. Triển khai hoàn chỉnh **Module Quản lý Chi tiêu & Ngân sách (Expenses & Budgeting - `/expenses`)** xuyên suốt toàn bộ hệ thống:
+    - **Spring Boot BaseEntity & Flyway Migration (`tripbudget-core`)**:
+      - Tạo `BaseEntity.java` (`@MappedSuperclass` với `id`, `isDel`, `createdAt`, `updatedAt`, `@PrePersist`, `@PreUpdate`, `markDeleted()`, `restore()`), refactor `TripEntity` và `TripMemberEntity` dùng chung.
+      - Tạo `V2__create_expenses_and_budgets.sql` (bổ sung `is_del` cho trips & trip_members; tạo `budgets`, `category_budgets`, `expenses`, `expense_splits`).
+    - **Backend Spring Boot 3 (`com.tripbudget.tripbudget_core.expense`)**:
+      - Entities kế thừa `BaseEntity`: `BudgetEntity`, `CategoryBudgetEntity`, `ExpenseEntity`, `ExpenseSplitEntity`.
+      - Enums: `ExpenseCategory`, `SplitType`, `ExpenseStatus`.
+      - Repositories: `ExpenseRepository`, `ExpenseSplitRepository`, `BudgetRepository`.
+      - Services: `ExpenseService` (thuật toán chia tiền EQUAL/EXACT/PERCENTAGE/SHARE, tự động bù số dư lẻ vào Payer, kiểm tra thành viên), `BudgetService` (tính toán hạn mức, chi tiêu thực tế, % tiêu hao, breakdown theo danh mục).
+      - Controller: `ExpenseController` (`/trip/{tripId}/expenses`, `/trip/{tripId}/expenses/summary`, `/trip/{tripId}/expenses/{expenseId}`, `/trip/{tripId}/budget`).
+      - Build thành công (`mvn compile -o` -> BUILD SUCCESS).
+    - **Next.js BFF Handlers (`src/app/api/trip/[id]/`)**:
+      - `expenses/route.ts` (GET phân trang & POST tạo khoản chi).
+      - `expenses/summary/route.ts` (GET báo cáo ngân sách).
+      - `expenses/[expenseId]/route.ts` (GET, PUT, DELETE khoản chi).
+      - `budget/route.ts` (POST thiết lập ngân sách tổng & danh mục).
+    - **Base UI Primitives & Utilities (`src/base/`)**:
+      - `currency.ts`: `formatCurrency`, `formatNumber`, `formatNumberInput` (định dạng số tiền tự động chèn dấu phẩy hàng nghìn kiểu `1,000,000`), `parseNumberInput` (phân tích chuỗi số có dấu phẩy thành raw number).
+      - `AppNumberInput.tsx`: Component input nhập số chuẩn hóa, tự động format hiển thị kiểu `1,000,000` theo thời gian thực (realtime typing), bảo toàn vị trí con trỏ (cursor tracking), hỗ trợ phím Backspace thông minh, tích hợp `currencySuffix` (`VND`, `USD`) tại endAdornment, trả về `rawString` và `numericValue` cho form cha để ngăn chặn lỗi `NaN`.
+      - `AppSelect.tsx`: Dropdown chọn chuẩn hoá hỗ trợ icons.
+      - `AppCategoryChip.tsx`: Chip danh mục với màu sắc và icon trực quan.
+      - `AppCard.tsx`: Bổ sung prop `layout?: 'default' | 'row'` (mặc định `'default'`), dùng `display: 'block'` thay vì ép cứng lưới 5 cột, loại bỏ tình trạng vỡ layout khi chứa nhiều phần tử con.
+    - **Feature Expense Frontend (`src/features/expense/`)**:
+      - Custom Hooks: `useTripExpenses`, `useTripBudgetSummary`, `useExpenseMutation` (`useCreateExpense`, `useUpdateExpense`, `useDeleteExpense`, `useSetBudget`).
+      - Components tuân thủ nghiêm ngặt **1 Component / 1 File** và quy tắc layout (`AGENTS.md`):
+        - Container owns spacing: Loại bỏ toàn bộ `m`, `mt`, `mb`, `ml`, `mr`, `mx`, `my` trên các phần tử con; mọi khoảng cách do `<Stack spacing={...}>` hoặc `gap` cha quản lý.
+        - Flexbox over CSS Grid: Chuyển toàn bộ CSS Grid sang Flexbox (`display: 'flex'`, `flexWrap: 'wrap'`, `flex: 1`, `minWidth: 0`), không dùng `position: relative/absolute`.
+        - Explicit pixel units: Chuẩn hoá `px` (font chữ `14px`, `12px`, `24px`, bo góc `16px`, `12px`, `20px`), đồng bộ toàn bộ icon sang `*RoundedIcon`.
+        - Đồng bộ thiết kế với `MyTrips.tsx` & `TripTable.tsx`: Nền trang `action.hover`, khung bảng bo viền `borderRadius: '16px'`, `border: 1`, `borderColor: 'divider'`, `TableHead` nền xám nhẹ `action.hover` chữ in hoa bold 12px, cell padding `py: 2`, và Skeleton loading rows.
+        - Chi tiết các components:
+          - `BudgetMetricsCards.tsx` (3 thẻ metric: Tổng ngân sách, Đã chi, Số dư còn lại; bố cục top/bottom cân đối với `contentSx`, chống gãy chữ nút bấm, Flexbox 3 cột responsive).
+          - `BudgetProgressBar.tsx` (Thanh tiến độ cảnh báo ngân sách).
+          - `CategorySpendingList.tsx` (Phân bổ chi tiêu theo từng danh mục dạng Flexbox wrap).
+          - `ExpenseTable.tsx` & `ExpenseTableRow.tsx` (Bảng chi tiêu chi tiết tràn viền bo 16px, Skeleton rows khi loading, trạng thái rỗng căn giữa).
+          - `AddExpenseDialog.tsx` & `AddExpenseForm.tsx` (Form thêm khoản chi dạng Flexbox 50/50, icons Rounded, không margin con).
+          - `EditExpenseDialog.tsx` & `EditExpenseForm.tsx` (Form chỉnh sửa khoản chi Flexbox 50/50, icons Rounded).
+          - `DeleteExpenseDialog.tsx` (Xác nhận xóa với Stack spacing).
+          - `SetBudgetDialog.tsx` & `SetBudgetForm.tsx` (Form thiết lập hạn mức tổng và hạng mục dạng Flexbox wrap).
+          - `ExpenseOverview.tsx` (Layout tổng quan chuẩn hoá Stack spacing, đồng bộ header với `MyTripsHeader`).
+      - Trang `/expenses` render `ExpenseOverview`.
+      - Kiểm thử hoàn toàn: `npx tsc --noEmit` -> 0 errors, `npm run lint` -> 0 errors, 0 warnings.
+16. **Chuẩn hóa Đa Ngôn Ngữ VNI / ENG Toàn Diện Cho Module Expense (`/expenses`)**:
+    - Bổ sung quy chuẩn bắt buộc i18n vào `AGENTS.md`: Cấm 100% hardcode text hiển thị, đồng bộ 1:1 giữa `messages/vi.json` và `messages/en.json`, dùng `useTranslations`.
+    - Thêm trọn bộ namespace `"expense"` vào `messages/vi.json` và `messages/en.json` (tiêu đề trang, metrics KPI, tiến độ ngân sách, danh sách danh mục, bảng chi tiêu, menu hành động, phân trang, form thêm/sửa, dialog xóa/ngân sách, toast thông báo).
+    - Cập nhật `AppCategoryChip.tsx`: Hỗ trợ dịch tên danh mục qua `useTranslations('expense.categories')`, đổi toàn bộ icon sang `*RoundedIcon`, chuẩn hoá `fontSize: '12px'`.
+    - Chuyển đổi toàn bộ 10 components trong `src/features/expense/components/` sang `useTranslations('expense')`, hỗ trợ gạt tức thì giữa `VNI` và `ENG` trên TopBar.
+
 ### Immediate likely next tasks:
 
-1. **Module Quản lý Chi tiêu & Ngân sách (Expenses & Budgeting)**: Tạo entity, migration, controller trong Spring Boot Core (`tripbudget-core`) và giao diện `/expenses`, popup thêm khoản chi (`AddExpenseDialog.tsx`) trên Next.js Web.
-2. **Module Quản lý Thành viên chuyến đi (Trip Members & Invitations)**: Quản lý quyền hạn (`OWNER`, `EDITOR`, `MEMBER`, `VIEWER`), mời thành viên qua email/link, hiển thị avatar nhóm.
+1. **Module Quản lý Thành viên chuyến đi (Trip Members & Invitations)**: Quản lý quyền hạn (`OWNER`, `EDITOR`, `MEMBER`, `VIEWER`), mời thành viên qua email/link, hiển thị avatar nhóm.
+2. **Module Quyết toán & Trả nợ (Debt Settlement & Balances)**: Tính toán ma trận nợ giữa các thành viên dựa trên `expense_splits`, đề xuất số giao dịch tối thiểu để tất toán (Debt Simplification Algorithm).
