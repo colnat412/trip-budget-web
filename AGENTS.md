@@ -293,6 +293,54 @@ Do not call `.data()` if the desired response includes `status`, `message`, and 
 
 Errors should be normalized through a `GlobalExceptionHandler` rather than repeated try/catch blocks in controllers.
 
+### User Authentication & Current User Injection Convention (@CurrentUser)
+
+The core Spring Boot service validates JWT access tokens issued by the Identity service. To obtain the authenticated user inside controllers in a clean, type-safe, and secure manner, the application uses a custom meta-annotation:
+
+- **Annotation**: `com.tripbudget.tripbudget_core.common.annotations.CurrentUser`
+- **DTO**: `com.tripbudget.tripbudget_core.common.dtos.CurrentUserDto` (Java Record: `Long id, String sessionId`)
+
+#### Implementation details:
+
+`@CurrentUser` is defined using Spring Security's `@AuthenticationPrincipal` with a SpEL constructor expression:
+
+```java
+@Target({ElementType.PARAMETER, ElementType.ANNOTATION_TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@AuthenticationPrincipal(
+    expression = "new com.tripbudget.tripbudget_core.common.dtos.CurrentUserDto(#this)"
+)
+public @interface CurrentUser {}
+```
+
+SpEL `#this` refers to the authenticated `Jwt` object validated by Spring Security. The constructor `CurrentUserDto(Jwt jwt)` automatically parses `jwt.getSubject()` into `Long id` and extracts `jwt.getClaimAsString("sid")` into `String sessionId`.
+
+#### Mandatory Controller Conventions:
+
+1. **Standard Parameter Injection**: Always declare `@CurrentUser CurrentUserDto user` as a method parameter in controller endpoints requiring authentication.
+2. **Explicit Extraction**: Explicitly declare `Long currentUserId = user.id();` at the beginning of the controller method. This improves debugging clarity and maintains consistency across all controllers.
+3. **Strict Security Prohibitions**:
+   - **NEVER** accept `userId` from the request body, URL query parameters, or route path variables to identify the caller. Doing so causes critical Insecure Direct Object Reference (IDOR) security vulnerabilities.
+   - **NEVER** manually parse `Jwt` claims or call `jwt.getSubject()` inside controller logic.
+4. **Context Passing**: Pass `currentUserId` as the first argument or contextual identifier to the service layer (e.g. `tripService.createTrip(currentUserId, ...)` or `expenseService.createExpense(currentUserId, tripId, ...)`).
+5. **Reference Standard**: Reference `TripController.java` (`com.tripbudget.tripbudget_core.trip.controllers.TripController`) and `ExpenseController.java` (`com.tripbudget.tripbudget_core.expense.controllers.ExpenseController`) as the canonical standard for all controllers.
+
+#### Mandatory Service Layer Authorization Conventions:
+
+1. The service layer must always receive `Long currentUserId`.
+2. The service layer is strictly responsible for verifying that `currentUserId` has valid permissions on the requested resource before performing any read or write operations:
+   - For trip-scoped actions, verify active membership:
+     ```java
+     boolean isMember = tripMemberRepository.existsByTrip_IdAndUserIdAndStatus(
+         tripId, currentUserId, TripMemberStatus.ACTIVE
+     );
+     if (!isMember) {
+         throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You do not have access to this trip");
+     }
+     ```
+   - Alternatively, use a reusable private helper like `getActiveMemberTrip(tripId, currentUserId)` or `validateMembership(tripId, currentUserId)` which validates both trip existence (throwing `404 NOT_FOUND` if deleted or absent) and active membership (throwing `403 FORBIDDEN` if unauthorized).
+
 ## 7. Frontend technology and UI rules
 
 Frontend stack:
@@ -1267,6 +1315,12 @@ If the user has already supplied a specific task, do not block on a broad questi
     - Thêm trọn bộ namespace `"expense"` vào `messages/vi.json` và `messages/en.json` (tiêu đề trang, metrics KPI, tiến độ ngân sách, danh sách danh mục, bảng chi tiêu, menu hành động, phân trang, form thêm/sửa, dialog xóa/ngân sách, toast thông báo).
     - Cập nhật `AppCategoryChip.tsx`: Hỗ trợ dịch tên danh mục qua `useTranslations('expense.categories')`, đổi toàn bộ icon sang `*RoundedIcon`, chuẩn hoá `fontSize: '12px'`.
     - Chuyển đổi toàn bộ 10 components trong `src/features/expense/components/` sang `useTranslations('expense')`, hỗ trợ gạt tức thì giữa `VNI` và `ENG` trên TopBar.
+17. **Chuẩn Hóa Quy Ước Lấy Người Dùng Đăng Nhập (`@CurrentUser` / `currentUserId`) Xuyên Suốt Backend Core**:
+    - Chuẩn hóa kiến trúc tiêm người dùng: Sử dụng custom annotation `@CurrentUser CurrentUserDto user` (dựa trên `@AuthenticationPrincipal` với SpEL khởi tạo `CurrentUserDto` từ `Jwt` subject và `sid`).
+    - Quy chuẩn hóa Controller: Tuyệt đối cấm nhận `userId` từ body/query/params để định danh; mọi endpoint đều tiêm `@CurrentUser CurrentUserDto user` và khai báo tường minh `Long currentUserId = user.id();` trước khi truyền xuống Service.
+    - Đồng bộ `TripController` & `ExpenseController`: Dọn dẹp mã cũ và comment trong `TripController`, đồng bộ hóa toàn bộ 7 endpoints của `ExpenseController` theo mẫu chuẩn.
+    - Quy chuẩn hóa Service: Nhận `currentUserId` và kiểm tra quyền hạn thành viên chuyến đi qua `existsByTrip_IdAndUserIdAndStatus` (`ACTIVE`), ném lỗi 403 Forbidden nếu không có quyền và 404 Not Found nếu chuyến đi không tồn tại/đã bị xóa mềm.
+    - Ghi nhận đầy đủ vào Mục 6 của `AGENTS.md` làm tiêu chuẩn kỹ thuật bắt buộc cho toàn bộ dự án.
 
 ### Immediate likely next tasks:
 
