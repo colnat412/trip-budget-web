@@ -1,0 +1,7 @@
+{
+  "git.path": "/home/hanbiro/lou/bin/git-safe",
+  "git.autofetch": false,
+  "terminal.integrated.env.linux": {
+    "PATH": "/home/hanbiro/lou/bin:${env:PATH}"
+  }
+}

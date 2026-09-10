@@ -29,6 +29,7 @@ export interface ExpenseTableProps {
   onEdit: (expense: Expense) => void;
   onDelete: (expense: Expense) => void;
   onAddNew: () => void;
+  onViewDetail?: (expense: Expense) => void;
 }
 
 export default function ExpenseTable({
@@ -39,6 +40,7 @@ export default function ExpenseTable({
   onEdit,
   onDelete,
   onAddNew,
+  onViewDetail,
 }: ExpenseTableProps) {
   const t = useTranslations('expense.table');
   const page = pagination?.page ?? 0;
@@ -184,6 +186,17 @@ export default function ExpenseTable({
                       py: 1.5,
                     }}
                   >
+                    {t('colPayer')}
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      fontWeight: 800,
+                      fontSize: '12px',
+                      textTransform: 'uppercase',
+                      color: 'text.secondary',
+                      py: 1.5,
+                    }}
+                  >
                     {t('colSplit')}
                   </TableCell>
                   <TableCell
@@ -236,6 +249,20 @@ export default function ExpenseTable({
                           />
                         </TableCell>
                         <TableCell sx={{ py: 2 }}>
+                          <Stack
+                            direction="row"
+                            spacing={1}
+                            sx={{ alignItems: 'center' }}
+                          >
+                            <Skeleton
+                              variant="circular"
+                              width={28}
+                              height={28}
+                            />
+                            <Skeleton variant="text" width={70} height={20} />
+                          </Stack>
+                        </TableCell>
+                        <TableCell sx={{ py: 2 }}>
                           <Skeleton variant="text" width="90px" height="24px" />
                         </TableCell>
                         <TableCell align="right" sx={{ py: 2 }}>
@@ -270,6 +297,7 @@ export default function ExpenseTable({
                         expense={expense}
                         onEdit={onEdit}
                         onDelete={onDelete}
+                        onViewDetail={onViewDetail}
                       />
                     ))}
               </TableBody>

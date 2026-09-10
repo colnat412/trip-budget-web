@@ -5,8 +5,10 @@ import { useTranslations } from 'next-intl';
 
 import GroupRoundedIcon from '@mui/icons-material/GroupRounded';
 import TripSummaryMetric from './TripSummaryMetric';
-import { formatDateRange } from '@/base/utils';
+import { formatCurrency, formatDateRange } from '@/base/utils';
 import { useTripContext } from '../../context/TripContext';
+import useTripBudgetSummary from '@/features/expense/hooks/useTripBudgetSummary';
+import useTripExpenses from '@/features/expense/hooks/useTripExpenses';
 import type { Trip } from '../../types';
 
 interface ActiveTripBannerProps {
@@ -20,6 +22,29 @@ export default function ActiveTripBanner({ trip }: ActiveTripBannerProps) {
   const { openMembers } = useTripContext();
   const dateRangeStr = formatDateRange(trip.startDate, trip.endDate);
   const isLive = trip.status === 'IN_PROGRESS';
+
+  const { summary } = useTripBudgetSummary({ tripId: trip.id });
+  const { pagination } = useTripExpenses({ tripId: trip.id, page: 0, size: 1 });
+
+  const totalSpent = summary?.actualSpent ?? 0;
+  const totalBudget = summary?.totalBudget ?? 0;
+  const remaining = summary?.remainingBudget ?? 0;
+  const isOver = totalSpent > totalBudget;
+
+  const donutBorderColor = isOver
+    ? '#EF4444'
+    : (summary?.percentageUsed ?? 0) > 85
+      ? '#F59E0B'
+      : '#10B981';
+
+  let days = 1;
+  if (trip.startDate && trip.endDate) {
+    const diff =
+      new Date(trip.endDate).getTime() - new Date(trip.startDate).getTime();
+    days = Math.max(1, Math.ceil(diff / (1000 * 60 * 60 * 24)) + 1);
+  }
+  const avgPerDay = totalSpent / days;
+  const expenseCount = pagination?.totalElements ?? 0;
 
   return (
     <Box
@@ -136,21 +161,23 @@ export default function ActiveTripBanner({ trip }: ActiveTripBannerProps) {
 
         <Box
           sx={{
-            width: 132,
-            height: 132,
+            minWidth: 140,
+            height: 140,
+            p: 1,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             flexShrink: 0,
             borderRadius: '50%',
-            border: '12px solid #F97316',
+            border: `10px solid ${donutBorderColor}`,
             bgcolor: 'rgba(7,18,37,0.18)',
+            textAlign: 'center',
           }}
         >
           <Stack spacing={0.25} sx={{ alignItems: 'center' }}>
             <Typography
               sx={{
-                color: 'rgba(255,255,255,0.65)',
+                color: 'rgba(255,255,255,0.7)',
                 fontSize: '10px',
                 fontWeight: 800,
                 letterSpacing: '1px',
@@ -162,16 +189,21 @@ export default function ActiveTripBanner({ trip }: ActiveTripBannerProps) {
             <Typography
               sx={{
                 fontFamily: 'var(--font-mono)',
-                fontSize: '21px',
+                fontSize: '16px',
                 fontWeight: 800,
+                lineHeight: 1.2,
               }}
             >
-              12.0tr
+              {formatCurrency(totalSpent, trip.baseCurrency)}
             </Typography>
             <Typography
-              sx={{ color: 'rgba(255,255,255,0.65)', fontSize: '10px' }}
+              sx={{
+                color: 'rgba(255,255,255,0.7)',
+                fontSize: '10px',
+                fontFamily: 'var(--font-mono)',
+              }}
             >
-              / 10tr
+              / {formatCurrency(totalBudget, trip.baseCurrency)}
             </Typography>
           </Stack>
         </Box>
@@ -188,9 +220,19 @@ export default function ActiveTripBanner({ trip }: ActiveTripBannerProps) {
           bgcolor: 'rgba(255,255,255,0.1)',
         }}
       >
-        <TripSummaryMetric label={t('remaining')} value="-1.985.000 đ" danger />
-        <TripSummaryMetric label={t('averagePerDay')} value="2.397.000 đ" />
-        <TripSummaryMetric label={t('expenseCount')} value="9" />
+        <TripSummaryMetric
+          label={t('remaining')}
+          value={formatCurrency(remaining, trip.baseCurrency)}
+          danger={isOver}
+        />
+        <TripSummaryMetric
+          label={t('averagePerDay')}
+          value={formatCurrency(avgPerDay, trip.baseCurrency)}
+        />
+        <TripSummaryMetric
+          label={t('expenseCount')}
+          value={String(expenseCount)}
+        />
       </Box>
     </Box>
   );

@@ -25,7 +25,7 @@ export interface AppCategoryChipProps extends Omit<ChipProps, 'color'> {
   category: CategoryType;
 }
 
-const CATEGORY_CONFIG: Record<
+export const CATEGORY_CONFIG: Record<
   string,
   { icon: React.ReactElement; bg: string; color: string }
 > = {

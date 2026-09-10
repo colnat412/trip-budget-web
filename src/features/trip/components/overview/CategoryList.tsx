@@ -1,150 +1,180 @@
 'use client';
 
-import { Box, Stack, Typography } from '@mui/material';
+import React from 'react';
+import { Box, Stack, Typography, Skeleton } from '@mui/material';
+import PieChartOutlineRoundedIcon from '@mui/icons-material/PieChartOutlineRounded';
 import { useTranslations } from 'next-intl';
-import type { ReactNode } from 'react';
-
 import { AppLinearProgress } from '@/base/components/ui';
+import { CATEGORY_CONFIG } from '@/base/components/ui/AppCategoryChip';
+import { formatCurrency } from '@/base/utils';
+import useTripBudgetSummary from '@/features/expense/hooks/useTripBudgetSummary';
 
-interface SpendingCategory {
-  messageKey:
-    | 'flight'
-    | 'stay'
-    | 'food'
-    | 'sightseeing'
-    | 'shopping'
-    | 'transport';
-  amount: string;
-  percentage: number;
-  color: string;
-  background: string;
-  icon: ReactNode;
+export interface CategoryListProps {
+  tripId?: number;
+  currency?: string;
 }
 
-const DEFAULT_CATEGORIES: SpendingCategory[] = [
-  {
-    messageKey: 'flight',
-    amount: '4.200.000 đ',
-    percentage: 35,
-    color: '#6366F1',
-    background: '#EEF2FF',
-    icon: '✈️',
-  },
-  {
-    messageKey: 'stay',
-    amount: '2.850.000 đ',
-    percentage: 24,
-    color: '#0EA5E9',
-    background: '#E0F2FE',
-    icon: '🏨',
-  },
-  {
-    messageKey: 'food',
-    amount: '2.095.000 đ',
-    percentage: 17,
-    color: '#F97316',
-    background: '#FFF7ED',
-    icon: '🍜',
-  },
-  {
-    messageKey: 'sightseeing',
-    amount: '1.740.000 đ',
-    percentage: 15,
-    color: '#10B981',
-    background: '#ECFDF5',
-    icon: '🎡',
-  },
-  {
-    messageKey: 'shopping',
-    amount: '620.000 đ',
-    percentage: 5,
-    color: '#EC4899',
-    background: '#FDF2F8',
-    icon: '🛍️',
-  },
-  {
-    messageKey: 'transport',
-    amount: '480.000 đ',
-    percentage: 4,
-    color: '#F59E0B',
-    background: '#FFFBEB',
-    icon: '🛵',
-  },
-];
+export default function CategoryList({
+  tripId,
+  currency = 'VND',
+}: CategoryListProps) {
+  const tExpense = useTranslations('expense');
 
-export default function CategoryList() {
-  const t = useTranslations('overview');
+  const { summary, isLoading } = useTripBudgetSummary({ tripId });
+
+  if (isLoading) {
+    return (
+      <Stack spacing={2}>
+        {Array.from({ length: 4 }).map((_, i) => (
+          <Stack
+            key={i}
+            direction="row"
+            spacing={1.5}
+            sx={{ alignItems: 'center' }}
+          >
+            <Skeleton
+              variant="rounded"
+              width={38}
+              height={38}
+              sx={{ borderRadius: '10px' }}
+            />
+            <Stack spacing={0.75} sx={{ flexGrow: 1 }}>
+              <Skeleton variant="text" width="50%" height={18} />
+              <Skeleton variant="rounded" width="100%" height={6} />
+            </Stack>
+            <Skeleton variant="text" width={30} height={18} />
+          </Stack>
+        ))}
+      </Stack>
+    );
+  }
+
+  const activeCategories =
+    summary?.categoryBreakdown?.filter(
+      (c) => c.spentAmount > 0 || (c.limitAmount && c.limitAmount > 0),
+    ) || [];
+
+  if (activeCategories.length === 0) {
+    return (
+      <Stack
+        spacing={1}
+        sx={{
+          py: 4,
+          alignItems: 'center',
+          justifyContent: 'center',
+          textAlign: 'center',
+          color: 'text.secondary',
+        }}
+      >
+        <Box
+          sx={{
+            p: 1.5,
+            borderRadius: '50%',
+            bgcolor: 'action.hover',
+            color: 'text.disabled',
+            display: 'inline-flex',
+          }}
+        >
+          <PieChartOutlineRoundedIcon sx={{ fontSize: 32 }} />
+        </Box>
+        <Typography sx={{ fontSize: '13px', fontWeight: 600 }}>
+          {tExpense('table.emptyTitle')}
+        </Typography>
+        <Typography
+          sx={{ fontSize: '12px', color: 'text.disabled', maxWidth: 260 }}
+        >
+          {tExpense('table.emptyDesc')}
+        </Typography>
+      </Stack>
+    );
+  }
 
   return (
     <Stack spacing={2}>
-      {DEFAULT_CATEGORIES.map((category) => (
-        <Stack
-          key={category.messageKey}
-          direction="row"
-          spacing={1.5}
-          sx={{ alignItems: 'center' }}
-        >
-          <Box
-            sx={{
-              width: 38,
-              height: 38,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexShrink: 0,
-              borderRadius: '10px',
-              color: category.color,
-              bgcolor: category.background,
-              '& svg': { fontSize: '20px' },
-            }}
+      {activeCategories.map((categoryItem) => {
+        const config =
+          CATEGORY_CONFIG[categoryItem.category] || CATEGORY_CONFIG.OTHER;
+        const categoryLabel =
+          tExpense(`categories.${categoryItem.category as 'OTHER'}`) ||
+          categoryItem.category;
+        const percent = Math.min(
+          100,
+          Math.max(0, Math.round(categoryItem.percentageUsed)),
+        );
+        const isOverLimit =
+          categoryItem.limitAmount > 0 &&
+          categoryItem.spentAmount > categoryItem.limitAmount;
+
+        return (
+          <Stack
+            key={categoryItem.category}
+            direction="row"
+            spacing={1.5}
+            sx={{ alignItems: 'center' }}
           >
-            {category.icon}
-          </Box>
-          <Stack spacing={0.75} sx={{ minWidth: 0, flexGrow: 1 }}>
-            <Stack
-              direction="row"
-              spacing={1}
-              sx={{ alignItems: 'center', justifyContent: 'space-between' }}
+            <Box
+              sx={{
+                width: 38,
+                height: 38,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+                borderRadius: '10px',
+                color: config.color,
+                bgcolor: config.bg,
+                '& svg': { fontSize: '20px' },
+              }}
             >
-              <Typography
-                sx={{
-                  color: 'text.primary',
-                  fontSize: '14px',
-                  fontWeight: 700,
-                }}
+              {config.icon}
+            </Box>
+            <Stack spacing={0.75} sx={{ minWidth: 0, flexGrow: 1 }}>
+              <Stack
+                direction="row"
+                spacing={1}
+                sx={{ alignItems: 'center', justifyContent: 'space-between' }}
               >
-                {t(`categories.${category.messageKey}`)}
-              </Typography>
-              <Typography
-                sx={{
-                  color: 'text.secondary',
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: '12px',
-                }}
-              >
-                {category.amount}
-              </Typography>
+                <Typography
+                  sx={{
+                    color: 'text.primary',
+                    fontSize: '14px',
+                    fontWeight: 700,
+                  }}
+                >
+                  {categoryLabel}
+                </Typography>
+                <Typography
+                  sx={{
+                    color: 'text.secondary',
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: '12px',
+                  }}
+                >
+                  {formatCurrency(categoryItem.spentAmount, currency)}
+                </Typography>
+              </Stack>
+              <AppLinearProgress
+                value={percent}
+                height={6}
+                trackColor="action.hover"
+                barColor={isOverLimit ? '#EF4444' : config.color}
+              />
             </Stack>
-            <AppLinearProgress
-              value={category.percentage}
-              height={6}
-              trackColor="action.hover"
-              barColor={category.color}
-            />
+            <Typography
+              sx={{
+                width: 34,
+                flexShrink: 0,
+                color: 'text.secondary',
+                fontSize: '11px',
+                textAlign: 'right',
+                fontFamily: 'var(--font-mono)',
+              }}
+            >
+              {percent}%
+            </Typography>
           </Stack>
-          <Typography
-            sx={{
-              width: 34,
-              flexShrink: 0,
-              color: 'text.secondary',
-              fontSize: '11px',
-              textAlign: 'right',
-            }}
-          >
-            {category.percentage}%
-          </Typography>
-        </Stack>
-      ))}
+        );
+      })}
     </Stack>
   );
 }

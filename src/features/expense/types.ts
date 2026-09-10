@@ -27,6 +27,9 @@ export interface PageResponse<T> {
 export interface ExpenseSplit {
   id: number;
   userId: number;
+  userName?: string | null;
+  userEmail?: string | null;
+  userAvatarUrl?: string | null;
   allocatedAmount: number;
   splitValue?: number;
   settled: boolean;
@@ -36,6 +39,9 @@ export interface Expense {
   id: number;
   tripId: number;
   payerId: number;
+  payerName?: string | null;
+  payerEmail?: string | null;
+  payerAvatarUrl?: string | null;
   title: string;
   category: ExpenseCategory;
   amount: number;

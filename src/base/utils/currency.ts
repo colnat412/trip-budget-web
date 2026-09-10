@@ -20,6 +20,48 @@ export function formatCurrency(
   }
 }
 
+export function formatCompactCurrency(
+  amount: number | string | null | undefined,
+  currency = 'VND',
+  locale = 'vi-VN',
+): string {
+  if (amount === null || amount === undefined || isNaN(Number(amount))) {
+    return `0 ${currency}`;
+  }
+
+  const numericAmount = Number(amount);
+  const curr = currency.toUpperCase();
+
+  if (curr === 'VND') {
+    const abs = Math.abs(numericAmount);
+    const sign = numericAmount < 0 ? '-' : '';
+    if (abs >= 1_000_000_000) {
+      const val = (abs / 1_000_000_000).toFixed(1).replace(/\.0$/, '');
+      return `${sign}${val} tỷ`;
+    }
+    if (abs >= 1_000_000) {
+      const val = (abs / 1_000_000).toFixed(1).replace(/\.0$/, '');
+      return `${sign}${val} tr`;
+    }
+    if (abs >= 1_000) {
+      const val = (abs / 1_000).toFixed(0);
+      return `${sign}${val}k`;
+    }
+    return `${numericAmount.toLocaleString(locale)} ₫`;
+  }
+
+  try {
+    return new Intl.NumberFormat(locale, {
+      style: 'currency',
+      currency: curr,
+      notation: 'compact',
+      maximumFractionDigits: 1,
+    }).format(numericAmount);
+  } catch {
+    return formatCurrency(numericAmount, currency, locale);
+  }
+}
+
 export function formatNumber(
   value: number | string | null | undefined,
   locale = 'vi-VN',

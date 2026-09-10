@@ -1,6 +1,7 @@
 'use client';
 
 import { Box, Skeleton, Stack, Typography } from '@mui/material';
+import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 
 import { useTripContext } from '../context/TripContext';
@@ -90,7 +91,10 @@ export default function Overview() {
           >
             {t('spendingByCategory')}
           </Typography>
-          <CategoryList />
+          <CategoryList
+            tripId={currentTrip.id}
+            currency={currentTrip.baseCurrency}
+          />
         </Stack>
 
         <Stack
@@ -118,14 +122,23 @@ export default function Overview() {
               {t('recentTitle')}
             </Typography>
             <Typography
-              component="a"
-              href="#"
-              sx={{ color: 'primary.main', fontSize: '12px', fontWeight: 700 }}
+              component={Link}
+              href="/expenses"
+              sx={{
+                color: 'primary.main',
+                fontSize: '12px',
+                fontWeight: 700,
+                textDecoration: 'none',
+                '&:hover': { textDecoration: 'underline' },
+              }}
             >
               {t('viewAll')} →
             </Typography>
           </Stack>
-          <RecentExpenseList />
+          <RecentExpenseList
+            tripId={currentTrip.id}
+            currency={currentTrip.baseCurrency}
+          />
         </Stack>
       </Box>
     </Stack>

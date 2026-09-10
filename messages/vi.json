@@ -191,7 +191,9 @@
     },
     "categoriesList": {
       "title": "Chi Tiêu Theo Hạng Mục",
-      "limit": "Hạn mức: {amount}"
+      "limit": "Hạn mức: {amount}",
+      "showDetails": "Chi tiết",
+      "collapse": "Thu gọn"
     },
     "table": {
       "title": "Danh Sách Khoản Chi ({count})",
@@ -202,6 +204,7 @@
       "colDate": "Ngày",
       "colExpense": "Khoản chi",
       "colCategory": "Danh mục",
+      "colPayer": "Người trả",
       "colSplit": "Cách chia",
       "colAmount": "Số tiền",
       "colActions": "Thao tác",
@@ -234,6 +237,15 @@
       "OTHER": "Chi phí khác"
     },
     "dialog": {
+      "detailTitle": "Chi Tiết Khoản Chi",
+      "paidBy": "Người thanh toán",
+      "paidFullAmount": "Đã thanh toán {amount}",
+      "splitBreakdown": "Danh sách chia tiền ({count})",
+      "settled": "Đã thanh toán",
+      "pending": "Chưa thanh toán",
+      "note": "Ghi chú",
+      "receipt": "Hóa đơn / Chứng từ",
+      "close": "Đóng",
       "addTitle": "Thêm Khoản Chi Tiêu Mới",
       "editTitle": "Chỉnh Sửa Khoản Chi",
       "deleteTitle": "Xác nhận xóa khoản chi",
@@ -245,7 +257,12 @@
       "totalBudgetLabel": "Tổng ngân sách dự kiến *",
       "totalBudgetPlaceholder": "Ví dụ: 15,000,000",
       "categoryLimitsTitle": "Hạn mức chi tiết theo từng hạng mục (Tùy chọn)",
-      "saveBudget": "Lưu ngân sách"
+      "saveBudget": "Lưu ngân sách",
+      "allocationStatus": "Tình trạng phân bổ ngân sách:",
+      "warningOverAllocated": "Tổng các hạng mục vượt quá Tổng ngân sách {amount}!",
+      "syncTotalBudget": "Đồng bộ Tổng ngân sách",
+      "remainingUnallocated": "Còn lại {amount} chưa phân bổ (quỹ dự phòng)",
+      "exactAllocated": "Đã phân bổ khớp 100% ngân sách"
     },
     "form": {
       "titleLabel": "Tên khoản chi *",

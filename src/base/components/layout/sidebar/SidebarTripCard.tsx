@@ -16,8 +16,13 @@ import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import { useTranslations } from 'next-intl';
 
 import { AppButton, AppLinearProgress } from '../../ui';
-import { formatDateRange } from '@/base/utils';
+import {
+  formatCurrency,
+  formatCompactCurrency,
+  formatDateRange,
+} from '@/base/utils';
 import { useTripContext } from '@/features/trip/context/TripContext';
+import useTripBudgetSummary from '@/features/expense/hooks/useTripBudgetSummary';
 import type { Trip } from '@/features/trip/types';
 
 export default function SidebarTripCard() {
@@ -25,6 +30,9 @@ export default function SidebarTripCard() {
   const tTrip = useTranslations('trip');
   const { trips, activeTrip, selectTrip, openCreateTrip, isLoading } =
     useTripContext();
+
+  const currentTrip = activeTrip || trips?.[0];
+  const { summary } = useTripBudgetSummary({ tripId: currentTrip?.id });
 
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
   const isMenuOpen = Boolean(menuAnchorEl);
@@ -104,7 +112,8 @@ export default function SidebarTripCard() {
     );
   }
 
-  const currentTrip = activeTrip || trips[0];
+  if (!currentTrip) return null;
+
   const dateRange = formatDateRange(currentTrip.startDate, currentTrip.endDate);
   const isLive = currentTrip.status === 'IN_PROGRESS';
 
@@ -295,51 +304,118 @@ export default function SidebarTripCard() {
       </Menu>
 
       <Box sx={{ p: '12px', display: 'flex', flexDirection: 'column', gap: 1 }}>
-        <Stack
-          direction="row"
-          sx={{ justifyContent: 'space-between', alignItems: 'center' }}
-        >
-          <Typography
-            variant="caption"
-            sx={{ color: 'text.primary', fontWeight: 600 }}
-          >
-            {t('budget')}
-          </Typography>
-          <Typography
-            variant="caption"
-            sx={{
-              color: 'secondary.dark',
-              fontWeight: 700,
-              fontFamily: 'var(--font-mono)',
-            }}
-          >
-            {currentTrip.baseCurrency}
-          </Typography>
-        </Stack>
+        {(() => {
+          const totalSpent = summary?.actualSpent ?? 0;
+          const totalBudget = summary?.totalBudget ?? 0;
+          const percentage = summary ? Math.round(summary.percentageUsed) : 0;
+          const isOverBudget = totalBudget > 0 && totalSpent > totalBudget;
+          const isWarning = !isOverBudget && percentage > 85;
 
-        <AppLinearProgress value={65} barColor="secondary.dark" />
+          const fullSpent = formatCurrency(
+            totalSpent,
+            currentTrip.baseCurrency,
+          );
+          const fullBudget = formatCurrency(
+            totalBudget,
+            currentTrip.baseCurrency,
+          );
+          const compactSpent = formatCompactCurrency(
+            totalSpent,
+            currentTrip.baseCurrency,
+          );
+          const compactBudget = formatCompactCurrency(
+            totalBudget,
+            currentTrip.baseCurrency,
+          );
 
-        <Stack
-          direction="row"
-          sx={{ justifyContent: 'space-between', pt: 0.25 }}
-        >
-          <Typography
-            variant="caption"
-            sx={{
-              color: 'text.secondary',
-              fontFamily: 'var(--font-mono)',
-              fontSize: '11px',
-            }}
-          >
-            {currentTrip.destination}
-          </Typography>
-          <Typography
-            variant="caption"
-            sx={{ color: 'primary.main', fontWeight: 700, fontSize: '11px' }}
-          >
-            {currentTrip.status}
-          </Typography>
-        </Stack>
+          return (
+            <>
+              <Stack
+                direction="row"
+                sx={{
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}
+              >
+                <Typography
+                  variant="caption"
+                  sx={{
+                    color: 'text.secondary',
+                    fontWeight: 600,
+                    fontSize: '11px',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.4px',
+                  }}
+                >
+                  {t('budget')}
+                </Typography>
+                <Typography
+                  variant="caption"
+                  sx={{
+                    color: isOverBudget
+                      ? 'error.main'
+                      : isWarning
+                        ? 'warning.main'
+                        : 'text.primary',
+                    fontWeight: 800,
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: '12px',
+                  }}
+                >
+                  {summary ? `${percentage}%` : '0%'}
+                </Typography>
+              </Stack>
+
+              <AppLinearProgress
+                value={Math.min(100, Math.max(0, percentage))}
+                barColor={
+                  isOverBudget
+                    ? '#EF4444'
+                    : isWarning
+                      ? '#F59E0B'
+                      : 'primary.main'
+                }
+                height={6}
+              />
+
+              <Stack
+                direction="row"
+                sx={{
+                  justifyContent: 'space-between',
+                  alignItems: 'baseline',
+                  pt: 0.25,
+                }}
+                title={`Đã chi: ${fullSpent} / Ngân sách: ${fullBudget}`}
+              >
+                <Typography
+                  variant="caption"
+                  sx={{
+                    color: isOverBudget ? 'error.main' : 'text.primary',
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: '12px',
+                    fontWeight: 700,
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {compactSpent}
+                </Typography>
+
+                <Typography
+                  variant="caption"
+                  sx={{
+                    color: 'text.secondary',
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: '11px',
+                    fontWeight: 500,
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  / {compactBudget}
+                </Typography>
+              </Stack>
+            </>
+          );
+        })()}
       </Box>
     </Box>
   );

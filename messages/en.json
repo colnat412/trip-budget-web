@@ -191,7 +191,9 @@
     },
     "categoriesList": {
       "title": "Spending by Category",
-      "limit": "Limit: {amount}"
+      "limit": "Limit: {amount}",
+      "showDetails": "Details",
+      "collapse": "Collapse"
     },
     "table": {
       "title": "Expense List ({count})",
@@ -202,6 +204,7 @@
       "colDate": "Date",
       "colExpense": "Expense",
       "colCategory": "Category",
+      "colPayer": "Paid by",
       "colSplit": "Split Method",
       "colAmount": "Amount",
       "colActions": "Actions",
@@ -234,6 +237,15 @@
       "OTHER": "Other expenses"
     },
     "dialog": {
+      "detailTitle": "Expense Details",
+      "paidBy": "Paid by",
+      "paidFullAmount": "Paid {amount}",
+      "splitBreakdown": "Split Breakdown ({count})",
+      "settled": "Settled",
+      "pending": "Pending",
+      "note": "Note",
+      "receipt": "Receipt / Document",
+      "close": "Close",
       "addTitle": "Add New Expense",
       "editTitle": "Edit Expense",
       "deleteTitle": "Confirm Delete Expense",
@@ -245,7 +257,12 @@
       "totalBudgetLabel": "Expected Total Budget *",
       "totalBudgetPlaceholder": "e.g. 15,000,000",
       "categoryLimitsTitle": "Category Limits (Optional)",
-      "saveBudget": "Save Budget"
+      "saveBudget": "Save Budget",
+      "allocationStatus": "Budget allocation status:",
+      "warningOverAllocated": "Category limits exceed Total Budget by {amount}!",
+      "syncTotalBudget": "Sync Total Budget",
+      "remainingUnallocated": "{amount} unallocated (contingency fund)",
+      "exactAllocated": "100% budget fully allocated"
     },
     "form": {
       "titleLabel": "Expense Title *",

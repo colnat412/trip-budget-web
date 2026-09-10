@@ -6,8 +6,8 @@ import AccountBalanceWalletRoundedIcon from '@mui/icons-material/AccountBalanceW
 import ShoppingCartRoundedIcon from '@mui/icons-material/ShoppingCartRounded';
 import SavingsRoundedIcon from '@mui/icons-material/SavingsRounded';
 import { useTranslations } from 'next-intl';
-import { AppCard, AppButton } from '@/base/components/ui';
-import { formatCurrency } from '@/base/utils';
+import { AppCard, AppButton, AppLinearProgress } from '@/base/components/ui';
+import { formatCurrency, formatCompactCurrency } from '@/base/utils';
 import type { TripBudgetSummary } from '../types';
 
 export interface BudgetMetricsCardsProps {
@@ -30,11 +30,15 @@ export default function BudgetMetricsCards({
   const isOverBudget = remainingBudget < 0;
 
   return (
-    <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+    <Stack
+      direction={{ xs: 'column', sm: 'row' }}
+      spacing={2}
+      sx={{ height: '100%' }}
+    >
       <Box sx={{ flex: 1, minWidth: 0 }}>
         <AppCard
           sx={{
-            p: 2.5,
+            p: { xs: 2, xl: 2.5 },
             height: '100%',
             borderRadius: '16px',
             border: 1,
@@ -76,9 +80,12 @@ export default function BudgetMetricsCards({
             <Typography
               sx={{
                 fontFamily: 'var(--font-display)',
-                fontSize: '24px',
+                fontSize: { xs: '20px', md: '22px', xl: '24px' },
                 fontWeight: 800,
                 color: 'text.primary',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
               }}
             >
               {formatCurrency(totalBudget, curr)}
@@ -119,12 +126,12 @@ export default function BudgetMetricsCards({
       <Box sx={{ flex: 1, minWidth: 0 }}>
         <AppCard
           sx={{
-            p: 2.5,
+            p: { xs: 2, xl: 2.5 },
             height: '100%',
             borderRadius: '16px',
             border: 1,
             borderColor: 'divider',
-            borderLeft: '4px solid #F59E0B',
+            borderLeft: `4px solid ${isOverBudget ? '#DC2626' : (summary?.percentageUsed ?? 0) > 85 ? '#F59E0B' : '#1E3A8A'}`,
           }}
           contentSx={{
             height: '100%',
@@ -134,62 +141,135 @@ export default function BudgetMetricsCards({
           }}
         >
           <Stack spacing={1}>
-            <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-              <Box
-                sx={{
-                  p: 0.8,
-                  borderRadius: '8px',
-                  bgcolor: '#FEF3C7',
-                  color: 'secondary.dark',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <ShoppingCartRoundedIcon fontSize="small" />
-              </Box>
-              <Typography
-                sx={{
-                  fontSize: '14px',
-                  color: 'text.secondary',
-                  fontWeight: 600,
-                }}
-              >
-                {t('actualSpent')}
-              </Typography>
+            <Stack
+              direction="row"
+              sx={{
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}
+            >
+              <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+                <Box
+                  sx={{
+                    p: 0.8,
+                    borderRadius: '8px',
+                    bgcolor: '#FEF3C7',
+                    color: 'secondary.dark',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <ShoppingCartRoundedIcon fontSize="small" />
+                </Box>
+                <Typography
+                  sx={{
+                    fontSize: '14px',
+                    color: 'text.secondary',
+                    fontWeight: 600,
+                  }}
+                >
+                  {t('actualSpent')}
+                </Typography>
+              </Stack>
+              {totalBudget > 0 && (
+                <Typography
+                  sx={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: '13px',
+                    fontWeight: 800,
+                    color: isOverBudget
+                      ? 'error.main'
+                      : (summary?.percentageUsed ?? 0) > 85
+                        ? 'warning.main'
+                        : 'primary.main',
+                  }}
+                >
+                  {summary?.percentageUsed.toFixed(1)}%
+                </Typography>
+              )}
             </Stack>
             <Typography
               sx={{
                 fontFamily: 'var(--font-display)',
-                fontSize: '24px',
+                fontSize: { xs: '20px', md: '22px', xl: '24px' },
                 fontWeight: 800,
-                color: 'secondary.dark',
+                color: isOverBudget ? 'error.main' : 'secondary.dark',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
               }}
             >
               {formatCurrency(actualSpent, curr)}
             </Typography>
           </Stack>
-          <Typography
-            sx={{
-              fontSize: '12px',
-              color: 'text.secondary',
-              pt: 2,
-              display: 'block',
-            }}
-          >
-            {totalBudget > 0
-              ? t('percentOfBudget', {
-                  percent: summary?.percentageUsed.toFixed(1) ?? '0',
-                })
-              : t('noLimit')}
-          </Typography>
+
+          {totalBudget > 0 ? (
+            <Stack spacing={0.5} sx={{ pt: 1.5 }}>
+              <AppLinearProgress
+                value={Math.min(summary?.percentageUsed ?? 0, 100)}
+                height={6}
+                barColor={
+                  isOverBudget
+                    ? '#DC2626'
+                    : (summary?.percentageUsed ?? 0) > 85
+                      ? '#F59E0B'
+                      : '#1E3A8A'
+                }
+                trackColor="action.hover"
+                sx={{ borderRadius: '3px' }}
+              />
+              <Stack
+                direction="row"
+                sx={{
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}
+              >
+                <Typography
+                  sx={{
+                    fontSize: '11px',
+                    color: isOverBudget ? 'error.main' : 'text.secondary',
+                    fontFamily: 'var(--font-mono)',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {t('percentOfBudget', {
+                    percent: summary?.percentageUsed.toFixed(1) ?? '0',
+                  })}
+                </Typography>
+                <Typography
+                  sx={{
+                    fontSize: '11px',
+                    color: 'text.disabled',
+                    fontFamily: 'var(--font-mono)',
+                    whiteSpace: 'nowrap',
+                  }}
+                  title={formatCurrency(totalBudget, curr)}
+                >
+                  / {formatCompactCurrency(totalBudget, curr)}
+                </Typography>
+              </Stack>
+            </Stack>
+          ) : (
+            <Typography
+              sx={{
+                fontSize: '12px',
+                color: 'text.secondary',
+                pt: 1.5,
+                display: 'block',
+              }}
+            >
+              {t('noLimit')}
+            </Typography>
+          )}
         </AppCard>
       </Box>
 
       <Box sx={{ flex: 1, minWidth: 0 }}>
         <AppCard
           sx={{
-            p: 2.5,
+            p: { xs: 2, xl: 2.5 },
             height: '100%',
             borderRadius: '16px',
             border: 1,
@@ -231,9 +311,12 @@ export default function BudgetMetricsCards({
             <Typography
               sx={{
                 fontFamily: 'var(--font-display)',
-                fontSize: '24px',
+                fontSize: { xs: '20px', md: '22px', xl: '24px' },
                 fontWeight: 800,
                 color: isOverBudget ? 'error.main' : 'success.main',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
               }}
             >
               {formatCurrency(Math.abs(remainingBudget), curr)}

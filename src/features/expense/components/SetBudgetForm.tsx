@@ -4,6 +4,7 @@ import React, { useMemo, useState } from 'react';
 import { Box, Stack, Typography, Divider } from '@mui/material';
 import { useTranslations } from 'next-intl';
 import { AppButton, AppNumberInput } from '@/base/components/ui';
+import { formatCurrency } from '@/base/utils';
 import type {
   ExpenseCategory,
   SetBudgetPayload,
@@ -49,7 +50,9 @@ export default function SetBudgetForm({
   );
 
   const [totalBudget, setTotalBudget] = useState(
-    summary?.totalBudget ? String(summary.totalBudget) : '',
+    summary?.totalBudget !== undefined && summary?.totalBudget !== null
+      ? String(summary.totalBudget)
+      : '',
   );
 
   const initialCategoryLimits: Partial<Record<ExpenseCategory, string>> = {};
@@ -67,25 +70,52 @@ export default function SetBudgetForm({
 
   const [error, setError] = useState<string | undefined>();
 
+  const numericTotalBudget = useMemo(() => {
+    if (!totalBudget || isNaN(Number(totalBudget))) return 0;
+    return Math.max(0, Number(totalBudget));
+  }, [totalBudget]);
+
+  const allocatedTotal = useMemo(() => {
+    return Object.values(categoryLimits).reduce<number>((sum, val) => {
+      if (!val) return sum;
+      const n = Number(val);
+      return !isNaN(n) && n > 0 ? sum + n : sum;
+    }, 0);
+  }, [categoryLimits]);
+
+  const isOverAllocated =
+    numericTotalBudget > 0 && allocatedTotal > numericTotalBudget;
+  const diffAmount = Math.abs(allocatedTotal - numericTotalBudget);
+  const remainingToAllocate = numericTotalBudget - allocatedTotal;
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!totalBudget || isNaN(Number(totalBudget)) || Number(totalBudget) < 0) {
+    if (
+      totalBudget.trim() === '' ||
+      isNaN(Number(totalBudget)) ||
+      Number(totalBudget) < 0
+    ) {
       setError(tForm('errors.totalBudgetRequired'));
       return;
     }
 
     const parsedLimits: Partial<Record<ExpenseCategory, number>> = {};
-    Object.entries(categoryLimits).forEach(([key, val]) => {
-      if (val && !isNaN(Number(val)) && Number(val) > 0) {
-        parsedLimits[key as ExpenseCategory] = Number(val);
+    CATEGORY_KEYS.forEach((key) => {
+      const val = categoryLimits[key];
+      if (val !== undefined && val.trim() !== '') {
+        const num = Number(val);
+        if (!isNaN(num) && num >= 0) {
+          parsedLimits[key] = num;
+        }
+      } else if (initialCategoryLimits[key]) {
+        parsedLimits[key] = 0;
       }
     });
 
     onSubmit({
       totalBudget: Number(totalBudget),
       currency: tripCurrency,
-      categoryLimits:
-        Object.keys(parsedLimits).length > 0 ? parsedLimits : undefined,
+      categoryLimits: parsedLimits,
     });
   };
 
@@ -113,6 +143,124 @@ export default function SetBudgetForm({
         helperText={error}
         autoFocus
       />
+
+      {numericTotalBudget > 0 && (
+        <Box
+          sx={{
+            p: 2,
+            borderRadius: '12px',
+            bgcolor: isOverAllocated
+              ? 'rgba(239, 68, 68, 0.08)'
+              : 'action.hover',
+            border: 1,
+            borderColor: isOverAllocated ? 'error.main' : 'divider',
+            transition: 'all 0.2s ease',
+          }}
+        >
+          <Stack spacing={1}>
+            <Stack
+              direction="row"
+              sx={{ justifyContent: 'space-between', alignItems: 'center' }}
+            >
+              <Typography
+                sx={{
+                  fontSize: '13px',
+                  fontWeight: 600,
+                  color: 'text.secondary',
+                }}
+              >
+                {tDialog('allocationStatus')}
+              </Typography>
+              <Typography
+                sx={{
+                  fontSize: '13px',
+                  fontWeight: 800,
+                  color: isOverAllocated ? 'error.main' : 'success.main',
+                }}
+              >
+                {formatCurrency(allocatedTotal, tripCurrency)} /{' '}
+                {formatCurrency(numericTotalBudget, tripCurrency)}
+              </Typography>
+            </Stack>
+
+            <Box
+              sx={{
+                width: '100%',
+                height: 6,
+                borderRadius: 3,
+                bgcolor: 'divider',
+                overflow: 'hidden',
+              }}
+            >
+              <Box
+                sx={{
+                  height: '100%',
+                  width: `${Math.min(100, (allocatedTotal / numericTotalBudget) * 100)}%`,
+                  bgcolor: isOverAllocated ? 'error.main' : 'success.main',
+                  transition: 'width 0.3s ease',
+                }}
+              />
+            </Box>
+
+            {isOverAllocated ? (
+              <Stack
+                direction={{ xs: 'column', sm: 'row' }}
+                spacing={1}
+                sx={{
+                  justifyContent: 'space-between',
+                  alignItems: { sm: 'center' },
+                  pt: 0.5,
+                }}
+              >
+                <Typography
+                  sx={{
+                    fontSize: '12px',
+                    fontWeight: 700,
+                    color: 'error.main',
+                  }}
+                >
+                  ⚠️{' '}
+                  {tDialog('warningOverAllocated', {
+                    amount: formatCurrency(diffAmount, tripCurrency),
+                  })}
+                </Typography>
+                <AppButton
+                  size="small"
+                  intent="secondary"
+                  onClick={() => setTotalBudget(String(allocatedTotal))}
+                  sx={{
+                    fontSize: '11px',
+                    py: 0.25,
+                    px: 1.25,
+                    height: '26px',
+                    whiteSpace: 'nowrap',
+                    alignSelf: { xs: 'flex-start', sm: 'center' },
+                  }}
+                >
+                  {tDialog('syncTotalBudget')}
+                </AppButton>
+              </Stack>
+            ) : remainingToAllocate > 0 ? (
+              <Typography sx={{ fontSize: '12px', color: 'text.secondary' }}>
+                ✓{' '}
+                {tDialog('remainingUnallocated', {
+                  amount: formatCurrency(remainingToAllocate, tripCurrency),
+                })}
+              </Typography>
+            ) : (
+              <Typography
+                sx={{
+                  fontSize: '12px',
+                  color: 'success.main',
+                  fontWeight: 600,
+                }}
+              >
+                ✓ {tDialog('exactAllocated')}
+              </Typography>
+            )}
+          </Stack>
+        </Box>
+      )}
 
       <Divider />
 
@@ -146,13 +294,14 @@ export default function SetBudgetForm({
               size="small"
               placeholder="0"
               currencySuffix={tripCurrency}
-              value={categoryLimits[cat.key] || ''}
-              onChange={(e) =>
+              value={categoryLimits[cat.key] ?? ''}
+              onChange={(e) => {
+                const val = e.target.value;
                 setCategoryLimits((prev) => ({
                   ...prev,
-                  [cat.key]: e.target.value,
-                }))
-              }
+                  [cat.key]: val,
+                }));
+              }}
             />
           </Box>
         ))}

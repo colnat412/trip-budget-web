@@ -23,13 +23,13 @@ import {
   useSetBudget,
 } from '../hooks/useExpenseMutation';
 import BudgetMetricsCards from './BudgetMetricsCards';
-import BudgetProgressBar from './BudgetProgressBar';
 import CategorySpendingList from './CategorySpendingList';
 import ExpenseTable from './ExpenseTable';
 import AddExpenseDialog from './AddExpenseDialog';
 import EditExpenseDialog from './EditExpenseDialog';
 import DeleteExpenseDialog from './DeleteExpenseDialog';
 import SetBudgetDialog from './SetBudgetDialog';
+import ExpenseDetailDialog from './ExpenseDetailDialog';
 import type {
   CreateExpensePayload,
   Expense,
@@ -46,6 +46,7 @@ export default function ExpenseOverview() {
   const [page, setPage] = useState(0);
 
   const [addOpen, setAddOpen] = useState(false);
+  const [detailExpense, setDetailExpense] = useState<Expense | null>(null);
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
   const [deletingExpense, setDeletingExpense] = useState<Expense | null>(null);
   const [setBudgetOpen, setSetBudgetOpen] = useState(false);
@@ -297,29 +298,72 @@ export default function ExpenseOverview() {
         </Stack>
       </Stack>
 
-      <BudgetMetricsCards
-        summary={summary}
-        currency={activeTrip.baseCurrency}
-        onOpenSetBudget={() => setSetBudgetOpen(true)}
-      />
+      {(() => {
+        const hasCategoryBreakdown = Boolean(
+          summary?.categoryBreakdown &&
+          summary.categoryBreakdown.some(
+            (c) => c.spentAmount > 0 || (c.limitAmount && c.limitAmount > 0),
+          ),
+        );
 
-      <BudgetProgressBar summary={summary} currency={activeTrip.baseCurrency} />
+        return (
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: { xs: 'column', lg: 'row' },
+              gap: 2,
+              alignItems: 'stretch',
+            }}
+          >
+            <Box
+              sx={{
+                flex: {
+                  xs: '1 1 100%',
+                  lg: hasCategoryBreakdown ? '1 1 68%' : '1 1 100%',
+                },
+                minWidth: 0,
+              }}
+            >
+              <BudgetMetricsCards
+                summary={summary}
+                currency={activeTrip.baseCurrency}
+                onOpenSetBudget={() => setSetBudgetOpen(true)}
+              />
+            </Box>
 
-      {summary && summary.categoryBreakdown && (
-        <CategorySpendingList
-          breakdown={summary.categoryBreakdown}
-          currency={activeTrip.baseCurrency}
-        />
-      )}
+            {hasCategoryBreakdown && summary?.categoryBreakdown && (
+              <Box
+                sx={{
+                  flex: { xs: '1 1 100%', lg: '1 1 32%' },
+                  minWidth: 0,
+                }}
+              >
+                <CategorySpendingList
+                  breakdown={summary.categoryBreakdown}
+                  currency={activeTrip.baseCurrency}
+                />
+              </Box>
+            )}
+          </Box>
+        );
+      })()}
 
       <ExpenseTable
         expenses={expenses}
         isLoading={isExpensesLoading || isSummaryLoading}
         pagination={pagination}
         onPageChange={(newPage) => setPage(newPage)}
+        onViewDetail={(expense) => setDetailExpense(expense)}
         onEdit={(expense) => setEditingExpense(expense)}
         onDelete={(expense) => setDeletingExpense(expense)}
         onAddNew={() => setAddOpen(true)}
+      />
+
+      <ExpenseDetailDialog
+        open={Boolean(detailExpense)}
+        expense={detailExpense}
+        onClose={() => setDetailExpense(null)}
+        onEdit={(expense) => setEditingExpense(expense)}
       />
 
       <AddExpenseDialog

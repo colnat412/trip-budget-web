@@ -1,9 +1,10 @@
 'use client';
 
 import React from 'react';
-import { TableRow, TableCell, Typography, Stack } from '@mui/material';
+import { TableRow, TableCell, Typography, Stack, Avatar } from '@mui/material';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
+import VisibilityRoundedIcon from '@mui/icons-material/VisibilityRounded';
 import { useTranslations } from 'next-intl';
 import { AppActionMenu, AppCategoryChip } from '@/base/components/ui';
 import { formatCurrency, formatDate } from '@/base/utils';
@@ -13,16 +14,28 @@ export interface ExpenseTableRowProps {
   expense: Expense;
   onEdit: (expense: Expense) => void;
   onDelete: (expense: Expense) => void;
+  onViewDetail?: (expense: Expense) => void;
 }
 
 export default function ExpenseTableRow({
   expense,
   onEdit,
   onDelete,
+  onViewDetail,
 }: ExpenseTableRowProps) {
   const t = useTranslations('expense');
 
   const menuItems = [
+    ...(onViewDetail
+      ? [
+          {
+            id: 'view',
+            label: t('dialog.detailTitle'),
+            icon: <VisibilityRoundedIcon fontSize="small" />,
+            onClick: () => onViewDetail(expense),
+          },
+        ]
+      : []),
     {
       id: 'edit',
       label: t('row.edit'),
@@ -47,7 +60,23 @@ export default function ExpenseTableRow({
   const participantCount = expense.splits?.length || 1;
 
   return (
-    <TableRow hover sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+    <TableRow
+      hover
+      sx={{
+        '&:last-child td, &:last-child th': { border: 0 },
+        cursor: onViewDetail ? 'pointer' : 'default',
+      }}
+      onClick={(e) => {
+        if (
+          (e.target as HTMLElement).closest(
+            '.MuiIconButton-root, .MuiMenu-root',
+          )
+        ) {
+          return;
+        }
+        onViewDetail?.(expense);
+      }}
+    >
       <TableCell sx={{ whiteSpace: 'nowrap', py: 2 }}>
         <Typography
           sx={{
@@ -67,6 +96,9 @@ export default function ExpenseTableRow({
               fontSize: '14px',
               fontWeight: 600,
               color: 'text.primary',
+              '&:hover': onViewDetail
+                ? { color: 'primary.main', textDecoration: 'underline' }
+                : undefined,
             }}
           >
             {expense.title}
@@ -90,6 +122,52 @@ export default function ExpenseTableRow({
 
       <TableCell sx={{ py: 2 }}>
         <AppCategoryChip category={expense.category} />
+      </TableCell>
+
+      <TableCell sx={{ py: 2 }}>
+        <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+          <Avatar
+            src={expense.payerAvatarUrl || undefined}
+            alt={expense.payerName || 'Payer'}
+            sx={{
+              width: 28,
+              height: 28,
+              fontSize: '12px',
+              fontWeight: 700,
+              bgcolor: 'primary.main',
+              color: 'primary.contrastText',
+            }}
+          >
+            {expense.payerName
+              ? expense.payerName.charAt(0).toUpperCase()
+              : 'U'}
+          </Avatar>
+          <Stack spacing={0}>
+            <Typography
+              sx={{
+                fontSize: '13px',
+                fontWeight: 600,
+                color: 'text.primary',
+                lineHeight: 1.2,
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {expense.payerName || '—'}
+            </Typography>
+            {expense.payerEmail && (
+              <Typography
+                sx={{
+                  fontSize: '11px',
+                  color: 'text.secondary',
+                  lineHeight: 1.2,
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {expense.payerEmail}
+              </Typography>
+            )}
+          </Stack>
+        </Stack>
       </TableCell>
 
       <TableCell sx={{ py: 2 }}>
