@@ -4,7 +4,8 @@
 
 ## Important
 
-Call me is "Ăm chã húi"
+Call me is "Ăm chã húi",
+Skip smoke test
 
 ## 1. Your role
 
@@ -340,6 +341,44 @@ SpEL `#this` refers to the authenticated `Jwt` object validated by Spring Securi
      }
      ```
    - Alternatively, use a reusable private helper like `getActiveMemberTrip(tripId, currentUserId)` or `validateMembership(tripId, currentUserId)` which validates both trip existence (throwing `404 NOT_FOUND` if deleted or absent) and active membership (throwing `403 FORBIDDEN` if unauthorized).
+
+### Trip Member Management & Permissions Convention
+
+The `tripbudget-core` service manages trip participants using `TripMemberEntity`:
+
+- **Member Roles (`TripMemberRole`)**:
+  - `OWNER`: Creator or principal manager of the trip. Has full control over settings, invites, role assignments, and member removals.
+  - `EDITOR`: Can invite other members (as `MEMBER`/`VIEWER`), add/update/delete expenses and configure budgets.
+  - `MEMBER`: Regular participant who can view expenses and participate in expense splitting (`splits`). Can leave the trip.
+  - `VIEWER`: Read-only participant.
+
+- **Member Statuses (`TripMemberStatus`)**:
+  - `ACTIVE`: Active participant who has access to the trip and appears in `/my-trips`.
+  - `INVITED`: Invited participant awaiting acceptance.
+  - `LEFT`: Member who voluntarily departed the trip (soft-deleted).
+  - `REMOVED`: Member removed by the trip owner (soft-deleted).
+
+#### Cross-Service User Lookup Without Foreign Keys:
+
+To respect the database decision (Section 4, lines 140-142) preserving service isolation, `tripbudget-core` defines a read-only entity:
+
+```java
+@Entity
+@Table(schema = "public", name = "users")
+@Immutable
+public class UserEntity { ... }
+```
+
+- No database Foreign Key DDL is created between `trip_core.trip_members` and `public.users`.
+- `UserRepository` enables finding users by email for invitations (`findByEmail`) and batch-loading user profiles (`findAllByIdIn`) to populate member names, emails, and avatars in `TripMemberResponse`.
+
+#### Trip Member Controller & BFF Endpoints:
+
+- `GET /api/trip/{id}/members`: List all active members of the trip.
+- `POST /api/trip/{id}/members`: Invite/add a member by email (`InviteMemberRequest`).
+- `PUT /api/trip/{id}/members/{memberId}`: Update member role (`UpdateMemberRoleRequest`, Owner only).
+- `DELETE /api/trip/{id}/members/{memberId}`: Remove a member (Owner only; Owner cannot be removed).
+- `POST /api/trip/{id}/members/leave`: Non-owner member voluntarily departs the trip.
 
 ## 7. Frontend technology and UI rules
 
@@ -1145,6 +1184,22 @@ Before Git mutations:
 
 Do not recommend `--force` casually. If remote replacement is explicitly desired, explain `--force-with-lease`, its risk, and verify the exact branch first.
 
+### Multi-Repository Workspace & VS Code "Accept All" Handling
+
+The root folder `/home/hanbiro/lou` contains two independent Git repositories:
+
+1. `trip-budget` (Backend Monorepo)
+2. `trip-budget-web` (Frontend Next.js App)
+
+**When clicking "Accept All" or "Stage All" in VS Code**:
+
+- VS Code prompts with a QuickPick dropdown: `Choose a repository: [trip-budget] or [trip-budget-web]`.
+- **Action**: Pick the first repository (`trip-budget`), and then if prompted or for remaining changes, accept `trip-budget-web`.
+- **CAUTION**: Do NOT hit `Escape`, cancel, or click "Refresh" while the prompt is active, as cancelling mid-write truncates `.git/index` to 0 bytes (`fatal: .git/index: index file smaller than expected`).
+- **One-click recovery / Stage**:
+  - Run `/home/hanbiro/lou/fix-git.sh` or VS Code Task `Git: Fix Corrupted Index`.
+  - To stage both simultaneously: Run VS Code Task `Git: Stage All (Both Repos)` or `git -C trip-budget add -A && git -C trip-budget-web add -A`.
+
 ## 11. Implementation workflow for every task
 
 Follow this sequence:
@@ -1321,8 +1376,40 @@ If the user has already supplied a specific task, do not block on a broad questi
     - Đồng bộ `TripController` & `ExpenseController`: Dọn dẹp mã cũ và comment trong `TripController`, đồng bộ hóa toàn bộ 7 endpoints của `ExpenseController` theo mẫu chuẩn.
     - Quy chuẩn hóa Service: Nhận `currentUserId` và kiểm tra quyền hạn thành viên chuyến đi qua `existsByTrip_IdAndUserIdAndStatus` (`ACTIVE`), ném lỗi 403 Forbidden nếu không có quyền và 404 Not Found nếu chuyến đi không tồn tại/đã bị xóa mềm.
     - Ghi nhận đầy đủ vào Mục 6 của `AGENTS.md` làm tiêu chuẩn kỹ thuật bắt buộc cho toàn bộ dự án.
+18. **Triển Khai Hoàn Chỉnh Module Quản Lý Thành Viên Chuyến Đi (Trip Members & Invitations)**:
+    - **Backend Spring Boot Core (`tripbudget-core`)**:
+      - Tạo Entity chỉ đọc `UserEntity` (`@Immutable`) ánh xạ bảng `public.users` (`id`, `email`, `name`, `avatar_url`, `status`) và `UserRepository` để tra cứu người dùng qua email và nạp danh sách profile mà không tạo quan hệ Foreign Key DDL xuyên service.
+      - Nâng cấp domain methods cho `TripMemberEntity`: `addDirectMember`, `updateRole`, `updateStatus`, `remove`, `leave`, `reactivate`.
+      - Mở rộng `TripMemberRepository` với các query lọc `isDel == false`.
+      - DTOs: `InviteMemberRequest`, `UpdateMemberRoleRequest`, `TripMemberResponse`.
+      - `TripMemberService`: Xác thực quyền hạn (`OWNER` có quyền đổi vai trò và xóa thành viên; `OWNER` và `EDITOR` có quyền mời; thành viên không phải owner có quyền tự rời nhóm `leaveTrip`).
+      - `TripMemberController`: Tuân thủ chuẩn mực `@CurrentUser CurrentUserDto user` và `Long currentUserId = user.id();`.
+    - **Next.js BFF Handlers (`src/app/api/trip/[id]/members/`)**:
+      - `route.ts` (GET danh sách thành viên, POST mời thành viên mới).
+      - `[memberId]/route.ts` (PUT cập nhật vai trò, DELETE xóa thành viên).
+      - `leave/route.ts` (POST rời chuyến đi).
+    - **Base & Feature Frontend Web (`src/features/trip/`)**:
+      - Types: `member.types.ts` (`TripMember`, `TripMemberRole`, `TripMemberStatus`,...).
+      - Custom Hooks: `useTripMembers`, `useInviteMember`, `useUpdateMemberRole`, `useRemoveMember`, `useLeaveTrip`.
+      - Components (1 Component / 1 File, Flexbox, Không margin con):
+        - `RoleBadge.tsx`: Chip vai trò màu sắc đặc trưng và icon Rounded.
+        - `TripMemberRow.tsx`: Dòng từng thành viên với Avatar initials (`getUserInitials`), Email, Name, Role badge, và menu hành động `AppActionMenu`.
+        - `TripMemberList.tsx`: Danh sách thành viên cuộn độc lập, Skeleton loading và Empty state.
+        - `InviteMemberForm.tsx`: Form nhập email và chọn vai trò, validation email regex.
+        - `EditMemberRoleDialog.tsx`: Dialog chọn vai trò mới cho thành viên.
+        - `TripMembersDialog.tsx`: Hộp thoại quản lý tổng thể với đầy đủ toast và dialog xác nhận xóa/rời nhóm.
+        - `TripMembersHost.tsx`: Host component toàn cục đặt trong `AppShell.tsx`.
+    - **Tích Hợp Sâu Xuyên Suốt**:
+      - `AppTopBar.tsx`: Nút "Mời thành viên" mở trực tiếp `TripMembersDialog` cho chuyến đi đang hoạt động.
+      - `ActiveTripBanner.tsx`: Nút "Thành viên" mở popup quản lý thành viên.
+      - `AddExpenseForm.tsx` & `AddExpenseDialog.tsx`: Tự động nạp danh sách `activeMembers` cho phép chọn "Người thanh toán" (`payerId`) thực tế trong chuyến đi.
+    - **Bản địa hóa 100% VNI / ENG**:
+      - Bổ sung trọn bộ từ điển `"members"` vào `messages/vi.json` và `messages/en.json`.
+    - **Kiểm thử chất lượng**:
+      - `mvn compile -q` -> 0 errors.
+      - `npx tsc --noEmit && npm run lint` -> 0 errors, 0 warnings.
 
 ### Immediate likely next tasks:
 
-1. **Module Quản lý Thành viên chuyến đi (Trip Members & Invitations)**: Quản lý quyền hạn (`OWNER`, `EDITOR`, `MEMBER`, `VIEWER`), mời thành viên qua email/link, hiển thị avatar nhóm.
-2. **Module Quyết toán & Trả nợ (Debt Settlement & Balances)**: Tính toán ma trận nợ giữa các thành viên dựa trên `expense_splits`, đề xuất số giao dịch tối thiểu để tất toán (Debt Simplification Algorithm).
+1. **Module Quyết toán & Trả nợ (Debt Settlement & Balances - `/settlement`)**: Tính toán ma trận nợ giữa các thành viên dựa trên `expense_splits`, đề xuất số giao dịch tối thiểu để tất toán (Debt Simplification Algorithm).
+2. **Kết nối Dữ liệu Thực tế cho Trang Tổng quan (`/overview`)**: Thay thế dữ liệu mock trong `RecentExpenseList` và `CategoryList` bằng dữ liệu thực tế từ API chi tiêu của chuyến đi đang diễn ra.

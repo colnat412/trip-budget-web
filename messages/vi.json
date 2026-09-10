@@ -275,5 +275,61 @@
       "setBudgetSuccess": "Đã lưu hạn mức ngân sách thành công!",
       "setBudgetError": "Không thể lưu ngân sách. Vui lòng thử lại."
     }
+  },
+  "members": {
+    "dialogTitle": "Thành Viên Chuyến Đi",
+    "dialogSubtitle": "Quản lý danh sách người tham gia, phân quyền và mời bạn bè cùng chia sẻ chi phí.",
+    "memberCount": "{count} thành viên",
+    "inviteBtn": "Mời thành viên",
+    "inviteTitle": "Mời Thành Viên Mới",
+    "inviteSubtitle": "Nhập địa chỉ email người dùng đã đăng ký TripBudget để thêm vào nhóm.",
+    "emailLabel": "Email thành viên *",
+    "emailPlaceholder": "nhap.email@example.com",
+    "roleLabel": "Vai trò *",
+    "sendInvite": "Gửi lời mời",
+    "cancel": "Hủy",
+    "roles": {
+      "OWNER": "Chủ chuyến đi",
+      "EDITOR": "Người chỉnh sửa",
+      "MEMBER": "Thành viên",
+      "VIEWER": "Người xem"
+    },
+    "roleDescriptions": {
+      "OWNER": "Toàn quyền quản lý chuyến đi, mời và phân quyền thành viên.",
+      "EDITOR": "Được thêm, sửa, xóa các khoản chi tiêu và hạn mức.",
+      "MEMBER": "Được xem chi tiêu và tham gia vào các khoản chia tiền.",
+      "VIEWER": "Chỉ có quyền xem thông tin chuyến đi và chi phí."
+    },
+    "statuses": {
+      "ACTIVE": "Đang tham gia",
+      "INVITED": "Đã gửi lời mời",
+      "LEFT": "Đã rời nhóm",
+      "REMOVED": "Đã bị xóa"
+    },
+    "actions": {
+      "changeRole": "Đổi vai trò",
+      "removeMember": "Xóa khỏi nhóm",
+      "leaveTrip": "Rời chuyến đi",
+      "confirmRemoveTitle": "Xóa Thành Viên Khỏi Chuyến Đi",
+      "confirmRemoveDesc": "Bạn có chắc chắn muốn xóa {name} ({email}) khỏi chuyến đi này không? Người này sẽ không thể xem hoặc chỉnh sửa chi phí của chuyến đi nữa.",
+      "confirmLeaveTitle": "Rời Khỏi Chuyến Đi",
+      "confirmLeaveDesc": "Bạn có chắc chắn muốn rời khỏi chuyến đi \"{tripName}\" không?",
+      "confirmRemoveBtn": "Xác nhận xóa",
+      "confirmLeaveBtn": "Rời chuyến đi"
+    },
+    "toasts": {
+      "inviteSuccess": "Đã thêm thành viên vào chuyến đi thành công!",
+      "inviteError": "Không thể mời thành viên. Vui lòng kiểm tra lại email.",
+      "updateRoleSuccess": "Đã cập nhật vai trò thành viên thành công!",
+      "updateRoleError": "Không thể cập nhật vai trò. Vui lòng thử lại.",
+      "removeSuccess": "Đã xóa thành viên khỏi chuyến đi.",
+      "removeError": "Không thể xóa thành viên. Vui lòng thử lại.",
+      "leaveSuccess": "Bạn đã rời chuyến đi thành công.",
+      "leaveError": "Không thể rời chuyến đi. Vui lòng thử lại."
+    },
+    "empty": {
+      "title": "Chưa có thành viên nào",
+      "desc": "Hãy mời bạn bè cùng tham gia chuyến đi để quản lý chi tiêu và chia tiền dễ dàng."
+    }
   }
 }

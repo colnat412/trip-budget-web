@@ -275,5 +275,61 @@
       "setBudgetSuccess": "Budget limit saved successfully!",
       "setBudgetError": "Failed to save budget. Please try again."
     }
+  },
+  "members": {
+    "dialogTitle": "Trip Members",
+    "dialogSubtitle": "Manage participants, assign permissions, and invite friends to share expenses.",
+    "memberCount": "{count} members",
+    "inviteBtn": "Invite member",
+    "inviteTitle": "Invite New Member",
+    "inviteSubtitle": "Enter the email of a registered TripBudget user to add them to this trip.",
+    "emailLabel": "Member email *",
+    "emailPlaceholder": "enter.email@example.com",
+    "roleLabel": "Role *",
+    "sendInvite": "Send invitation",
+    "cancel": "Cancel",
+    "roles": {
+      "OWNER": "Trip Owner",
+      "EDITOR": "Editor",
+      "MEMBER": "Member",
+      "VIEWER": "Viewer"
+    },
+    "roleDescriptions": {
+      "OWNER": "Full control over the trip, member management and settings.",
+      "EDITOR": "Can add, edit, delete expenses and budgets.",
+      "MEMBER": "Can view expenses and participate in expense splits.",
+      "VIEWER": "Can only view trip details and expenses."
+    },
+    "statuses": {
+      "ACTIVE": "Active",
+      "INVITED": "Invited",
+      "LEFT": "Left",
+      "REMOVED": "Removed"
+    },
+    "actions": {
+      "changeRole": "Change role",
+      "removeMember": "Remove from trip",
+      "leaveTrip": "Leave trip",
+      "confirmRemoveTitle": "Remove Member From Trip",
+      "confirmRemoveDesc": "Are you sure you want to remove {name} ({email}) from this trip? They will no longer have access to this trip.",
+      "confirmLeaveTitle": "Leave Trip",
+      "confirmLeaveDesc": "Are you sure you want to leave the trip \"{tripName}\"?",
+      "confirmRemoveBtn": "Confirm remove",
+      "confirmLeaveBtn": "Leave trip"
+    },
+    "toasts": {
+      "inviteSuccess": "Member added to trip successfully!",
+      "inviteError": "Could not invite member. Please check the email address.",
+      "updateRoleSuccess": "Member role updated successfully!",
+      "updateRoleError": "Could not update role. Please try again.",
+      "removeSuccess": "Member removed from trip.",
+      "removeError": "Could not remove member. Please try again.",
+      "leaveSuccess": "You have left the trip successfully.",
+      "leaveError": "Could not leave trip. Please try again."
+    },
+    "empty": {
+      "title": "No members yet",
+      "desc": "Invite your travel companions to manage expenses and split bills easily."
+    }
   }
 }

@@ -26,11 +26,13 @@ export async function GET(request: NextRequest) {
       },
     });
 
+    const userPayload = response.data?.data ?? response.data;
+
     return NextResponse.json(
       {
         status: 200,
         message: 'User profile retrieved successfully',
-        data: response.data,
+        data: userPayload,
       },
       { status: 200 },
     );

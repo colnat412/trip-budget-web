@@ -11,8 +11,14 @@ export default function useCurrentUser(enabled = true) {
     enabled,
   });
 
+  const rawData = query.data?.data;
+  const user: UserProfile | null =
+    (rawData as { data?: UserProfile })?.data ??
+    (rawData as UserProfile) ??
+    null;
+
   return {
     ...query,
-    user: query.data?.data ?? null,
+    user,
   };
 }

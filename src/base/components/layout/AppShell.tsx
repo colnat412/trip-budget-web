@@ -7,6 +7,7 @@ import type { ReactNode } from 'react';
 import AppSidebar from './AppSidebar';
 import AppTopBar from './AppTopBar';
 import CreateTripHost from './CreateTripHost';
+import TripMembersHost from './TripMembersHost';
 import GlobalLoadingHost from './GlobalLoadingHost';
 import { TripProvider } from '@/features/trip/context/TripContext';
 import { UserProvider } from '@/features/user/context/UserContext';
@@ -61,6 +62,7 @@ export default function AppShell({
             </Box>
           </Box>
           <CreateTripHost />
+          <TripMembersHost />
           <GlobalLoadingHost />
         </Box>
       </TripProvider>

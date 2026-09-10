@@ -328,6 +328,7 @@ export default function ExpenseOverview() {
         onSubmit={handleCreateSubmit}
         isLoading={isCreating}
         tripCurrency={activeTrip.baseCurrency}
+        tripId={tripId}
       />
 
       <EditExpenseDialog

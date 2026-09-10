@@ -24,6 +24,10 @@ interface TripContextValue {
   isCreateTripOpen: boolean;
   openCreateTrip: () => void;
   closeCreateTrip: () => void;
+  isMembersOpen: boolean;
+  isInviteInitial: boolean;
+  openMembers: (initialInvite?: boolean) => void;
+  closeMembers: () => void;
 }
 
 const TripContext = createContext<TripContextValue | null>(null);
@@ -32,6 +36,8 @@ export function TripProvider({ children }: { children: ReactNode }) {
   const { trips, isLoading, isFetching, error, refetch } = useMyTrips();
   const [selectedTripId, setSelectedTripId] = useState<number | null>(null);
   const [isCreateTripOpen, setIsCreateTripOpen] = useState(false);
+  const [isMembersOpen, setIsMembersOpen] = useState(false);
+  const [isInviteInitial, setIsInviteInitial] = useState(false);
 
   const activeTrip = useMemo(() => {
     if (!trips || trips.length === 0) return null;
@@ -41,11 +47,9 @@ export function TripProvider({ children }: { children: ReactNode }) {
       if (found) return found;
     }
 
-    // Ưu tiên chuyến đi đang diễn ra (IN_PROGRESS)
     const inProgressTrip = trips.find((t) => t.status === 'IN_PROGRESS');
     if (inProgressTrip) return inProgressTrip;
 
-    // Mặc định chọn chuyến đi đầu tiên trong danh sách
     return trips[0];
   }, [trips, selectedTripId]);
 
@@ -61,6 +65,19 @@ export function TripProvider({ children }: { children: ReactNode }) {
     setIsCreateTripOpen(false);
   }, []);
 
+  const openMembers = useCallback(
+    (initialInvite: boolean | unknown = false) => {
+      setIsInviteInitial(initialInvite === true);
+      setIsMembersOpen(true);
+    },
+    [],
+  );
+
+  const closeMembers = useCallback(() => {
+    setIsMembersOpen(false);
+    setIsInviteInitial(false);
+  }, []);
+
   const value = useMemo<TripContextValue>(
     () => ({
       trips,
@@ -74,6 +91,10 @@ export function TripProvider({ children }: { children: ReactNode }) {
       isCreateTripOpen,
       openCreateTrip,
       closeCreateTrip,
+      isMembersOpen,
+      isInviteInitial,
+      openMembers,
+      closeMembers,
     }),
     [
       trips,
@@ -87,6 +108,10 @@ export function TripProvider({ children }: { children: ReactNode }) {
       isCreateTripOpen,
       openCreateTrip,
       closeCreateTrip,
+      isMembersOpen,
+      isInviteInitial,
+      openMembers,
+      closeMembers,
     ],
   );
 

@@ -26,7 +26,7 @@ export default function AppTopBar() {
   const t = useTranslations('topBar');
   const tPageTitle = useTranslations('sidebar');
   const tTrip = useTranslations('trip');
-  const { openCreateTrip } = useTripContext();
+  const { openCreateTrip, openMembers, activeTrip } = useTripContext();
 
   const matchedPath = Object.keys(PAGE_MESSAGE_KEYS).find(
     (path) =>
@@ -98,6 +98,8 @@ export default function AppTopBar() {
           size="small"
           intent="secondary"
           startIcon={<PersonAddAltRoundedIcon />}
+          onClick={() => openMembers(true)}
+          disabled={!activeTrip}
         >
           <Box component="span" sx={{ display: { xs: 'none', md: 'inline' } }}>
             {t('inviteMember')}

@@ -3,8 +3,10 @@
 import { Box, Stack, Typography } from '@mui/material';
 import { useTranslations } from 'next-intl';
 
+import GroupRoundedIcon from '@mui/icons-material/GroupRounded';
 import TripSummaryMetric from './TripSummaryMetric';
 import { formatDateRange } from '@/base/utils';
+import { useTripContext } from '../../context/TripContext';
 import type { Trip } from '../../types';
 
 interface ActiveTripBannerProps {
@@ -14,6 +16,8 @@ interface ActiveTripBannerProps {
 export default function ActiveTripBanner({ trip }: ActiveTripBannerProps) {
   const t = useTranslations('overview');
   const tTrip = useTranslations('trip');
+  const tMembers = useTranslations('members');
+  const { openMembers } = useTripContext();
   const dateRangeStr = formatDateRange(trip.startDate, trip.endDate);
   const isLive = trip.status === 'IN_PROGRESS';
 
@@ -89,13 +93,45 @@ export default function ActiveTripBanner({ trip }: ActiveTripBannerProps) {
             {trip.name}
           </Typography>
 
-          <Typography
-            sx={{ color: 'rgba(255,255,255,0.72)', fontSize: '13px' }}
+          <Stack
+            direction="row"
+            spacing={1.5}
+            sx={{ alignItems: 'center', flexWrap: 'wrap', pt: 0.5 }}
           >
-            {trip.destination}
-            {dateRangeStr ? ` · ${dateRangeStr}` : ''}
-            {trip.baseCurrency ? ` · ${trip.baseCurrency}` : ''}
-          </Typography>
+            <Typography
+              sx={{ color: 'rgba(255,255,255,0.72)', fontSize: '13px' }}
+            >
+              {trip.destination}
+              {dateRangeStr ? ` · ${dateRangeStr}` : ''}
+              {trip.baseCurrency ? ` · ${trip.baseCurrency}` : ''}
+            </Typography>
+
+            <Box
+              component="button"
+              onClick={() => openMembers(false)}
+              sx={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 0.75,
+                px: 1.25,
+                py: 0.4,
+                borderRadius: '8px',
+                bgcolor: 'rgba(255,255,255,0.15)',
+                color: '#FFFFFF',
+                border: '1px solid rgba(255,255,255,0.25)',
+                cursor: 'pointer',
+                fontSize: '12px',
+                fontWeight: 700,
+                transition: 'all 0.2s',
+                '&:hover': {
+                  bgcolor: 'rgba(255,255,255,0.28)',
+                },
+              }}
+            >
+              <GroupRoundedIcon sx={{ fontSize: '15px' }} />
+              {tMembers('dialogTitle')}
+            </Box>
+          </Stack>
         </Stack>
 
         <Box

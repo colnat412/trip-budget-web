@@ -17,6 +17,7 @@ import {
   AppSelect,
   type AppSelectOption,
 } from '@/base/components/ui';
+import type { TripMember } from '@/features/trip/types/member.types';
 import type {
   CreateExpensePayload,
   ExpenseCategory,
@@ -26,6 +27,7 @@ import type {
 export interface AddExpenseFormProps {
   tripCurrency?: string;
   isLoading?: boolean;
+  members?: TripMember[];
   onSubmit: (payload: CreateExpensePayload) => void;
   onCancel: () => void;
 }
@@ -33,6 +35,7 @@ export interface AddExpenseFormProps {
 export default function AddExpenseForm({
   tripCurrency = 'VND',
   isLoading = false,
+  members = [],
   onSubmit,
   onCancel,
 }: AddExpenseFormProps) {
@@ -95,7 +98,7 @@ export default function AddExpenseForm({
         value: 'OTHER',
         label: tCat('OTHER'),
         icon: (
-          <MoreHorizRoundedIcon fontSize="small" sx={{ color: '#616161' }} />
+          <MoreHorizRoundedIcon fontSize="small" sx={{ color: '#546e7a' }} />
         ),
       },
     ],
@@ -105,8 +108,6 @@ export default function AddExpenseForm({
   const splitOptions: AppSelectOption[] = useMemo(
     () => [
       { value: 'EQUAL', label: tSplits('EQUAL') },
-      { value: 'PERCENTAGE', label: tSplits('PERCENTAGE') },
-      { value: 'SHARE', label: tSplits('SHARE') },
       { value: 'EXACT_AMOUNT', label: tSplits('EXACT_AMOUNT') },
     ],
     [tSplits],
@@ -119,6 +120,9 @@ export default function AddExpenseForm({
     new Date().toISOString().split('T')[0],
   );
   const [splitType, setSplitType] = useState<SplitType>('EQUAL');
+  const [payerId, setPayerId] = useState<number | ''>(() => {
+    return members.length > 0 ? members[0].userId : '';
+  });
   const [note, setNote] = useState('');
 
   const [errors, setErrors] = useState<{ title?: string; amount?: string }>({});
@@ -146,6 +150,7 @@ export default function AddExpenseForm({
       currency: tripCurrency,
       expenseDate,
       splitType,
+      payerId: payerId ? Number(payerId) : undefined,
       note: note.trim() || undefined,
     });
   };
@@ -218,6 +223,18 @@ export default function AddExpenseForm({
           />
         </Box>
       </Stack>
+
+      {members && members.length > 1 && (
+        <AppSelect
+          label="Người thanh toán (Payer)"
+          value={payerId}
+          options={members.map((m) => ({
+            value: m.userId,
+            label: `${m.name} (${m.email})`,
+          }))}
+          onChange={(e) => setPayerId(Number(e.target.value))}
+        />
+      )}
 
       <AppTextField
         label={tForm('noteLabel')}
