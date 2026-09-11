@@ -309,40 +309,27 @@ export default function ExpenseOverview() {
         return (
           <Box
             sx={{
-              display: 'flex',
-              flexDirection: { xs: 'column', lg: 'row' },
+              display: 'grid',
+              gridTemplateColumns: {
+                xs: '1fr',
+                sm: 'repeat(2, 1fr)',
+                lg: hasCategoryBreakdown ? 'repeat(4, 1fr)' : 'repeat(3, 1fr)',
+              },
               gap: 2,
               alignItems: 'stretch',
             }}
           >
-            <Box
-              sx={{
-                flex: {
-                  xs: '1 1 100%',
-                  lg: hasCategoryBreakdown ? '1 1 68%' : '1 1 100%',
-                },
-                minWidth: 0,
-              }}
-            >
-              <BudgetMetricsCards
-                summary={summary}
-                currency={activeTrip.baseCurrency}
-                onOpenSetBudget={() => setSetBudgetOpen(true)}
-              />
-            </Box>
+            <BudgetMetricsCards
+              summary={summary}
+              currency={activeTrip.baseCurrency}
+              onOpenSetBudget={() => setSetBudgetOpen(true)}
+            />
 
             {hasCategoryBreakdown && summary?.categoryBreakdown && (
-              <Box
-                sx={{
-                  flex: { xs: '1 1 100%', lg: '1 1 32%' },
-                  minWidth: 0,
-                }}
-              >
-                <CategorySpendingList
-                  breakdown={summary.categoryBreakdown}
-                  currency={activeTrip.baseCurrency}
-                />
-              </Box>
+              <CategorySpendingList
+                breakdown={summary.categoryBreakdown}
+                currency={activeTrip.baseCurrency}
+              />
             )}
           </Box>
         );

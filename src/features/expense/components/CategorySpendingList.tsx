@@ -1,10 +1,10 @@
 'use client';
 
 import React from 'react';
-import { Box, Typography, Stack } from '@mui/material';
+import { Box, Typography, Stack, Tooltip } from '@mui/material';
 import CategoryRoundedIcon from '@mui/icons-material/CategoryRounded';
 import { useTranslations } from 'next-intl';
-import { AppCard, AppLinearProgress } from '@/base/components/ui';
+import { AppCard } from '@/base/components/ui';
 import { CATEGORY_CONFIG } from '@/base/components/ui/AppCategoryChip';
 import { formatCurrency, formatCompactCurrency } from '@/base/utils';
 import type { CategoryBreakdown } from '../types';
@@ -29,196 +29,212 @@ export default function CategorySpendingList({
     return null;
   }
 
+  const totalSpentInCategories = activeItems.reduce(
+    (sum, item) => sum + item.spentAmount,
+    0,
+  );
+
+  const sortedItems = [...activeItems].sort(
+    (a, b) => b.spentAmount - a.spentAmount,
+  );
+
+  const topCategories = sortedItems.slice(0, 2);
+
   return (
-    <AppCard
-      sx={{
-        p: { xs: 2, xl: 2.25 },
-        height: '100%',
-        borderRadius: '16px',
-        border: 1,
-        borderColor: 'divider',
-        display: 'flex',
-        flexDirection: 'column',
-      }}
-      contentSx={{
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        p: '0 !important',
-      }}
-    >
-      <Stack
-        direction="row"
+    <Box sx={{ minWidth: 0, height: '100%' }}>
+      <AppCard
         sx={{
+          p: { xs: 1.75, sm: 2 },
+          height: '100%',
+          borderRadius: '16px',
+          border: 1,
+          borderColor: 'divider',
+          borderLeft: '4px solid',
+          borderLeftColor: 'secondary.main',
+        }}
+        contentSx={{
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
           justifyContent: 'space-between',
-          alignItems: 'center',
-          mb: 1.25,
-          flexShrink: 0,
+          gap: 1,
         }}
       >
-        <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-          <Box
+        <Stack spacing={0.75}>
+          <Stack
+            direction="row"
             sx={{
-              p: 0.6,
-              borderRadius: '8px',
-              bgcolor: 'action.hover',
-              color: 'text.secondary',
-              display: 'inline-flex',
+              justifyContent: 'space-between',
               alignItems: 'center',
             }}
           >
-            <CategoryRoundedIcon sx={{ fontSize: 18 }} />
-          </Box>
-          <Typography
+            <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+              <Box
+                sx={{
+                  p: 0.6,
+                  borderRadius: '8px',
+                  bgcolor: 'action.hover',
+                  color: 'secondary.main',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <CategoryRoundedIcon sx={{ fontSize: 18 }} />
+              </Box>
+              <Typography
+                sx={{
+                  fontSize: '13px',
+                  color: 'text.secondary',
+                  fontWeight: 600,
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {t('title')}
+              </Typography>
+            </Stack>
+
+            <Box
+              component="span"
+              sx={{
+                px: 0.8,
+                py: 0.2,
+                borderRadius: '999px',
+                bgcolor: 'action.hover',
+                color: 'text.secondary',
+                fontSize: '11px',
+                fontWeight: 700,
+                fontFamily: 'var(--font-mono)',
+              }}
+            >
+              {activeItems.length}
+            </Box>
+          </Stack>
+
+          <Box
             sx={{
-              fontSize: '14px',
-              fontWeight: 700,
-              color: 'text.primary',
+              display: 'flex',
+              width: '100%',
+              height: 7,
+              borderRadius: '4px',
+              overflow: 'hidden',
+              bgcolor: 'action.hover',
+              my: 0.5,
             }}
           >
-            {t('title')}
-          </Typography>
+            {totalSpentInCategories > 0 ? (
+              sortedItems.map((item) => {
+                const config =
+                  CATEGORY_CONFIG[item.category] || CATEGORY_CONFIG.OTHER;
+                const percent =
+                  (item.spentAmount / totalSpentInCategories) * 100;
+                const categoryName =
+                  tCategories(item.category as 'OTHER') || item.category;
+
+                return (
+                  <Tooltip
+                    key={item.category}
+                    title={`${categoryName}: ${formatCurrency(item.spentAmount, currency)} (${percent.toFixed(0)}%)`}
+                    arrow
+                  >
+                    <Box
+                      sx={{
+                        width: `${percent}%`,
+                        bgcolor: config.color,
+                        minWidth: item.spentAmount > 0 ? '4px' : 0,
+                        transition: 'width 0.3s ease',
+                      }}
+                    />
+                  </Tooltip>
+                );
+              })
+            ) : (
+              <Box sx={{ width: '100%', bgcolor: 'divider' }} />
+            )}
+          </Box>
         </Stack>
 
-        <Box
-          component="span"
+        <Stack
+          direction="row"
+          spacing={1}
           sx={{
-            px: 1,
-            py: 0.2,
-            borderRadius: '999px',
-            bgcolor: 'action.hover',
-            color: 'text.secondary',
-            fontSize: '11px',
-            fontWeight: 700,
-            fontFamily: 'var(--font-mono)',
+            alignItems: 'center',
+            overflow: 'hidden',
+            flexWrap: 'nowrap',
           }}
         >
-          {activeItems.length}
-        </Box>
-      </Stack>
+          {topCategories.map((item) => {
+            const config =
+              CATEGORY_CONFIG[item.category] || CATEGORY_CONFIG.OTHER;
+            const categoryName =
+              tCategories(item.category as 'OTHER') || item.category;
 
-      <Stack
-        spacing={1.25}
-        sx={{
-          flexGrow: 1,
-          minHeight: 0,
-          maxHeight: { xs: 240, lg: 130 },
-          overflowY: 'auto',
-          pr: 0.5,
-          '&::-webkit-scrollbar': {
-            width: '4px',
-          },
-          '&::-webkit-scrollbar-thumb': {
-            bgcolor: 'divider',
-            borderRadius: '4px',
-          },
-        }}
-      >
-        {activeItems.map((item) => {
-          const config =
-            CATEGORY_CONFIG[item.category] || CATEGORY_CONFIG.OTHER;
-          const isOver =
-            item.limitAmount > 0 && item.spentAmount > item.limitAmount;
-          const categoryName =
-            tCategories(item.category as 'OTHER') || item.category;
-          const hasLimit = item.limitAmount > 0;
-
-          return (
-            <Stack key={item.category} spacing={0.5}>
-              <Stack
-                direction="row"
-                sx={{
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                }}
+            return (
+              <Tooltip
+                key={item.category}
+                title={`${categoryName}: ${formatCurrency(item.spentAmount, currency)}`}
+                arrow
               >
                 <Stack
                   direction="row"
-                  spacing={0.75}
-                  sx={{ alignItems: 'center', minWidth: 0 }}
+                  spacing={0.5}
+                  sx={{
+                    alignItems: 'center',
+                    px: 0.75,
+                    py: 0.2,
+                    borderRadius: '6px',
+                    bgcolor: 'action.hover',
+                    minWidth: 0,
+                    flexShrink: 1,
+                  }}
                 >
                   <Box
                     sx={{
-                      color: config.color,
-                      display: 'flex',
-                      alignItems: 'center',
-                      '& svg': { fontSize: 15 },
+                      width: 6,
+                      height: 6,
+                      borderRadius: '50%',
+                      bgcolor: config.color,
                       flexShrink: 0,
                     }}
-                  >
-                    {config.icon}
-                  </Box>
+                  />
                   <Typography
                     noWrap
                     sx={{
-                      fontSize: '12px',
+                      fontSize: '11px',
+                      color: 'text.secondary',
                       fontWeight: 600,
-                      color: 'text.primary',
                     }}
                   >
                     {categoryName}
                   </Typography>
-                </Stack>
-
-                <Typography
-                  sx={{
-                    fontSize: '12px',
-                    fontWeight: 700,
-                    fontFamily: 'var(--font-mono)',
-                    color: isOver ? 'error.main' : 'text.primary',
-                    flexShrink: 0,
-                  }}
-                >
-                  {formatCurrency(item.spentAmount, currency)}
-                </Typography>
-              </Stack>
-
-              {hasLimit && (
-                <Stack spacing={0.25}>
-                  <AppLinearProgress
-                    value={Math.min(item.percentageUsed, 100)}
-                    barColor={isOver ? '#DC2626' : config.color}
-                    height={4}
-                    sx={{ borderRadius: '2px' }}
-                  />
-                  <Stack
-                    direction="row"
+                  <Typography
                     sx={{
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
+                      fontSize: '11px',
+                      color: 'text.primary',
+                      fontWeight: 700,
+                      fontFamily: 'var(--font-mono)',
                     }}
                   >
-                    <Typography
-                      sx={{
-                        fontSize: '10px',
-                        color: 'text.secondary',
-                        fontFamily: 'var(--font-mono)',
-                      }}
-                    >
-                      {t('limit', {
-                        amount: formatCompactCurrency(
-                          item.limitAmount,
-                          currency,
-                        ),
-                      })}
-                    </Typography>
-                    <Typography
-                      sx={{
-                        fontSize: '10px',
-                        fontWeight: 700,
-                        fontFamily: 'var(--font-mono)',
-                        color: isOver ? 'error.main' : 'text.secondary',
-                      }}
-                    >
-                      {item.percentageUsed.toFixed(0)}%
-                    </Typography>
-                  </Stack>
+                    {formatCompactCurrency(item.spentAmount, currency)}
+                  </Typography>
                 </Stack>
-              )}
-            </Stack>
-          );
-        })}
-      </Stack>
-    </AppCard>
+              </Tooltip>
+            );
+          })}
+          {sortedItems.length > 2 && (
+            <Typography
+              sx={{
+                fontSize: '10px',
+                color: 'text.disabled',
+                fontWeight: 600,
+                flexShrink: 0,
+              }}
+            >
+              +{sortedItems.length - 2}
+            </Typography>
+          )}
+        </Stack>
+      </AppCard>
+    </Box>
   );
 }
