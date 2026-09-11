@@ -236,7 +236,7 @@ export default function SidebarTripCard() {
         </Typography>
 
         {trips.map((item) => {
-          const isSelected = item.id === currentTrip.id;
+          const isSelected = String(item.id) === String(currentTrip?.id);
           return (
             <MenuItem
               key={item.id}

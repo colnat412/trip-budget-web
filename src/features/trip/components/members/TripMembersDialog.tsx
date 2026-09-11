@@ -34,7 +34,7 @@ interface TripMembersDialogProps {
   onClose: () => void;
   tripId: number | string;
   tripName?: string;
-  tripOwnerId?: number;
+  tripOwnerId?: number | string;
   initialShowInvite?: boolean;
 }
 
@@ -124,7 +124,7 @@ export default function TripMembersDialog({
 
   const { updateRole, isPending: isUpdatingRole } = useUpdateMemberRole({
     tripId,
-    memberId: editingMember?.id ?? 0,
+    memberId: editingMember?.id ?? '',
     options: {
       onSuccess: () => {
         setToast({
@@ -147,7 +147,7 @@ export default function TripMembersDialog({
 
   const { removeMember, isPending: isRemoving } = useRemoveMember({
     tripId,
-    memberId: removingMember?.id ?? 0,
+    memberId: removingMember?.id ?? '',
     options: {
       onSuccess: () => {
         setToast({

@@ -19,7 +19,7 @@ import type { Trip } from '../../types';
 interface TripTableProps {
   trips: Trip[];
   isLoading: boolean;
-  activeTripId: number | null;
+  activeTripId: string | number | null;
   onSelectTrip: (trip: Trip) => void;
   onCreateTrip: () => void;
   onEditTrip?: (trip: Trip) => void;
@@ -162,7 +162,7 @@ export default function TripTable({
               <TripTableRow
                 key={trip.id}
                 trip={trip}
-                isSelected={trip.id === activeTripId}
+                isSelected={String(trip.id) === String(activeTripId)}
                 onSelectTrip={onSelectTrip}
                 onEditTrip={onEditTrip}
                 onDeleteTrip={onDeleteTrip}

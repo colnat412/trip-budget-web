@@ -14,7 +14,7 @@ export interface AddExpenseDialogProps {
   onSubmit: (payload: CreateExpensePayload) => void;
   isLoading?: boolean;
   tripCurrency?: string;
-  tripId?: number | null;
+  tripId?: number | string | null;
 }
 
 export default function AddExpenseDialog({

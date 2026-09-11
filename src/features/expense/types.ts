@@ -25,8 +25,8 @@ export interface PageResponse<T> {
 }
 
 export interface ExpenseSplit {
-  id: number;
-  userId: number;
+  id: number | string;
+  userId: number | string;
   userName?: string | null;
   userEmail?: string | null;
   userAvatarUrl?: string | null;
@@ -36,9 +36,9 @@ export interface ExpenseSplit {
 }
 
 export interface Expense {
-  id: number;
-  tripId: number;
-  payerId: number;
+  id: number | string;
+  tripId: number | string;
+  payerId: number | string;
   payerName?: string | null;
   payerEmail?: string | null;
   payerAvatarUrl?: string | null;
@@ -64,7 +64,7 @@ export interface CategoryBreakdown {
 }
 
 export interface TripBudgetSummary {
-  tripId: number;
+  tripId: number | string;
   totalBudget: number;
   actualSpent: number;
   remainingBudget: number;
@@ -74,7 +74,7 @@ export interface TripBudgetSummary {
 }
 
 export interface SplitItemPayload {
-  userId: number;
+  userId: number | string;
   splitValue?: number;
   allocatedAmount?: number;
 }
@@ -88,7 +88,7 @@ export interface CreateExpensePayload {
   splitType?: SplitType;
   note?: string;
   receiptUrl?: string;
-  payerId?: number;
+  payerId?: number | string;
   splits?: SplitItemPayload[];
 }
 
@@ -101,7 +101,7 @@ export interface UpdateExpensePayload {
   splitType?: SplitType;
   note?: string;
   receiptUrl?: string;
-  payerId?: number;
+  payerId?: number | string;
   splits?: SplitItemPayload[];
 }
 

@@ -23,7 +23,7 @@ export default function DeleteTripDialog({
   const tTrip = useTranslations('trip');
 
   const { deleteTrip, isPending } = useDeleteTrip({
-    tripId: trip?.id ?? 0,
+    tripId: trip?.id ?? '',
   });
 
   const handleConfirm = () => {

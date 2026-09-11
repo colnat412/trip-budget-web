@@ -6,7 +6,7 @@ import { expenseQueryKeys } from '../constants/expense-keys';
 import type { TripBudgetSummary } from '../types';
 
 interface UseTripBudgetSummaryParams {
-  tripId?: number | null;
+  tripId?: number | string | null;
   enabled?: boolean;
 }
 

@@ -120,7 +120,7 @@ export default function AddExpenseForm({
     new Date().toISOString().split('T')[0],
   );
   const [splitType, setSplitType] = useState<SplitType>('EQUAL');
-  const [payerId, setPayerId] = useState<number | ''>(() => {
+  const [payerId, setPayerId] = useState<string | number | ''>(() => {
     return members.length > 0 ? members[0].userId : '';
   });
   const [note, setNote] = useState('');
@@ -150,7 +150,7 @@ export default function AddExpenseForm({
       currency: tripCurrency,
       expenseDate,
       splitType,
-      payerId: payerId ? Number(payerId) : undefined,
+      payerId: payerId ? payerId : undefined,
       note: note.trim() || undefined,
     });
   };
@@ -232,7 +232,7 @@ export default function AddExpenseForm({
             value: m.userId,
             label: `${m.name} (${m.email})`,
           }))}
-          onChange={(e) => setPayerId(Number(e.target.value))}
+          onChange={(e) => setPayerId(e.target.value as string | number)}
         />
       )}
 

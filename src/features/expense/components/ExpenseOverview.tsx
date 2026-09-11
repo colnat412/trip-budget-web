@@ -87,7 +87,7 @@ export default function ExpenseOverview() {
   };
 
   const { createExpenseAsync, isPending: isCreating } = useCreateExpense({
-    tripId: tripId || 0,
+    tripId: tripId ?? '',
     options: {
       onSuccess: () => {
         showToast(t('toasts.createSuccess'));
@@ -101,8 +101,8 @@ export default function ExpenseOverview() {
   });
 
   const { updateExpenseAsync, isPending: isUpdating } = useUpdateExpense({
-    tripId: tripId || 0,
-    expenseId: editingExpense?.id || 0,
+    tripId: tripId ?? '',
+    expenseId: editingExpense?.id ?? '',
     options: {
       onSuccess: () => {
         showToast(t('toasts.updateSuccess'));
@@ -116,8 +116,8 @@ export default function ExpenseOverview() {
   });
 
   const { deleteExpenseAsync, isPending: isDeleting } = useDeleteExpense({
-    tripId: tripId || 0,
-    expenseId: deletingExpense?.id || 0,
+    tripId: tripId ?? '',
+    expenseId: deletingExpense?.id ?? '',
     options: {
       onSuccess: () => {
         showToast(t('toasts.deleteSuccess'));
@@ -131,7 +131,7 @@ export default function ExpenseOverview() {
   });
 
   const { setBudgetAsync, isPending: isSettingBudget } = useSetBudget({
-    tripId: tripId || 0,
+    tripId: tripId ?? '',
     options: {
       onSuccess: () => {
         showToast(t('toasts.setBudgetSuccess'));

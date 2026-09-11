@@ -10,7 +10,7 @@ import { formatCurrency } from '@/base/utils';
 import useTripBudgetSummary from '@/features/expense/hooks/useTripBudgetSummary';
 
 export interface CategoryListProps {
-  tripId?: number;
+  tripId?: number | string;
   currency?: string;
 }
 

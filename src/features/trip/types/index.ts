@@ -9,8 +9,8 @@ export type TripStatus =
   | 'DELETED';
 
 export interface Trip {
-  id: number;
-  ownerId: number;
+  id: number | string;
+  ownerId: number | string;
   name: string;
   destination: string;
   description: string | null;
@@ -44,7 +44,7 @@ export interface CreateTripPayload {
   endDate: string;
   baseCurrency?: string;
   initialMembers?: Array<{
-    userId: number;
+    userId: number | string;
     role: string;
   }>;
 }

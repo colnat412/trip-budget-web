@@ -15,8 +15,8 @@ import type { Trip } from '../types';
 interface TripContextValue {
   trips: Trip[];
   activeTrip: Trip | null;
-  selectedTripId: number | null;
-  selectTrip: (tripId: number) => void;
+  selectedTripId: string | number | null;
+  selectTrip: (tripId: string | number) => void;
   isLoading: boolean;
   isFetching: boolean;
   error: ApiError | null;
@@ -34,7 +34,9 @@ const TripContext = createContext<TripContextValue | null>(null);
 
 export function TripProvider({ children }: { children: ReactNode }) {
   const { trips, isLoading, isFetching, error, refetch } = useMyTrips();
-  const [selectedTripId, setSelectedTripId] = useState<number | null>(null);
+  const [selectedTripId, setSelectedTripId] = useState<string | number | null>(
+    null,
+  );
   const [isCreateTripOpen, setIsCreateTripOpen] = useState(false);
   const [isMembersOpen, setIsMembersOpen] = useState(false);
   const [isInviteInitial, setIsInviteInitial] = useState(false);
@@ -43,7 +45,7 @@ export function TripProvider({ children }: { children: ReactNode }) {
     if (!trips || trips.length === 0) return null;
 
     if (selectedTripId !== null) {
-      const found = trips.find((t) => t.id === selectedTripId);
+      const found = trips.find((t) => String(t.id) === String(selectedTripId));
       if (found) return found;
     }
 
@@ -53,7 +55,7 @@ export function TripProvider({ children }: { children: ReactNode }) {
     return trips[0];
   }, [trips, selectedTripId]);
 
-  const selectTrip = useCallback((tripId: number) => {
+  const selectTrip = useCallback((tripId: string | number) => {
     setSelectedTripId(tripId);
   }, []);
 

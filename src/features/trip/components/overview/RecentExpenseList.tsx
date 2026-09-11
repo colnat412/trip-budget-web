@@ -11,7 +11,7 @@ import ExpenseDetailDialog from '@/features/expense/components/ExpenseDetailDial
 import type { Expense } from '@/features/expense/types';
 
 export interface RecentExpenseListProps {
-  tripId?: number;
+  tripId?: number | string;
   currency?: string;
 }
 

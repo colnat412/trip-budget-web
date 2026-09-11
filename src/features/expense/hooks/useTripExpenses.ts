@@ -6,7 +6,7 @@ import { expenseQueryKeys } from '../constants/expense-keys';
 import type { Expense, PageResponse } from '../types';
 
 interface UseTripExpensesParams {
-  tripId?: number | null;
+  tripId?: number | string | null;
   page?: number;
   size?: number;
   enabled?: boolean;
