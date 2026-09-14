@@ -109,7 +109,9 @@
     "inProgress": "Đang đi",
     "draft": "Nháp",
     "planning": "Lên kế hoạch",
-    "completed": "Hoàn thành"
+    "completed": "Hoàn thành",
+    "archived": "Lưu trữ",
+    "cancelled": "Đã hủy"
   },
   "myTrips": {
     "title": "Chuyến đi của tôi",
@@ -121,6 +123,8 @@
     "colCurrency": "Tiền tệ",
     "colStatus": "Trạng thái",
     "colActions": "Hành động",
+    "filterNamePlaceholder": "Tìm kiếm chuyến đi...",
+    "filterDestinationPlaceholder": "Tìm điểm đến...",
     "viewTrip": "Xem / Chọn",
     "selected": "Đang chọn",
     "rowsPerPage": "Số dòng mỗi trang",
@@ -208,6 +212,8 @@
       "colSplit": "Cách chia",
       "colAmount": "Số tiền",
       "colActions": "Thao tác",
+      "filterExpensePlaceholder": "Tìm kiếm chi tiêu...",
+      "filterPayerPlaceholder": "Tìm người chi...",
       "displayedRows": "{from}–{to} trên {count}"
     },
     "row": {
@@ -348,5 +354,20 @@
       "title": "Chưa có thành viên nào",
       "desc": "Hãy mời bạn bè cùng tham gia chuyến đi để quản lý chi tiêu và chia tiền dễ dàng."
     }
+  },
+  "table": {
+    "filterBy": "Lọc theo: {column}",
+    "filterPlaceholder": "Tìm {column}...",
+    "selectAll": "Chọn tất cả",
+    "deselectAll": "Bỏ chọn tất cả",
+    "apply": "Áp dụng",
+    "clearFilter": "Xóa lọc",
+    "clearAll": "Xóa tất cả",
+    "filtering": "Đang lọc:",
+    "noResultsFound": "Không tìm thấy kết quả phù hợp",
+    "noData": "Chưa có dữ liệu",
+    "sortBy": "Sắp xếp theo {column}",
+    "rowsPerPage": "Số dòng mỗi trang",
+    "displayedRows": "{from}–{to} trên {count}"
   }
 }

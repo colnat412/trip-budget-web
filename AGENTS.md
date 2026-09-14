@@ -1408,8 +1408,30 @@ If the user has already supplied a specific task, do not block on a broad questi
     - **Kiểm thử chất lượng**:
       - `mvn compile -q` -> 0 errors.
       - `npx tsc --noEmit && npm run lint` -> 0 errors, 0 warnings.
+19. **Xây Dựng Base Component Dùng Chung `AppTable` Đa Năng (Server & Client Filtering/Sorting/Pagination) & Đồng Bộ Hoá i18n**:
+    - **Kiến Trúc Base Table (`src/base/components/table/`)**:
+      - `types.ts`: Định nghĩa `AppTableColumn<T>`, `ColumnFilterType` (`text`, `select`, `dateRange`, `numberRange`), `ColumnFilterOption`, `TableSortState`, `AppTableProps<T>`, hỗ trợ 2 chế độ `mode?: 'client' | 'server'`.
+      - `AppColumnFilterPopover.tsx`: Popover lọc từng cột (text search có phím tắt Enter, dropdown đa lựa chọn với nút Chọn/Bỏ chọn tất cả).
+      - `AppColumnHeader.tsx`: Header cột hỗ trợ click đổi chiều Sort (`asc` -> `desc` -> hủy sort), icon badge phễu lọc sáng khi có filter.
+      - `AppTablePagination.tsx`: Phân trang đồng bộ giao diện toàn hệ thống với select rowsPerPage.
+      - `AppTable.tsx`: Component bảng dữ liệu trung tâm, tự động hiển thị Active Filters Bar, Empty State, Skeleton rows khi loading. Khi `mode="server"` hoặc khi được truyền controlled state (`sort`, `filters`), bảng bỏ qua việc lọc/sắp xếp cục bộ và đẩy toàn bộ params lên trang cha.
+    - **Đồng Bộ Hoá 100% Đa Ngôn Ngữ VNI / ENG (`messages/vi.json` & `messages/en.json`)**:
+      - Thêm namespace `"table"` với 13 keys: `filterBy`, `filterPlaceholder`, `selectAll`, `deselectAll`, `apply`, `clearFilter`, `clearAll`, `filtering`, `noResultsFound`, `noData`, `sortBy`, `rowsPerPage`, `displayedRows`.
+      - Thêm bản dịch trạng thái chuyến đi (`archived`, `cancelled`) và placeholders lọc trong `"myTrips"` và `"expense.table"`.
+    - **Áp Dụng Cho Feature Chuyến Đi (`/trips`)**:
+      - `useMyTrips`: Truyền `search`, `destination`, `currency`, `status`, `sortBy`, `sortDirection`.
+      - BFF `GET /api/trip/my-trips`: Chuyển tiếp toàn bộ search params sang Spring Boot Core.
+      - `TripTable.tsx` & `MyTrips.tsx`: Sử dụng `mode="server"` và quản lý state controlled sort/filter, tự động đưa trang về `0` khi filter/sort thay đổi.
+    - **Áp Dụng Cho Feature Chi Tiêu (`/expenses`)**:
+      - `useTripExpenses`: Truyền `search`, `title`, `category`, `payer`, `splitType`, `sortBy`, `sortDirection`.
+      - BFF `GET /api/trip/[id]/expenses`: Chuyển tiếp toàn bộ search params sang Spring Boot Core.
+      - `ExpenseTable.tsx` & `ExpenseOverview.tsx`: Sử dụng `mode="server"`, quản lý state controlled sort/filter, quốc tế hóa filter options danh mục (`categories.*`) và phương thức chia tiền (`splits.*`), reset trang về `0` khi điều kiện lọc thay đổi.
+    - **Tuân Thủ Tuyệt Đối Bộ Quy Tắc Coding (`AGENTS.md`)**:
+      - 1 Component / 1 File, explicit pixel units (`px`), không sử dụng child margins (`m`, `mt`, `mb`, `ml`, `mr`, `mx`, `my`), màu sắc bám sát MUI theme palette.
+      - Kiểm thử: `npx tsc --noEmit && npm run lint` -> 0 errors, 0 warnings.
 
 ### Immediate likely next tasks:
 
-1. **Module Quyết toán & Trả nợ (Debt Settlement & Balances - `/settlement`)**: Tính toán ma trận nợ giữa các thành viên dựa trên `expense_splits`, đề xuất số giao dịch tối thiểu để tất toán (Debt Simplification Algorithm).
-2. **Kết nối Dữ liệu Thực tế cho Trang Tổng quan (`/overview`)**: Thay thế dữ liệu mock trong `RecentExpenseList` và `CategoryList` bằng dữ liệu thực tế từ API chi tiêu của chuyến đi đang diễn ra.
+1. **Triển Khai Backend Core (`tripbudget-core`) Hỗ Trợ Server-Side Filter & Sort**: Tiếp nhận các query params (`search`, `category`, `status`, `payer`, `sortBy`, `sortDirection`) tại `TripController`/`TripService` và `ExpenseController`/`ExpenseService` thông qua Spring Data JPA Specifications hoặc dynamic JPQL queries.
+2. **Module Quyết toán & Trả nợ (Debt Settlement & Balances - `/settlement`)**: Tính toán ma trận nợ giữa các thành viên dựa trên `expense_splits`, đề xuất số giao dịch tối thiểu để tất toán (Debt Simplification Algorithm).
+3. **Kết nối Dữ liệu Thực tế cho Trang Tổng quan (`/overview`)**: Thay thế dữ liệu mock trong `RecentExpenseList` và `CategoryList` bằng dữ liệu thực tế từ API chi tiêu của chuyến đi đang diễn ra.

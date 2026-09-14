@@ -40,3 +40,5 @@ export type { AppCategoryChipProps, CategoryType } from './AppCategoryChip';
 
 export { default as AppNumberInput } from './AppNumberInput';
 export type { AppNumberInputProps } from './AppNumberInput';
+
+export * from '../table';

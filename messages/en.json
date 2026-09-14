@@ -109,7 +109,9 @@
     "inProgress": "In Progress",
     "draft": "Draft",
     "planning": "Planning",
-    "completed": "Completed"
+    "completed": "Completed",
+    "archived": "Archived",
+    "cancelled": "Cancelled"
   },
   "myTrips": {
     "title": "My Trips",
@@ -121,6 +123,8 @@
     "colCurrency": "Currency",
     "colStatus": "Status",
     "colActions": "Actions",
+    "filterNamePlaceholder": "Search trips...",
+    "filterDestinationPlaceholder": "Search destinations...",
     "viewTrip": "View / Select",
     "selected": "Selected",
     "rowsPerPage": "Rows per page",
@@ -208,6 +212,8 @@
       "colSplit": "Split Method",
       "colAmount": "Amount",
       "colActions": "Actions",
+      "filterExpensePlaceholder": "Search expenses...",
+      "filterPayerPlaceholder": "Search payer...",
       "displayedRows": "{from}–{to} of {count}"
     },
     "row": {
@@ -348,5 +354,20 @@
       "title": "No members yet",
       "desc": "Invite your travel companions to manage expenses and split bills easily."
     }
+  },
+  "table": {
+    "filterBy": "Filter by: {column}",
+    "filterPlaceholder": "Search {column}...",
+    "selectAll": "Select all",
+    "deselectAll": "Deselect all",
+    "apply": "Apply",
+    "clearFilter": "Clear filter",
+    "clearAll": "Clear all",
+    "filtering": "Filtered by:",
+    "noResultsFound": "No matching results found",
+    "noData": "No data available",
+    "sortBy": "Sort by {column}",
+    "rowsPerPage": "Rows per page",
+    "displayedRows": "{from}–{to} of {count}"
   }
 }

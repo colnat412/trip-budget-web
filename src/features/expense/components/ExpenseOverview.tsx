@@ -12,6 +12,8 @@ import {
   AppButton,
   AppToast,
   type AppToastSeverity,
+  type ColumnFilterValue,
+  type TableSortState,
 } from '@/base/components/ui';
 import { useTripContext } from '@/features/trip/context/TripContext';
 import useTripBudgetSummary from '../hooks/useTripBudgetSummary';
@@ -44,12 +46,41 @@ export default function ExpenseOverview() {
   const tripId = activeTrip?.id;
 
   const [page, setPage] = useState(0);
+  const [sort, setSort] = useState<TableSortState | null>(null);
+  const [filters, setFilters] = useState<Record<string, ColumnFilterValue>>({});
 
   const [addOpen, setAddOpen] = useState(false);
   const [detailExpense, setDetailExpense] = useState<Expense | null>(null);
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
   const [deletingExpense, setDeletingExpense] = useState<Expense | null>(null);
   const [setBudgetOpen, setSetBudgetOpen] = useState(false);
+
+  const search = typeof filters.title === 'string' ? filters.title : undefined;
+  const category =
+    typeof filters.category === 'string'
+      ? filters.category
+      : Array.isArray(filters.category)
+        ? filters.category.join(',')
+        : undefined;
+  const payer = typeof filters.payer === 'string' ? filters.payer : undefined;
+  const splitType =
+    typeof filters.splitType === 'string'
+      ? filters.splitType
+      : Array.isArray(filters.splitType)
+        ? filters.splitType.join(',')
+        : undefined;
+
+  const handleSortChange = (newSort: TableSortState | null) => {
+    setSort(newSort);
+    setPage(0);
+  };
+
+  const handleFilterChange = (
+    newFilters: Record<string, ColumnFilterValue>,
+  ) => {
+    setFilters(newFilters);
+    setPage(0);
+  };
 
   const [toast, setToast] = useState<{
     open: boolean;
@@ -79,7 +110,18 @@ export default function ExpenseOverview() {
     pagination,
     isLoading: isExpensesLoading,
     refetch: refetchExpenses,
-  } = useTripExpenses({ tripId, page, size: 10 });
+  } = useTripExpenses({
+    tripId,
+    page,
+    size: 10,
+    search,
+    title: search,
+    category,
+    payer,
+    splitType,
+    sortBy: sort?.columnId,
+    sortDirection: sort?.direction,
+  });
 
   const refreshAll = () => {
     refetchSummary();
@@ -268,8 +310,10 @@ export default function ExpenseOverview() {
           </Stack>
           <Typography sx={{ color: 'text.secondary', fontSize: '14px' }}>
             {t('trip')}:{' '}
-            <strong style={{ color: '#1E3A8A' }}>{activeTrip.name}</strong> •{' '}
-            {t('destination')}:{' '}
+            <Box component="strong" sx={{ color: 'primary.main' }}>
+              {activeTrip.name}
+            </Box>{' '}
+            • {t('destination')}:{' '}
             <strong>{activeTrip.destination || t('notUpdated')}</strong>
           </Typography>
         </Stack>
@@ -344,6 +388,10 @@ export default function ExpenseOverview() {
         onEdit={(expense) => setEditingExpense(expense)}
         onDelete={(expense) => setDeletingExpense(expense)}
         onAddNew={() => setAddOpen(true)}
+        sort={sort}
+        onSortChange={handleSortChange}
+        filters={filters}
+        onFilterChange={handleFilterChange}
       />
 
       <ExpenseDetailDialog

@@ -25,12 +25,12 @@ export async function GET(request: NextRequest, context: RouteContext) {
 
     const { id } = await context.params;
     const { searchParams } = new URL(request.url);
-    const page = searchParams.get('page') || '0';
-    const size = searchParams.get('size') || '10';
+    const query = Object.fromEntries(searchParams.entries());
 
     const response = await axios.get(
-      `${CORE_SERVICE_URL}/api/trip/${id}/expenses?page=${page}&size=${size}`,
+      `${CORE_SERVICE_URL}/api/trip/${id}/expenses`,
       {
+        params: query,
         headers: {
           Authorization: `Bearer ${accessToken}`,
           Accept: 'application/json',
