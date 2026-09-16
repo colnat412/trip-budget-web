@@ -1430,8 +1430,59 @@ If the user has already supplied a specific task, do not block on a broad questi
       - 1 Component / 1 File, explicit pixel units (`px`), không sử dụng child margins (`m`, `mt`, `mb`, `ml`, `mr`, `mx`, `my`), màu sắc bám sát MUI theme palette.
       - Kiểm thử: `npx tsc --noEmit && npm run lint` -> 0 errors, 0 warnings.
 
+20. **Triển Khai Hoàn Chỉnh Server-Side Dynamic Filter, Search & Sort Tại Backend Spring Boot Core (`tripbudget-core`)**:
+    - **Kiến trúc Spring Data JPA Specifications**:
+      - Bổ sung `JpaSpecificationExecutor<TripEntity>` vào `TripRepository` và `JpaSpecificationExecutor<ExpenseEntity>` vào `ExpenseRepository`.
+      - Xây dựng `TripSpecifications` và `ExpenseSpecifications` cung cấp các vị từ Criteria API an toàn (`root.get(...)`, `Subquery`, `cb.like`, `cb.or`, `cb.and`, `root.in(...)`).
+    - **Chống SQL Injection & Lỗi Thuộc Tính (Whitelist Sorting)**:
+      - Xây dựng `buildSort` kiểm soát nghiêm ngặt các trường cho phép sắp xếp (`name`, `destination`, `startDate`, `endDate`, `baseCurrency`, `status`, `id` cho Trips; `expenseDate`, `title`, `amount`, `category`, `splitType`, `id` cho Expenses), tự động chuyển đổi chiều `ASC`/`DESC` an toàn, ngăn chặn lỗi `PropertyReferenceException`.
+    - **Triển khai Module Chuyến đi (`com.tripbudget.tripbudget_core.trip`)**:
+      - DTO `TripFilterRequest` nhận: `search`, `name`, `destination`, `currency`, `status`, `sortBy`, `sortDirection`.
+      - `TripSpecifications.hasActiveMember(currentUserId)`: Kiểm tra membership của người dùng bằng Criteria Subquery trên `TripMemberEntity` (`status = ACTIVE` và `isDel = false`), kết hợp loại trừ chuyến đi bị xóa mềm (`isDel = false` và `status != DELETED`).
+      - `TripController.getMyTrips`: Cập nhật nhận các query params tùy chọn `@RequestParam(required = false)`, tạo `TripFilterRequest` và chuyển giao cho `tripService.getMyTrips`.
+    - **Triển khai Module Khoản chi (`com.tripbudget.tripbudget_core.expense` & `user`)**:
+      - `UserRepository`: Bổ sung truy vấn `findIdsByKeyword` tìm kiếm User ID theo tên hoặc email (`LOWER(name) LIKE ... OR LOWER(email) LIKE ...`).
+      - DTO `ExpenseFilterRequest` nhận: `search`, `title`, `category`, `payer`, `splitType`, `sortBy`, `sortDirection`.
+      - `ExpenseService.getTripExpenses`: Tra cứu danh sách User ID khớp với từ khóa `payer` hoặc giải mã HashID; tạo Criteria Predicate `payerId IN (:matchedPayerIds)` hoặc `cb.disjunction()` nếu không tìm thấy user nào khớp từ khóa.
+      - `ExpenseController.getTripExpenses`: Cập nhật nhận các query params tùy chọn `@RequestParam(required = false)`, tạo `ExpenseFilterRequest` và chuyển giao cho `expenseService.getTripExpenses`.
+    - **Bảo mật & Tính Tương Thích**:
+      - Tuyệt đối tuân thủ `@CurrentUser CurrentUserDto user` và `Long currentUserId = user.id();`.
+      - Hoàn toàn tương thích ngược: các endpoint vẫn hoạt động bình thường với giá trị mặc định khi không truyền tham số lọc.
+    - **Kiểm thử chất lượng**:
+      - `./mvnw test-compile -q -o` -> BUILD SUCCESS (0 errors).
+      - `npx tsc --noEmit && npm run lint` -> 0 errors, 0 warnings.
+
+21. **Triển Khai Toàn Diện Module Quyết Toán & Trả Nợ (Debt Settlement & Balances - `/settlement`)**:
+    - **Cơ sở dữ liệu & Migration**:
+      - Tạo `tripbudget-core/src/main/resources/db/migration/V3__create_settlements.sql`: Tạo bảng `trip_core.settlements` lưu vết các khoản chuyển khoản/tiền mặt giữa các thành viên, kèm `is_del`, audit columns, và các indexes cần thiết (`idx_settlements_trip_id`, `idx_settlements_payer`, `idx_settlements_payee`, `idx_settlements_settled_at`).
+    - **Backend Spring Boot Core (`tripbudget-core`)**:
+      - Package: `com.tripbudget.tripbudget_core.settlement`.
+      - Entity & Enum: `SettlementEntity` kế thừa `BaseEntity`, `PaymentMethod` (`CASH`, `BANK_TRANSFER`, `OTHER`).
+      - DTOs: `CreateSettlementRequest`, `MemberBalanceResponse`, `SuggestedSettlementResponse`, `SettlementResponse`, `TripSettlementSummaryResponse`.
+      - Thuật toán Tối Giản Nợ (Greedy Min-Cash-Flow Debt Simplification Algorithm):
+        - Tính Net Balance của từng thành viên: $Net = \sum \text{Paid Expenses} + \sum \text{Settlements Given} - \sum \text{Owed Splits} - \sum \text{Settlements Received}$.
+        - Phân loại thành nhóm con nợ (Debtors, $Net < 0$) và chủ nợ (Creditors, $Net > 0$).
+        - Sử dụng thuật toán 2 con trỏ tham lam ghép cặp con nợ lớn nhất với chủ nợ lớn nhất để giảm số lần chuyển tiền xuống mức tối thiểu (tối đa $N-1$ giao dịch).
+      - Xử lý Batch User Info: Truy vấn một lượt danh sách `public.users` bằng `UserRepository.findAllByIdIn`, ghép nối tên, email, avatar vào phản hồi.
+      - Controller & Security: `SettlementController` (`GET /api/trip/{tripId}/settlement`, `POST /api/trip/{tripId}/settlement`, `DELETE /api/trip/{tripId}/settlement/{settlementId}`). Tuyệt đối lấy user từ `@CurrentUser CurrentUserDto user` -> `Long currentUserId = user.id();`.
+    - **BFF & Frontend Next.js (`trip-budget-web`)**:
+      - BFF Route Handlers: `src/app/api/trip/[id]/settlement/route.ts` và `src/app/api/trip/[id]/settlement/[settlementId]/route.ts`.
+      - Feature Module (`src/features/settlement/`):
+        - Types: `types/index.ts`.
+        - Hooks: `useTripSettlement.ts` (`useTripSettlementSummary`, `useCreateSettlement`, `useDeleteSettlement`).
+        - Components: `MyBalanceCard.tsx`, `SuggestedSettlementCard.tsx`, `SuggestedSettlementsList.tsx`, `MemberBalancesTable.tsx`, `SettlementHistoryTable.tsx`, `RecordSettlementForm.tsx`, `RecordSettlementDialog.tsx`, `SettlementOverview.tsx`.
+        - Page: `src/app/settlement/page.tsx` render `SettlementOverview`.
+      - **Quy tắc i18n 100% VNI / ENG Tuyệt Đối**:
+        - `messages/vi.json` và `messages/en.json` đồng bộ 1:1 namespace `"settlement"`.
+        - Toàn bộ thông báo lỗi (validation errors: `payerRequired`, `payeeRequired`, `samePerson`, `invalidAmount`), thông báo toast, placeholders, văn bản fallback đều phải lấy qua `useTranslations`, cấm tuyệt đối hardcode bất kỳ chuỗi tiếng Việt/tiếng Anh nào trong code logic hay JSX.
+    - **Tuân thủ quy tắc kiến trúc & UI**:
+      - 1 Component / 1 File, Flexbox trên CSS Grid, đơn vị pixel rõ ràng (`px`), không sử dụng child margins (`m`, `mt`, `mb`...), sử dụng theme tokens.
+      - Kiểm thử:
+        - Backend: `./mvnw test-compile -q -o` -> BUILD SUCCESS (0 errors).
+        - Frontend: `npx tsc --noEmit && npm run lint` -> 0 errors, 0 warnings.
+
 ### Immediate likely next tasks:
 
-1. **Triển Khai Backend Core (`tripbudget-core`) Hỗ Trợ Server-Side Filter & Sort**: Tiếp nhận các query params (`search`, `category`, `status`, `payer`, `sortBy`, `sortDirection`) tại `TripController`/`TripService` và `ExpenseController`/`ExpenseService` thông qua Spring Data JPA Specifications hoặc dynamic JPQL queries.
-2. **Module Quyết toán & Trả nợ (Debt Settlement & Balances - `/settlement`)**: Tính toán ma trận nợ giữa các thành viên dựa trên `expense_splits`, đề xuất số giao dịch tối thiểu để tất toán (Debt Simplification Algorithm).
-3. **Kết nối Dữ liệu Thực tế cho Trang Tổng quan (`/overview`)**: Thay thế dữ liệu mock trong `RecentExpenseList` và `CategoryList` bằng dữ liệu thực tế từ API chi tiêu của chuyến đi đang diễn ra.
+1. **Kết nối Dữ liệu Thực tế cho Trang Tổng quan (`/overview`)**: Thay thế dữ liệu mock trong `RecentExpenseList` và `CategoryList` bằng dữ liệu thực tế từ API chi tiêu của chuyến đi đang diễn ra.
+2. **Module Quét Hóa Đơn Bằng AI / Camera (`/scan`)**: OCR hóa đơn chi tiêu tự động trích xuất số tiền, ngày, danh mục, gán vào chuyến đi.
+3. **Module Phân Tích & Gợi Ý Chi Tiêu Thông Minh (`/ai`)**: Tích hợp trợ lý phân tích ngân sách, cảnh báo chi tiêu vượt ngưỡng.

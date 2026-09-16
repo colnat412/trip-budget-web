@@ -1,5 +1,5 @@
-import TripFeaturePlaceholder from '@/features/trip/components/TripFeaturePlaceholder';
+import SettlementOverview from '@/features/settlement/components/SettlementOverview';
 
 export default function SettlementPage() {
-  return <TripFeaturePlaceholder feature="settlement" />;
+  return <SettlementOverview />;
 }
