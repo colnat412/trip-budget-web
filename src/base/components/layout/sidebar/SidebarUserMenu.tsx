@@ -22,14 +22,14 @@ interface SidebarUserMenuProps {
   isLoggingOut: boolean;
 }
 
-export default function SidebarUserMenu({
+const SidebarUserMenu = ({
   anchorEl,
   open,
   onClose,
   onOpenProfile,
   onLogout,
   isLoggingOut,
-}: SidebarUserMenuProps) {
+}: SidebarUserMenuProps) => {
   const t = useTranslations('userMenu');
 
   return (
@@ -138,4 +138,6 @@ export default function SidebarUserMenu({
       </MenuItem>
     </Menu>
   );
-}
+};
+
+export default SidebarUserMenu;

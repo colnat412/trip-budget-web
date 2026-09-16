@@ -29,13 +29,13 @@ const CATEGORY_KEYS: ExpenseCategory[] = [
   'OTHER',
 ];
 
-export default function SetBudgetForm({
+const SetBudgetForm = ({
   summary,
   tripCurrency = 'VND',
   isLoading = false,
   onSubmit,
   onCancel,
-}: SetBudgetFormProps) {
+}: SetBudgetFormProps) => {
   const tDialog = useTranslations('expense.dialog');
   const tForm = useTranslations('expense.form');
   const tCat = useTranslations('expense.categories');
@@ -327,4 +327,6 @@ export default function SetBudgetForm({
       </Stack>
     </Box>
   );
-}
+};
+
+export default SetBudgetForm;

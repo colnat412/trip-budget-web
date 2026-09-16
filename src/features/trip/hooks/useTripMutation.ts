@@ -69,10 +69,12 @@ export function useDeleteTrip({ tripId, options }: UseDeleteTripParams) {
   };
 }
 
-export default function useTripMutation() {
+const useTripMutation = () => {
   return {
     useCreateTrip,
     useUpdateTrip,
     useDeleteTrip,
   };
-}
+};
+
+export default useTripMutation;

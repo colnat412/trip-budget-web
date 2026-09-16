@@ -45,10 +45,10 @@ const CURRENCY_OPTIONS = [
   // { value: 'THB', label: 'THB' },
 ];
 
-export default function CreateTripDialog({
+const CreateTripDialog = ({
   open,
   onClose,
-}: CreateTripDialogProps) {
+}: CreateTripDialogProps) => {
   const t = useTranslations('trip');
   const { refetchTrips, selectTrip } = useTripContext();
   const { createMutation } = useCreateTrip();
@@ -352,4 +352,6 @@ export default function CreateTripDialog({
       </Dialog>
     </>
   );
-}
+};
+
+export default CreateTripDialog;

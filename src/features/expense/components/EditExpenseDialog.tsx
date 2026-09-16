@@ -15,13 +15,13 @@ export interface EditExpenseDialogProps {
   isLoading?: boolean;
 }
 
-export default function EditExpenseDialog({
+const EditExpenseDialog = ({
   open,
   expense,
   onClose,
   onSubmit,
   isLoading = false,
-}: EditExpenseDialogProps) {
+}: EditExpenseDialogProps) => {
   const t = useTranslations('expense');
 
   if (!expense) return null;
@@ -43,4 +43,6 @@ export default function EditExpenseDialog({
       />
     </AppDialog>
   );
-}
+};
+
+export default EditExpenseDialog;

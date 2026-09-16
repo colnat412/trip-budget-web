@@ -117,11 +117,13 @@ export function useSetBudget({ tripId, options }: UseSetBudgetParams) {
   };
 }
 
-export default function useExpenseMutation() {
+const useExpenseMutation = () => {
   return {
     useCreateExpense,
     useUpdateExpense,
     useDeleteExpense,
     useSetBudget,
   };
-}
+};
+
+export default useExpenseMutation;

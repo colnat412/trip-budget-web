@@ -13,7 +13,7 @@ interface RoleBadgeProps {
   role: TripMemberRole;
 }
 
-export default function RoleBadge({ role }: RoleBadgeProps) {
+const RoleBadge = ({ role }: RoleBadgeProps) => {
   const t = useTranslations('members.roles');
 
   const config = {
@@ -53,4 +53,6 @@ export default function RoleBadge({ role }: RoleBadgeProps) {
       }}
     />
   );
-}
+};
+
+export default RoleBadge;

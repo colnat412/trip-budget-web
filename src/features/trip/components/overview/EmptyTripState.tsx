@@ -11,7 +11,7 @@ interface EmptyTripStateProps {
   onCreateTrip: () => void;
 }
 
-export default function EmptyTripState({ onCreateTrip }: EmptyTripStateProps) {
+const EmptyTripState = ({ onCreateTrip }: EmptyTripStateProps) => {
   const tTrip = useTranslations('trip');
 
   return (
@@ -75,4 +75,6 @@ export default function EmptyTripState({ onCreateTrip }: EmptyTripStateProps) {
       </AppButton>
     </Box>
   );
-}
+};
+
+export default EmptyTripState;

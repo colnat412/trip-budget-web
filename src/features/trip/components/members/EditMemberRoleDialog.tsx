@@ -22,13 +22,13 @@ interface EditMemberRoleDialogProps {
   isSubmitting: boolean;
 }
 
-export default function EditMemberRoleDialog({
+const EditMemberRoleDialog = ({
   open,
   onClose,
   member,
   onSubmit,
   isSubmitting,
-}: EditMemberRoleDialogProps) {
+}: EditMemberRoleDialogProps) => {
   const t = useTranslations('members');
   const [selectedRole, setSelectedRole] = useState<TripMemberRole>(
     member?.role === 'OWNER' ? 'EDITOR' : (member?.role ?? 'MEMBER'),
@@ -124,4 +124,6 @@ export default function EditMemberRoleDialog({
       </Stack>
     </AppDialog>
   );
-}
+};
+
+export default EditMemberRoleDialog;

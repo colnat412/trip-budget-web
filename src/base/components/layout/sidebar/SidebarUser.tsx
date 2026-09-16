@@ -24,7 +24,7 @@ export interface SidebarUserProps {
   user?: Partial<SidebarUserData> | UserProfile;
 }
 
-export default function SidebarUser({ user: defaultUser }: SidebarUserProps) {
+const SidebarUser = ({ user: defaultUser }: SidebarUserProps) => {
   const router = useRouter();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [profileOpen, setProfileOpen] = useState(false);
@@ -171,4 +171,6 @@ export default function SidebarUser({ user: defaultUser }: SidebarUserProps) {
       />
     </>
   );
-}
+};
+
+export default SidebarUser;

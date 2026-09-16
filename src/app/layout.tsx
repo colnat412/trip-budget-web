@@ -36,7 +36,7 @@ export const metadata: Metadata = {
 // add path name to hide sidebar here
 const sidebarDisabledPaths: readonly string[] = ["/login"];
 
-export default async function RootLayout({ children }: LayoutProps<"/">) {
+const RootLayout = async ({ children }: LayoutProps<"/">) => {
   const locale = await getLocale();
 
   return (
@@ -57,4 +57,6 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       </body>
     </html>
   );
-}
+};
+
+export default RootLayout;

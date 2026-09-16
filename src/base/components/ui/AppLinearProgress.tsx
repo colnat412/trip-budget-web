@@ -10,14 +10,14 @@ export interface AppLinearProgressProps
   barColor?: string;
 }
 
-export default function AppLinearProgress({
+const AppLinearProgress = ({
   value,
   height = 4,
   trackColor = "action.selected",
   barColor = "primary.main",
   sx,
   ...progressProps
-}: AppLinearProgressProps) {
+}: AppLinearProgressProps) => {
   const normalizedValue = Math.min(Math.max(value, 0), 100);
 
   return (
@@ -39,4 +39,6 @@ export default function AppLinearProgress({
       ]}
     />
   );
-}
+};
+
+export default AppLinearProgress;

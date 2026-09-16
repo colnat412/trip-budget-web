@@ -36,7 +36,7 @@ export interface ExpenseTableProps {
   onFilterChange?: (filters: Record<string, ColumnFilterValue>) => void;
 }
 
-export default function ExpenseTable({
+const ExpenseTable = ({
   expenses,
   isLoading,
   pagination,
@@ -49,7 +49,7 @@ export default function ExpenseTable({
   onSortChange,
   filters,
   onFilterChange,
-}: ExpenseTableProps) {
+}: ExpenseTableProps) => {
   const t = useTranslations('expense');
   const tTable = useTranslations('expense.table');
 
@@ -343,4 +343,6 @@ export default function ExpenseTable({
       }}
     />
   );
-}
+};
+
+export default ExpenseTable;

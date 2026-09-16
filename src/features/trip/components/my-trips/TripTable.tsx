@@ -38,7 +38,7 @@ export interface TripTableProps {
   onFilterChange?: (filters: Record<string, ColumnFilterValue>) => void;
 }
 
-export default function TripTable({
+const TripTable = ({
   trips,
   isLoading,
   activeTripId,
@@ -51,7 +51,7 @@ export default function TripTable({
   onSortChange,
   filters,
   onFilterChange,
-}: TripTableProps) {
+}: TripTableProps) => {
   const t = useTranslations('myTrips');
   const tTrip = useTranslations('trip');
 
@@ -277,4 +277,6 @@ export default function TripTable({
       }}
     />
   );
-}
+};
+
+export default TripTable;

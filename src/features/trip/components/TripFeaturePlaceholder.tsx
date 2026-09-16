@@ -8,9 +8,9 @@ interface TripFeaturePlaceholderProps {
   feature: TripFeatureKey;
 }
 
-export default async function TripFeaturePlaceholder({
+const TripFeaturePlaceholder = async ({
   feature,
-}: TripFeaturePlaceholderProps) {
+}: TripFeaturePlaceholderProps) => {
   const t = await getTranslations('tripFeature');
 
   return (
@@ -61,4 +61,6 @@ export default async function TripFeaturePlaceholder({
       </Stack>
     </Box>
   );
-}
+};
+
+export default TripFeaturePlaceholder;

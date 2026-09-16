@@ -23,13 +23,13 @@ interface AppColumnHeaderProps<T> {
   onFilterChange: (columnId: string, value: ColumnFilterValue) => void;
 }
 
-export default function AppColumnHeader<T>({
+const AppColumnHeader = <T,>({
   column,
   sort,
   onSortToggle,
   filterValue,
   onFilterChange,
-}: AppColumnHeaderProps<T>) {
+}: AppColumnHeaderProps<T>) => {
   const t = useTranslations('table');
   const [filterAnchorEl, setFilterAnchorEl] = useState<HTMLElement | null>(
     null,
@@ -170,4 +170,6 @@ export default function AppColumnHeader<T>({
       </Stack>
     </TableCell>
   );
-}
+};
+
+export default AppColumnHeader;

@@ -18,7 +18,7 @@ export interface RecordSettlementDialogProps {
   onSubmit: (data: CreateSettlementRequest) => void;
 }
 
-export default function RecordSettlementDialog({
+const RecordSettlementDialog = ({
   open,
   onClose,
   members,
@@ -26,7 +26,7 @@ export default function RecordSettlementDialog({
   currency,
   isLoading,
   onSubmit,
-}: RecordSettlementDialogProps) {
+}: RecordSettlementDialogProps) => {
   const t = useTranslations('settlement');
 
   return (
@@ -47,4 +47,6 @@ export default function RecordSettlementDialog({
       />
     </AppDialog>
   );
-}
+};
+
+export default RecordSettlementDialog;

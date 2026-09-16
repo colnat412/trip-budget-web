@@ -17,14 +17,14 @@ export interface AddExpenseDialogProps {
   tripId?: number | string | null;
 }
 
-export default function AddExpenseDialog({
+const AddExpenseDialog = ({
   open,
   onClose,
   onSubmit,
   isLoading = false,
   tripCurrency = 'VND',
   tripId,
-}: AddExpenseDialogProps) {
+}: AddExpenseDialogProps) => {
   const t = useTranslations('expense');
   const { activeMembers } = useTripMembers({ tripId, enabled: open });
 
@@ -45,4 +45,6 @@ export default function AddExpenseDialog({
       />
     </AppDialog>
   );
-}
+};
+
+export default AddExpenseDialog;

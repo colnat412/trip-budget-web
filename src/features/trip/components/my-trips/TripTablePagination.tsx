@@ -11,13 +11,13 @@ interface TripTablePaginationProps {
   onRowsPerPageChange: (newRowsPerPage: number) => void;
 }
 
-export default function TripTablePagination({
+const TripTablePagination = ({
   count,
   page,
   rowsPerPage,
   onPageChange,
   onRowsPerPageChange,
-}: TripTablePaginationProps) {
+}: TripTablePaginationProps) => {
   const t = useTranslations('myTrips');
 
   return (
@@ -56,4 +56,6 @@ export default function TripTablePagination({
       />
     </Box>
   );
-}
+};
+
+export default TripTablePagination;

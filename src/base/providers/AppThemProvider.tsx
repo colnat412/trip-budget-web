@@ -9,7 +9,7 @@ type AppThemeProviderProps = {
   children: ReactNode;
 };
 
-export default function AppThemeProvider({ children }: AppThemeProviderProps) {
+const AppThemeProvider = ({ children }: AppThemeProviderProps) => {
   return (
     <AppRouterCacheProvider options={{ enableCssLayer: true }}>
       <ThemeProvider theme={appTheme} defaultMode="light">
@@ -18,4 +18,6 @@ export default function AppThemeProvider({ children }: AppThemeProviderProps) {
       </ThemeProvider>
     </AppRouterCacheProvider>
   );
-}
+};
+
+export default AppThemeProvider;

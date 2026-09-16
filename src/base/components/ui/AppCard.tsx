@@ -132,7 +132,7 @@ function getCardStyles(
   };
 }
 
-export default function AppCard({
+const AppCard = ({
   children,
   variant = 'elevated',
   interactive = false,
@@ -142,7 +142,7 @@ export default function AppCard({
   layout = 'default',
   sx,
   ...cardProps
-}: AppCardProps) {
+}: AppCardProps) => {
   const resolvedIconSize =
     typeof iconSize === 'number' ? `${iconSize}px` : iconSize;
 
@@ -207,4 +207,6 @@ export default function AppCard({
       </Box>
     </Card>
   );
-}
+};
+
+export default AppCard;

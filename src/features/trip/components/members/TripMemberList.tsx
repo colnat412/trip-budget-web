@@ -17,7 +17,7 @@ interface TripMemberListProps {
   onLeave: (member: TripMember) => void;
 }
 
-export default function TripMemberList({
+const TripMemberList = ({
   members,
   isLoading,
   isCurrentUserOwner,
@@ -25,7 +25,7 @@ export default function TripMemberList({
   onEditRole,
   onRemove,
   onLeave,
-}: TripMemberListProps) {
+}: TripMemberListProps) => {
   const t = useTranslations('members');
 
   if (isLoading) {
@@ -108,4 +108,6 @@ export default function TripMemberList({
       ))}
     </Stack>
   );
-}
+};
+
+export default TripMemberList;

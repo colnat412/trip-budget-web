@@ -22,11 +22,11 @@ interface ProfileDialogProps {
   user?: Partial<SidebarUser> | UserProfile;
 }
 
-export default function ProfileDialog({
+const ProfileDialog = ({
   open,
   onClose,
   user,
-}: ProfileDialogProps) {
+}: ProfileDialogProps) => {
   const t = useTranslations('profile');
 
   return (
@@ -96,4 +96,6 @@ export default function ProfileDialog({
       )}
     </Dialog>
   );
-}
+};
+
+export default ProfileDialog;

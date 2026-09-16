@@ -20,12 +20,12 @@ export interface ExpenseDetailDialogProps {
   onEdit?: (expense: Expense) => void;
 }
 
-export default function ExpenseDetailDialog({
+const ExpenseDetailDialog = ({
   open,
   expense,
   onClose,
   onEdit,
-}: ExpenseDetailDialogProps) {
+}: ExpenseDetailDialogProps) => {
   const t = useTranslations('expense');
 
   if (!expense) return null;
@@ -469,4 +469,6 @@ export default function ExpenseDetailDialog({
       </Stack>
     </AppDialog>
   );
-}
+};
+
+export default ExpenseDetailDialog;

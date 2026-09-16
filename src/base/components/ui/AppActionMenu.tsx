@@ -27,12 +27,12 @@ export interface AppActionMenuProps {
   ariaLabel?: string;
 }
 
-export default function AppActionMenu({
+const AppActionMenu = ({
   items,
   trigger,
   size = 'small',
   ariaLabel = 'Actions menu',
-}: AppActionMenuProps) {
+}: AppActionMenuProps) => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const open = Boolean(anchorEl);
 
@@ -151,4 +151,6 @@ export default function AppActionMenu({
       </Menu>
     </>
   );
-}
+};
+
+export default AppActionMenu;

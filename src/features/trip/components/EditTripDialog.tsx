@@ -14,12 +14,12 @@ export interface EditTripDialogProps {
   onSuccess?: (updatedTrip: Trip) => void;
 }
 
-export default function EditTripDialog({
+const EditTripDialog = ({
   open,
   onClose,
   trip,
   onSuccess,
-}: EditTripDialogProps) {
+}: EditTripDialogProps) => {
   const t = useTranslations('myTrips');
 
   return (
@@ -36,4 +36,6 @@ export default function EditTripDialog({
       )}
     </AppDialog>
   );
-}
+};
+
+export default EditTripDialog;

@@ -5,14 +5,14 @@ import { TablePagination } from '@mui/material';
 import { useTranslations } from 'next-intl';
 import type { AppTablePaginationProps } from './types';
 
-export default function AppTablePagination({
+const AppTablePagination = ({
   page,
   pageSize,
   totalCount,
   onPageChange,
   onPageSizeChange,
   pageSizeOptions = [5, 10, 20, 50],
-}: AppTablePaginationProps) {
+}: AppTablePaginationProps) => {
   const t = useTranslations('table');
 
   return (
@@ -53,4 +53,6 @@ export default function AppTablePagination({
       }}
     />
   );
-}
+};
+
+export default AppTablePagination;

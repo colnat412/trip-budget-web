@@ -38,14 +38,14 @@ interface TripMembersDialogProps {
   initialShowInvite?: boolean;
 }
 
-export default function TripMembersDialog({
+const TripMembersDialog = ({
   open,
   onClose,
   tripId,
   tripName = '',
   tripOwnerId,
   initialShowInvite = false,
-}: TripMembersDialogProps) {
+}: TripMembersDialogProps) => {
   const t = useTranslations('members');
   const { user: userFromContext } = useUserContext();
   const { user: userFromHook } = useCurrentUser();
@@ -316,4 +316,6 @@ export default function TripMembersDialog({
       />
     </>
   );
-}
+};
+
+export default TripMembersDialog;

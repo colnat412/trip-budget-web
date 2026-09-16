@@ -13,12 +13,12 @@ export interface DeleteTripDialogProps {
   onSuccess?: () => void;
 }
 
-export default function DeleteTripDialog({
+const DeleteTripDialog = ({
   open,
   onClose,
   trip,
   onSuccess,
-}: DeleteTripDialogProps) {
+}: DeleteTripDialogProps) => {
   const t = useTranslations('myTrips');
   const tTrip = useTranslations('trip');
 
@@ -53,4 +53,6 @@ export default function DeleteTripDialog({
       loading={isPending}
     />
   );
-}
+};
+
+export default DeleteTripDialog;

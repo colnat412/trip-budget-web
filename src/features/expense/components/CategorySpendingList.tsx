@@ -14,10 +14,10 @@ export interface CategorySpendingListProps {
   currency?: string;
 }
 
-export default function CategorySpendingList({
+const CategorySpendingList = ({
   breakdown,
   currency = 'VND',
-}: CategorySpendingListProps) {
+}: CategorySpendingListProps) => {
   const t = useTranslations('expense.categoriesList');
   const tCategories = useTranslations('expense.categories');
 
@@ -237,4 +237,6 @@ export default function CategorySpendingList({
       </AppCard>
     </Box>
   );
-}
+};
+
+export default CategorySpendingList;

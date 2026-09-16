@@ -20,7 +20,7 @@ export interface AppNumberInputProps extends Omit<
   currencySuffix?: string;
 }
 
-export default function AppNumberInput({
+const AppNumberInput = ({
   value,
   onValueChange,
   onChange,
@@ -31,7 +31,7 @@ export default function AppNumberInput({
   variant = 'outlined',
   slotProps,
   ...restProps
-}: AppNumberInputProps) {
+}: AppNumberInputProps) => {
   const internalInputRef = useRef<HTMLInputElement | null>(null);
 
   const [prevValue, setPrevValue] = useState(value);
@@ -196,4 +196,6 @@ export default function AppNumberInput({
       }}
     />
   );
-}
+};
+
+export default AppNumberInput;

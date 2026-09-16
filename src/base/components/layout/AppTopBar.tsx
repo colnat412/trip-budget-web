@@ -21,7 +21,7 @@ const PAGE_MESSAGE_KEYS = {
   '/ai': 'ai',
 } as const;
 
-export default function AppTopBar() {
+const AppTopBar = () => {
   const pathname = usePathname();
   const t = useTranslations('topBar');
   const tPageTitle = useTranslations('sidebar');
@@ -108,4 +108,6 @@ export default function AppTopBar() {
       </Stack>
     </Box>
   );
-}
+};
+
+export default AppTopBar;

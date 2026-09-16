@@ -16,11 +16,11 @@ export interface BudgetMetricsCardsProps {
   onOpenSetBudget?: () => void;
 }
 
-export default function BudgetMetricsCards({
+const BudgetMetricsCards = ({
   summary,
   currency = 'VND',
   onOpenSetBudget,
-}: BudgetMetricsCardsProps) {
+}: BudgetMetricsCardsProps) => {
   const t = useTranslations('expense.metrics');
   const totalBudget = summary?.totalBudget ?? 0;
   const actualSpent = summary?.actualSpent ?? 0;
@@ -335,4 +335,6 @@ export default function BudgetMetricsCards({
       </Box>
     </>
   );
-}
+};
+
+export default BudgetMetricsCards;

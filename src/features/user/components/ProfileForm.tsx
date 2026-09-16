@@ -29,7 +29,7 @@ interface ProfileFormProps {
   user?: Partial<SidebarUser> | UserProfile;
 }
 
-export default function ProfileForm({ onClose, user }: ProfileFormProps) {
+const ProfileForm = ({ onClose, user }: ProfileFormProps) => {
   const t = useTranslations('profile');
   const { user: currentUser } = useUserContext();
 
@@ -234,4 +234,6 @@ export default function ProfileForm({ onClose, user }: ProfileFormProps) {
       </Box>
     </>
   );
-}
+};
+
+export default ProfileForm;

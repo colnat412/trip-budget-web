@@ -1,5 +1,7 @@
 import ExpenseOverview from '@/features/expense/components/ExpenseOverview';
 
-export default function ExpensesPage() {
+const ExpensesPage = () => {
   return <ExpenseOverview />;
-}
+};
+
+export default ExpensesPage;

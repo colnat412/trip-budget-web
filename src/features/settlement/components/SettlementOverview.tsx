@@ -29,7 +29,7 @@ import type {
   SuggestedSettlement,
 } from '../types';
 
-export default function SettlementOverview() {
+const SettlementOverview = () => {
   const t = useTranslations('settlement');
   const tTrip = useTranslations('trip');
   const {
@@ -289,4 +289,6 @@ export default function SettlementOverview() {
       />
     </Box>
   );
-}
+};
+
+export default SettlementOverview;

@@ -29,7 +29,7 @@ export interface AppSelectProps extends Omit<SelectProps, 'onChange'> {
   ) => void;
 }
 
-export default function AppSelect({
+const AppSelect = ({
   label,
   options,
   helperText,
@@ -39,7 +39,7 @@ export default function AppSelect({
   value,
   onChange,
   ...selectProps
-}: AppSelectProps) {
+}: AppSelectProps) => {
   const labelId = React.useId();
 
   return (
@@ -64,4 +64,6 @@ export default function AppSelect({
       {helperText && <FormHelperText>{helperText}</FormHelperText>}
     </FormControl>
   );
-}
+};
+
+export default AppSelect;

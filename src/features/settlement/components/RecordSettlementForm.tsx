@@ -24,14 +24,14 @@ export interface RecordSettlementFormProps {
   onCancel: () => void;
 }
 
-export default function RecordSettlementForm({
+const RecordSettlementForm = ({
   members,
   initialData,
   currency,
   isLoading,
   onSubmit,
   onCancel,
-}: RecordSettlementFormProps) {
+}: RecordSettlementFormProps) => {
   const t = useTranslations('settlement');
   const tDialog = useTranslations('settlement.dialog');
 
@@ -224,4 +224,6 @@ export default function RecordSettlementForm({
       </Stack>
     </Box>
   );
-}
+};
+
+export default RecordSettlementForm;

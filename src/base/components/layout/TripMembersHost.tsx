@@ -3,7 +3,7 @@
 import { useTripContext } from '@/features/trip/context/TripContext';
 import TripMembersDialog from '@/features/trip/components/members/TripMembersDialog';
 
-export default function TripMembersHost() {
+const TripMembersHost = () => {
   const { activeTrip, isMembersOpen, isInviteInitial, closeMembers } =
     useTripContext();
 
@@ -20,4 +20,6 @@ export default function TripMembersHost() {
       initialShowInvite={isInviteInitial}
     />
   );
-}
+};
+
+export default TripMembersHost;

@@ -12,10 +12,10 @@ interface MyTripsHeaderProps {
   onCreateTrip: () => void;
 }
 
-export default function MyTripsHeader({
+const MyTripsHeader = ({
   totalTrips,
   onCreateTrip,
-}: MyTripsHeaderProps) {
+}: MyTripsHeaderProps) => {
   const t = useTranslations('myTrips');
 
   return (
@@ -73,4 +73,6 @@ export default function MyTripsHeader({
       </AppButton>
     </Stack>
   );
-}
+};
+
+export default MyTripsHeader;

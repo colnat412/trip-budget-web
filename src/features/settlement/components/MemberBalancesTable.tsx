@@ -25,10 +25,10 @@ export interface MemberBalancesTableProps {
   currency: string;
 }
 
-export default function MemberBalancesTable({
+const MemberBalancesTable = ({
   memberBalances,
   currency,
-}: MemberBalancesTableProps) {
+}: MemberBalancesTableProps) => {
   const t = useTranslations('settlement');
 
   return (
@@ -247,4 +247,6 @@ export default function MemberBalancesTable({
       </TableContainer>
     </AppCard>
   );
-}
+};
+
+export default MemberBalancesTable;

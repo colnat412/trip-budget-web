@@ -18,14 +18,14 @@ interface UseMutationDeleteParams<TResponse, TPayload> {
   config?: AxiosRequestConfig;
 }
 
-export default function useMutationDelete<TResponse, TPayload>({
+const useMutationDelete = <TResponse, TPayload>({
   mutationKey,
   endPoint,
   options,
   getEndPoint,
   getPayload,
   config,
-}: UseMutationDeleteParams<TResponse, TPayload>) {
+}: UseMutationDeleteParams<TResponse, TPayload>) => {
   return useMutationRequest<TResponse, TPayload>({
     mutationKey,
     options,
@@ -36,4 +36,6 @@ export default function useMutationDelete<TResponse, TPayload>({
         config,
       ),
   });
-}
+};
+
+export default useMutationDelete;

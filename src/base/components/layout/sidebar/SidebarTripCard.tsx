@@ -25,7 +25,7 @@ import { useTripContext } from '@/features/trip/context/TripContext';
 import useTripBudgetSummary from '@/features/expense/hooks/useTripBudgetSummary';
 import type { Trip } from '@/features/trip/types';
 
-export default function SidebarTripCard() {
+const SidebarTripCard = () => {
   const t = useTranslations('sidebar');
   const tTrip = useTranslations('trip');
   const { trips, activeTrip, selectTrip, openCreateTrip, isLoading } =
@@ -419,4 +419,6 @@ export default function SidebarTripCard() {
       </Box>
     </Box>
   );
-}
+};
+
+export default SidebarTripCard;

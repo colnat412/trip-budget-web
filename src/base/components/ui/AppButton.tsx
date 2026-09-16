@@ -179,7 +179,7 @@ function getButtonStyles(
   };
 }
 
-export default function AppButton({
+const AppButton = ({
   children,
   intent = "primary",
   loading = false,
@@ -190,7 +190,7 @@ export default function AppButton({
   startIcon,
   sx,
   ...buttonProps
-}: AppButtonProps) {
+}: AppButtonProps) => {
   const loadingIcon = (
     <CircularProgress
       size={size === "small" ? 14 : 18}
@@ -215,4 +215,6 @@ export default function AppButton({
       {!loading ? children : undefined}
     </Button>
   );
-}
+};
+
+export default AppButton;

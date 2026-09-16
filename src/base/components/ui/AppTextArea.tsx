@@ -9,11 +9,11 @@ export type AppTextAreaProps = TextFieldProps & {
   maxRows?: number;
 };
 
-export default function AppTextArea({
+const AppTextArea = ({
   minRows = 4,
   maxRows = 8,
   ...textAreaProps
-}: AppTextAreaProps) {
+}: AppTextAreaProps) => {
   return (
     <AppTextField
       {...textAreaProps}
@@ -22,4 +22,6 @@ export default function AppTextArea({
       maxRows={maxRows}
     />
   );
-}
+};
+
+export default AppTextArea;

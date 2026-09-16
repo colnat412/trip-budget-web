@@ -14,10 +14,10 @@ export interface BudgetProgressBarProps {
   currency?: string;
 }
 
-export default function BudgetProgressBar({
+const BudgetProgressBar = ({
   summary,
   currency = 'VND',
-}: BudgetProgressBarProps) {
+}: BudgetProgressBarProps) => {
   const t = useTranslations('expense.progress');
   const totalBudget = summary?.totalBudget ?? 0;
   const actualSpent = summary?.actualSpent ?? 0;
@@ -121,4 +121,6 @@ export default function BudgetProgressBar({
       </Stack>
     </AppCard>
   );
-}
+};
+
+export default BudgetProgressBar;

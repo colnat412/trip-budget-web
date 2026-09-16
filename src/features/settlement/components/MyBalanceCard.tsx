@@ -22,14 +22,14 @@ export interface MyBalanceCardProps {
   onOpenRecordPayment: () => void;
 }
 
-export default function MyBalanceCard({
+const MyBalanceCard = ({
   myBalance,
   myStatus,
   currency,
   totalExpenses,
   totalSettled,
   onOpenRecordPayment,
-}: MyBalanceCardProps) {
+}: MyBalanceCardProps) => {
   const t = useTranslations('settlement');
 
   const isOwed = myStatus === 'OWED';
@@ -221,4 +221,6 @@ export default function MyBalanceCard({
       </Stack>
     </AppCard>
   );
-}
+};
+
+export default MyBalanceCard;

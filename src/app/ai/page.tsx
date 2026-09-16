@@ -1,5 +1,7 @@
 import TripFeaturePlaceholder from '@/features/trip/components/TripFeaturePlaceholder';
 
-export default function AiPage() {
+const AiPage = () => {
   return <TripFeaturePlaceholder feature="ai" />;
-}
+};
+
+export default AiPage;

@@ -22,12 +22,12 @@ export type {
   SidebarUser,
 } from './sidebar/types';
 
-export default function AppSidebar({
+const AppSidebar = ({
   activeMenuId,
   menuItems = DEFAULT_SIDEBAR_MENU,
   currentUser: customUser,
   onMenuChange,
-}: AppSidebarProps) {
+}: AppSidebarProps) => {
   const t = useTranslations('sidebar');
   const pathname = usePathname();
   const { user: contextUser } = useUserContext();
@@ -95,4 +95,6 @@ export default function AppSidebar({
       </Stack>
     </Box>
   );
-}
+};
+
+export default AppSidebar;

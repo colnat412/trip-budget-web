@@ -5,9 +5,9 @@ import { useMutationPost, type MutationCallbacks } from '@/base/hooks';
 import { authMutationKeys } from '../constants/auth-keys';
 import type { LoginData, LoginPayload } from '../types';
 
-export default function useLogin(
+const useLogin = (
   options?: MutationCallbacks<ApiResponse<LoginData>, LoginPayload>,
-) {
+) => {
   const loginMutation = useMutationPost<ApiResponse<LoginData>, LoginPayload>({
     mutationKey: authMutationKeys.login,
     endPoint: '/auth/login',
@@ -17,4 +17,6 @@ export default function useLogin(
   return {
     loginMutation,
   };
-}
+};
+
+export default useLogin;

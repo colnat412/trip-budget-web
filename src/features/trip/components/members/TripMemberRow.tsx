@@ -22,14 +22,14 @@ interface TripMemberRowProps {
   onLeave: (member: TripMember) => void;
 }
 
-export default function TripMemberRow({
+const TripMemberRow = ({
   member,
   isCurrentUserOwner,
   currentUserId,
   onEditRole,
   onRemove,
   onLeave,
-}: TripMemberRowProps) {
+}: TripMemberRowProps) => {
   const t = useTranslations('members');
 
   const menuItems: AppActionMenuItem[] = [];
@@ -153,4 +153,6 @@ export default function TripMemberRow({
       </Stack>
     </Stack>
   );
-}
+};
+
+export default TripMemberRow;

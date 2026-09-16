@@ -29,10 +29,10 @@ export interface SettlementHistoryTableProps {
   onDelete?: (settlement: Settlement) => void;
 }
 
-export default function SettlementHistoryTable({
+const SettlementHistoryTable = ({
   settlements,
   onDelete,
-}: SettlementHistoryTableProps) {
+}: SettlementHistoryTableProps) => {
   const t = useTranslations('settlement');
   const [selectedSettlement, setSelectedSettlement] =
     useState<Settlement | null>(null);
@@ -322,4 +322,6 @@ export default function SettlementHistoryTable({
       )}
     </>
   );
-}
+};
+
+export default SettlementHistoryTable;

@@ -19,14 +19,14 @@ export interface AppToastProps {
   position?: AppToastPosition;
 }
 
-export default function AppToast({
+const AppToast = ({
   open,
   message,
   onClose,
   severity = 'info',
   autoHideDuration = 4_000,
   position = { vertical: 'top', horizontal: 'right' },
-}: AppToastProps) {
+}: AppToastProps) => {
   return (
     <Snackbar
       open={open}
@@ -43,4 +43,6 @@ export default function AppToast({
       </Alert>
     </Snackbar>
   );
-}
+};
+
+export default AppToast;

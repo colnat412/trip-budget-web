@@ -1,5 +1,7 @@
 import Demo from "@/features/demo/components/Demo";
 
-export default function DemoPage() {
+const DemoPage = () => {
   return <Demo />;
-}
+};
+
+export default DemoPage;

@@ -32,7 +32,7 @@ const STATUS_CONFIG_MAP: Record<
   DELETED: { variant: 'error', labelKey: 'draft' },
 };
 
-export default function TripStatusChip({ status }: TripStatusChipProps) {
+const TripStatusChip = ({ status }: TripStatusChipProps) => {
   const t = useTranslations('trip');
   const config = STATUS_CONFIG_MAP[status] || STATUS_CONFIG_MAP.DRAFT;
   const label = t(config.labelKey) || status;
@@ -111,4 +111,6 @@ export default function TripStatusChip({ status }: TripStatusChipProps) {
       }}
     />
   );
-}
+};
+
+export default TripStatusChip;

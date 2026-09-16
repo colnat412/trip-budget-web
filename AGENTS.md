@@ -1034,6 +1034,35 @@ Tuyệt đối **không định nghĩa nhiều components trong cùng 1 file** (
 - Tách riêng các Host/Wrapper component (ví dụ: `CreateTripHost.tsx` tách khỏi `AppShell.tsx`).
 - Giúp code rõ ràng, giảm độ phức tạp của từng file, dễ bảo trì, dễ viết unit test và tái sử dụng độc lập.
 
+### Quy tắc Khai Báo Component Dạng Const Arrow Function & Export Default (Arrow Function Component Convention)
+
+Toàn bộ React component (bao gồm cả Pages, Layouts, Features, và Base Components) **bắt buộc phải được khai báo dưới dạng `const` arrow function** và đặt câu lệnh `export default ComponentName;` ở dòng cuối cùng của file.
+
+- **Nghiêm cấm**: Tuyệt đối không sử dụng cú pháp `export default function ComponentName() { ... }` hoặc anonymous export default `export default () => { ... }`.
+- **Cú pháp chuẩn bắt buộc**:
+
+  ```tsx
+  interface MyComponentProps {
+    title: string;
+  }
+
+  const MyComponent = ({ title }: MyComponentProps) => {
+    return (
+      <Box>
+        <Typography>{title}</Typography>
+      </Box>
+    );
+  };
+
+  export default MyComponent;
+  ```
+
+- **Lý do**:
+  1. Đồng nhất 100% phong cách viết component xuyên suốt dự án.
+  2. Tách biệt rõ ràng phần định nghĩa component và phần export, giúp code nhất quán và tránh hoisting không mong muốn.
+  3. Dễ dàng gán kiểu (như `React.FC`) hoặc định nghĩa generic types khi cần mở rộng.
+  4. Hỗ trợ hiển thị tên Component rõ ràng trong React DevTools và stack traces khi debug.
+
 ### Quy tắc Sử dụng Palette Theme Cho Màu Sắc & Trạng Thái (Theme-First Palette Tokenization)
 
 Nghiêm cấm **hardcode mã màu hex tĩnh** (`#15803D`, `#3B82F6`, `#F97316`...) trực tiếp vào component, badges, status chips, hoặc styles.
@@ -1480,6 +1509,20 @@ If the user has already supplied a specific task, do not block on a broad questi
       - Kiểm thử:
         - Backend: `./mvnw test-compile -q -o` -> BUILD SUCCESS (0 errors).
         - Frontend: `npx tsc --noEmit && npm run lint` -> 0 errors, 0 warnings.
+
+22. **Chuẩn Hóa Toàn Bộ Khai Báo React Components & Hooks Sang Const Arrow Function & Export Default**:
+    - **Quy chuẩn bắt buộc**: Toàn bộ React components (Pages, Layouts, Features, Base UI Primitives, Tables) và custom hooks trong dự án bắt buộc được khai báo theo mẫu `const ComponentName = (props: Props) => { ... }; export default ComponentName;` ở cuối file. Tuyệt đối nghiêm cấm dùng `export default function` hoặc `export default async function`.
+    - **Cập nhật tài liệu**: Bổ sung chi tiết quy tắc "Quy tắc Khai Báo Component Dạng Const Arrow Function & Export Default" vào Mục 7 của `AGENTS.md` làm tiêu chuẩn kỹ thuật bắt buộc cho mọi yêu cầu phát triển tiếp theo.
+    - **Refactor Toàn Bộ 100% Source Code (92 Files)**:
+      - App Router (`src/app/`): `layout.tsx`, `ai/page.tsx`, `demo/page.tsx`, `expenses/page.tsx`, `overview/page.tsx`, `scan/page.tsx`, `settlement/page.tsx`, `trips/page.tsx`.
+      - Base Layout & Sidebar (`src/base/components/layout/`): `AppShell`, `AppSidebar`, `AppTopBar`, `CreateTripHost`, `GlobalLoadingHost`, `TripMembersHost`, `SidebarBrand`, `SidebarMenu`, `SidebarTripCard`, `SidebarUser`, `SidebarUserMenu`.
+      - Base Table & Primitives (`src/base/components/table/` & `ui/`): `AppTable`, `AppColumnHeader`, `AppColumnFilterPopover`, `AppTablePagination`, `AppButton`, `AppCard`, `AppDialog`, `AppConfirmDialog`, `AppNumberInput`, `AppSelect`, `AppTextField`, `AppTextArea`, `AppToast`, `AppLoadingOverlay`, `AppCategoryChip`, `AppActionMenu`, `AppLinearProgress`.
+      - Base Hooks & Providers: `useQueryGet`, `useMutationPost`, `useMutationPut`, `useMutationDelete`, `useMutationRequest`, `AppThemeProvider`.
+      - Feature Chuyến Đi (`src/features/trip/`): Toàn bộ components quản lý chuyến đi (`MyTrips`, `TripTable`, `TripTableRow`, `TripStatusChip`, `TripMembersDialog`, `ActiveTripBanner`, `Overview`...), và hooks `useMyTrips`, `useTripDetail`, `useTripMutation`.
+      - Feature Chi Tiêu (`src/features/expense/`): Toàn bộ components ngân sách (`BudgetMetricsCards`, `ExpenseTable`, `AddExpenseDialog`, `ExpenseOverview`...), và hooks `useTripExpenses`, `useTripBudgetSummary`, `useExpenseMutation`.
+      - Feature Quyết Toán (`src/features/settlement/`): Toàn bộ components quyết toán (`MyBalanceCard`, `SuggestedSettlementCard`, `MemberBalancesTable`, `SettlementHistoryTable`, `RecordSettlementDialog`, `SettlementOverview`...).
+      - Feature User & Auth: `ProfileDialog`, `ProfileForm`, `useCurrentUser`, `useLogin`, `useLogout`.
+    - **Kiểm thử chất lượng**: `npx tsc --noEmit` -> 0 errors, `npm run lint` -> 0 errors, 0 warnings. Không còn bất kỳ file nào tồn tại cú pháp cũ `export default function`.
 
 ### Immediate likely next tasks:
 

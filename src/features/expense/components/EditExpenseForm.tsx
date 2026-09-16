@@ -31,12 +31,12 @@ export interface EditExpenseFormProps {
   onCancel: () => void;
 }
 
-export default function EditExpenseForm({
+const EditExpenseForm = ({
   expense,
   isLoading = false,
   onSubmit,
   onCancel,
-}: EditExpenseFormProps) {
+}: EditExpenseFormProps) => {
   const tForm = useTranslations('expense.form');
   const tCat = useTranslations('expense.categories');
   const tSplits = useTranslations('expense.splits.options');
@@ -244,4 +244,6 @@ export default function EditExpenseForm({
       </Stack>
     </Box>
   );
-}
+};
+
+export default EditExpenseForm;

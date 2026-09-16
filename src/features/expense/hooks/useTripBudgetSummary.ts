@@ -10,10 +10,10 @@ interface UseTripBudgetSummaryParams {
   enabled?: boolean;
 }
 
-export default function useTripBudgetSummary({
+const useTripBudgetSummary = ({
   tripId,
   enabled = true,
-}: UseTripBudgetSummaryParams) {
+}: UseTripBudgetSummaryParams) => {
   const isEnabled = enabled && Boolean(tripId);
 
   const query = useQueryGet<ApiResponse<TripBudgetSummary>>({
@@ -26,4 +26,6 @@ export default function useTripBudgetSummary({
     ...query,
     summary: query.data?.data ?? null,
   };
-}
+};
+
+export default useTripBudgetSummary;

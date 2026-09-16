@@ -20,7 +20,7 @@ export interface UseTripExpensesParams {
   enabled?: boolean;
 }
 
-export default function useTripExpenses({
+const useTripExpenses = ({
   tripId,
   page = 0,
   size = 10,
@@ -33,7 +33,7 @@ export default function useTripExpenses({
   sortDirection,
   sort,
   enabled = true,
-}: UseTripExpensesParams) {
+}: UseTripExpensesParams) => {
   const isEnabled = enabled && Boolean(tripId);
   const effectiveSort =
     sort || (sortBy ? `${sortBy},${sortDirection || 'asc'}` : undefined);
@@ -76,4 +76,6 @@ export default function useTripExpenses({
     expenses: query.data?.data?.items ?? [],
     pagination: query.data?.data?.pagination ?? null,
   };
-}
+};
+
+export default useTripExpenses;

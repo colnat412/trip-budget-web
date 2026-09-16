@@ -39,7 +39,7 @@ import type {
   UpdateExpensePayload,
 } from '../types';
 
-export default function ExpenseOverview() {
+const ExpenseOverview = () => {
   const router = useRouter();
   const t = useTranslations('expense');
   const { activeTrip } = useTripContext();
@@ -443,4 +443,6 @@ export default function ExpenseOverview() {
       />
     </Stack>
   );
-}
+};
+
+export default ExpenseOverview;

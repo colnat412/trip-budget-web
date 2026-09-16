@@ -25,7 +25,7 @@ import AppColumnHeader from './AppColumnHeader';
 import AppTablePagination from './AppTablePagination';
 import type { AppTableProps, ColumnFilterValue, TableSortState } from './types';
 
-export default function AppTable<T>({
+const AppTable = <T,>({
   columns,
   data,
   keyExtractor,
@@ -44,7 +44,7 @@ export default function AppTable<T>({
   onFilterChange: controlledOnFilterChange,
   minWidth = 650,
   sx,
-}: AppTableProps<T>) {
+}: AppTableProps<T>) => {
   const t = useTranslations('table');
 
   const [internalSort, setInternalSort] = useState<TableSortState | null>(null);
@@ -439,4 +439,6 @@ export default function AppTable<T>({
       )}
     </Stack>
   );
-}
+};
+
+export default AppTable;

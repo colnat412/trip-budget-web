@@ -1,5 +1,7 @@
 import TripFeaturePlaceholder from '@/features/trip/components/TripFeaturePlaceholder';
 
-export default function ScanPage() {
+const ScanPage = () => {
   return <TripFeaturePlaceholder feature="scan" />;
-}
+};
+
+export default ScanPage;

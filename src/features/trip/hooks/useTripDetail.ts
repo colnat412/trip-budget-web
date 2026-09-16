@@ -10,10 +10,10 @@ interface UseTripDetailParams {
   enabled?: boolean;
 }
 
-export default function useTripDetail({
+const useTripDetail = ({
   tripId,
   enabled = true,
-}: UseTripDetailParams) {
+}: UseTripDetailParams) => {
   const query = useQueryGet<ApiResponse<Trip>>({
     queryKey: tripQueryKeys.detail(tripId ?? 'none'),
     endPoint: `/trip/${tripId}`,
@@ -24,4 +24,6 @@ export default function useTripDetail({
     ...query,
     trip: query.data?.data ?? null,
   };
-}
+};
+
+export default useTripDetail;

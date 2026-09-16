@@ -17,10 +17,10 @@ export interface AppShellProps {
   sidebarDisabledPaths?: readonly string[];
 }
 
-export default function AppShell({
+const AppShell = ({
   children,
   sidebarDisabledPaths = [],
-}: AppShellProps) {
+}: AppShellProps) => {
   const pathname = usePathname();
   const showSidebar = !sidebarDisabledPaths.includes(pathname);
 
@@ -68,4 +68,6 @@ export default function AppShell({
       </TripProvider>
     </UserProvider>
   );
-}
+};
+
+export default AppShell;

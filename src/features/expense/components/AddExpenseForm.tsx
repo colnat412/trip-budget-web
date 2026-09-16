@@ -32,13 +32,13 @@ export interface AddExpenseFormProps {
   onCancel: () => void;
 }
 
-export default function AddExpenseForm({
+const AddExpenseForm = ({
   tripCurrency = 'VND',
   isLoading = false,
   members = [],
   onSubmit,
   onCancel,
-}: AddExpenseFormProps) {
+}: AddExpenseFormProps) => {
   const tForm = useTranslations('expense.form');
   const tCat = useTranslations('expense.categories');
   const tSplits = useTranslations('expense.splits.options');
@@ -265,4 +265,6 @@ export default function AddExpenseForm({
       </Stack>
     </Box>
   );
-}
+};
+
+export default AddExpenseForm;

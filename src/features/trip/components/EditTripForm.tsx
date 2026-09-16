@@ -31,11 +31,11 @@ const CURRENCY_OPTIONS = [
   { value: 'USD', label: 'USD' },
 ];
 
-export default function EditTripForm({
+const EditTripForm = ({
   trip,
   onClose,
   onSuccess,
-}: EditTripFormProps) {
+}: EditTripFormProps) => {
   const t = useTranslations('trip');
   const tMyTrips = useTranslations('myTrips');
 
@@ -237,4 +237,6 @@ export default function EditTripForm({
       </Box>
     </>
   );
-}
+};
+
+export default EditTripForm;

@@ -24,11 +24,11 @@ interface InviteMemberFormProps {
   isSubmitting: boolean;
 }
 
-export default function InviteMemberForm({
+const InviteMemberForm = ({
   onSubmit,
   onCancel,
   isSubmitting,
-}: InviteMemberFormProps) {
+}: InviteMemberFormProps) => {
   const t = useTranslations('members');
 
   const [email, setEmail] = useState('');
@@ -167,4 +167,6 @@ export default function InviteMemberForm({
       </Stack>
     </Box>
   );
-}
+};
+
+export default InviteMemberForm;

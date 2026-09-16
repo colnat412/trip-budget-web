@@ -15,13 +15,13 @@ export interface DeleteExpenseDialogProps {
   onConfirm: () => void;
 }
 
-export default function DeleteExpenseDialog({
+const DeleteExpenseDialog = ({
   open,
   expense,
   isLoading = false,
   onClose,
   onConfirm,
-}: DeleteExpenseDialogProps) {
+}: DeleteExpenseDialogProps) => {
   const t = useTranslations('expense');
 
   if (!expense) return null;
@@ -51,4 +51,6 @@ export default function DeleteExpenseDialog({
       loading={isLoading}
     />
   );
-}
+};
+
+export default DeleteExpenseDialog;

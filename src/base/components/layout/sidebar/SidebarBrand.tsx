@@ -1,7 +1,7 @@
 import FlightTakeoffRoundedIcon from "@mui/icons-material/FlightTakeoffRounded";
 import { Box, Stack, Typography } from "@mui/material";
 
-export default function SidebarBrand() {
+const SidebarBrand = () => {
   return (
     <Stack direction="row" spacing={1.25} sx={{ alignItems: "center", px: 1 }}>
       <Box
@@ -34,4 +34,6 @@ export default function SidebarBrand() {
       </Box>
     </Stack>
   );
-}
+};
+
+export default SidebarBrand;

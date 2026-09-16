@@ -22,13 +22,13 @@ interface TripTableRowProps {
   onDeleteTrip?: (trip: Trip) => void;
 }
 
-export default function TripTableRow({
+const TripTableRow = ({
   trip,
   isSelected,
   onSelectTrip,
   onEditTrip,
   onDeleteTrip,
-}: TripTableRowProps) {
+}: TripTableRowProps) => {
   const t = useTranslations('myTrips');
   const dateRangeStr = formatDateRange(trip.startDate, trip.endDate);
 
@@ -180,4 +180,6 @@ export default function TripTableRow({
       </TableCell>
     </TableRow>
   );
-}
+};
+
+export default TripTableRow;

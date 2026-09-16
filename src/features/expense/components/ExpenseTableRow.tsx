@@ -17,12 +17,12 @@ export interface ExpenseTableRowProps {
   onViewDetail?: (expense: Expense) => void;
 }
 
-export default function ExpenseTableRow({
+const ExpenseTableRow = ({
   expense,
   onEdit,
   onDelete,
   onViewDetail,
-}: ExpenseTableRowProps) {
+}: ExpenseTableRowProps) => {
   const t = useTranslations('expense');
 
   const menuItems = [
@@ -199,4 +199,6 @@ export default function ExpenseTableRow({
       </TableCell>
     </TableRow>
   );
-}
+};
+
+export default ExpenseTableRow;

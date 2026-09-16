@@ -10,7 +10,7 @@ import CategoryList from './overview/CategoryList';
 import EmptyTripState from './overview/EmptyTripState';
 import RecentExpenseList from './overview/RecentExpenseList';
 
-export default function Overview() {
+const Overview = () => {
   const t = useTranslations('overview');
   const { trips, activeTrip, isLoading, openCreateTrip } = useTripContext();
 
@@ -143,4 +143,6 @@ export default function Overview() {
       </Box>
     </Stack>
   );
-}
+};
+
+export default Overview;

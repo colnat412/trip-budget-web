@@ -18,14 +18,14 @@ interface UseMutationPutParams<TResponse, TPayload> {
   config?: AxiosRequestConfig;
 }
 
-export default function useMutationPut<TResponse, TPayload>({
+const useMutationPut = <TResponse, TPayload>({
   mutationKey,
   endPoint,
   options,
   getEndPoint,
   getPayload,
   config,
-}: UseMutationPutParams<TResponse, TPayload>) {
+}: UseMutationPutParams<TResponse, TPayload>) => {
   return useMutationRequest<TResponse, TPayload>({
     mutationKey,
     options,
@@ -36,4 +36,6 @@ export default function useMutationPut<TResponse, TPayload>({
         config,
       ),
   });
-}
+};
+
+export default useMutationPut;

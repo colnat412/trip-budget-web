@@ -306,7 +306,7 @@ function FilterPopoverForm<T>({
   );
 }
 
-export default function AppColumnFilterPopover<T>({
+const AppColumnFilterPopover = <T,>({
   anchorEl,
   open,
   onClose,
@@ -314,7 +314,7 @@ export default function AppColumnFilterPopover<T>({
   currentValue,
   onApply,
   onReset,
-}: AppColumnFilterPopoverProps<T>) {
+}: AppColumnFilterPopoverProps<T>) => {
   return (
     <Popover
       open={open}
@@ -354,4 +354,6 @@ export default function AppColumnFilterPopover<T>({
       )}
     </Popover>
   );
-}
+};
+
+export default AppColumnFilterPopover;

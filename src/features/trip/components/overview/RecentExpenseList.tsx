@@ -15,10 +15,10 @@ export interface RecentExpenseListProps {
   currency?: string;
 }
 
-export default function RecentExpenseList({
+const RecentExpenseList = ({
   tripId,
   currency = 'VND',
-}: RecentExpenseListProps) {
+}: RecentExpenseListProps) => {
   const tExpense = useTranslations('expense');
   const [selectedExpense, setSelectedExpense] = useState<Expense | null>(null);
 
@@ -185,4 +185,6 @@ export default function RecentExpenseList({
       />
     </>
   );
-}
+};
+
+export default RecentExpenseList;

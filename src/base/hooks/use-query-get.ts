@@ -24,14 +24,14 @@ interface UseQueryGetParams<TResponse> {
   config?: AxiosRequestConfig;
 }
 
-export default function useQueryGet<TResponse>({
+const useQueryGet = <TResponse>({
   queryKey,
   endPoint,
   enabled = true,
   options,
   getEndPoint,
   config,
-}: UseQueryGetParams<TResponse>) {
+}: UseQueryGetParams<TResponse>) => {
   const [data, setData] = useState<TResponse | null>(null);
   const [error, setError] = useState<ApiError | null>(null);
   const [isFetching, setIsFetching] = useState(false);
@@ -141,4 +141,6 @@ export default function useQueryGet<TResponse>({
     refetch,
     clearError,
   };
-}
+};
+
+export default useQueryGet;

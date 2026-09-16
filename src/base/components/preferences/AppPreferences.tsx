@@ -18,7 +18,7 @@ import { axiosPut } from '@/base/api';
 import { AppToast } from '@/base/components/ui';
 import type { AppLocale } from '@/i18n/config';
 
-export default function AppPreferences() {
+const AppPreferences = () => {
   const t = useTranslations('preferences');
   const locale = useLocale();
   const router = useRouter();
@@ -97,4 +97,6 @@ export default function AppPreferences() {
       </Tooltip>
     </Stack>
   );
-}
+};
+
+export default AppPreferences;

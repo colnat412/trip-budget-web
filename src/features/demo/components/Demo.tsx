@@ -6,7 +6,7 @@ import { Box, Card, CardContent, Stack } from "@mui/material";
 import { AppButton, AppCard, AppTextArea, AppTextField } from "@/base/components/ui";
 import { useTranslations } from "next-intl";
 
-export default function Demo() {
+const Demo = () => {
   const t = useTranslations("demo");
 
   return (
@@ -34,4 +34,6 @@ export default function Demo() {
       </Card>
     </Box>
   );
-}
+};
+
+export default Demo;

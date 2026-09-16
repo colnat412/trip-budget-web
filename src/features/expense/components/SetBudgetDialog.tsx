@@ -16,14 +16,14 @@ export interface SetBudgetDialogProps {
   onSubmit: (payload: SetBudgetPayload) => void;
 }
 
-export default function SetBudgetDialog({
+const SetBudgetDialog = ({
   open,
   summary,
   tripCurrency = 'VND',
   isLoading = false,
   onClose,
   onSubmit,
-}: SetBudgetDialogProps) {
+}: SetBudgetDialogProps) => {
   const t = useTranslations('expense');
 
   return (
@@ -44,4 +44,6 @@ export default function SetBudgetDialog({
       />
     </AppDialog>
   );
-}
+};
+
+export default SetBudgetDialog;

@@ -15,7 +15,7 @@ interface ActiveTripBannerProps {
   trip: Trip;
 }
 
-export default function ActiveTripBanner({ trip }: ActiveTripBannerProps) {
+const ActiveTripBanner = ({ trip }: ActiveTripBannerProps) => {
   const t = useTranslations('overview');
   const tTrip = useTranslations('trip');
   const tMembers = useTranslations('members');
@@ -236,4 +236,6 @@ export default function ActiveTripBanner({ trip }: ActiveTripBannerProps) {
       </Box>
     </Box>
   );
-}
+};
+
+export default ActiveTripBanner;

@@ -3,9 +3,9 @@
 import type { ApiResponse } from '@/base/api';
 import { useMutationPost, type MutationCallbacks } from '@/base/hooks';
 
-export default function useLogout(
+const useLogout = (
   options?: MutationCallbacks<ApiResponse<null>, Record<string, never>>,
-) {
+) => {
   const logoutMutation = useMutationPost<
     ApiResponse<null>,
     Record<string, never>
@@ -19,4 +19,6 @@ export default function useLogout(
     ...logoutMutation,
     logoutMutation,
   };
-}
+};
+
+export default useLogout;

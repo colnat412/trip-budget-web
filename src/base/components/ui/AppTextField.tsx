@@ -4,12 +4,12 @@ import { TextField, TextFieldProps } from '@mui/material';
 
 export type AppTextFieldProps = TextFieldProps;
 
-export default function AppTextField({
+const AppTextField = ({
   fullWidth = true,
   size = 'medium',
   variant = 'outlined',
   ...textFieldProps
-}: AppTextFieldProps) {
+}: AppTextFieldProps) => {
   return (
     <TextField
       {...textFieldProps}
@@ -18,4 +18,6 @@ export default function AppTextField({
       variant={variant}
     />
   );
-}
+};
+
+export default AppTextField;

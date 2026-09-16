@@ -1,5 +1,7 @@
 import SettlementOverview from '@/features/settlement/components/SettlementOverview';
 
-export default function SettlementPage() {
+const SettlementPage = () => {
   return <SettlementOverview />;
-}
+};
+
+export default SettlementPage;

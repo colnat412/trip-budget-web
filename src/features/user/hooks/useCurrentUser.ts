@@ -4,7 +4,7 @@ import type { ApiResponse } from '@/base/api';
 import { useQueryGet } from '@/base/hooks';
 import type { UserProfile } from '@/features/auth/types';
 
-export default function useCurrentUser(enabled = true) {
+const useCurrentUser = (enabled = true) => {
   const query = useQueryGet<ApiResponse<UserProfile>>({
     queryKey: ['auth', 'me'],
     endPoint: '/auth/me',
@@ -21,4 +21,6 @@ export default function useCurrentUser(enabled = true) {
     ...query,
     user,
   };
-}
+};
+
+export default useCurrentUser;

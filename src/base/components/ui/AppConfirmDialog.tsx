@@ -29,7 +29,7 @@ export interface AppConfirmDialogProps {
   icon?: ReactNode;
 }
 
-export default function AppConfirmDialog({
+const AppConfirmDialog = ({
   open,
   onClose,
   onConfirm,
@@ -40,7 +40,7 @@ export default function AppConfirmDialog({
   intent = 'danger',
   loading = false,
   icon,
-}: AppConfirmDialogProps) {
+}: AppConfirmDialogProps) => {
   const getDefaultIcon = () => {
     switch (intent) {
       case 'danger':
@@ -181,4 +181,6 @@ export default function AppConfirmDialog({
       </Box>
     </Dialog>
   );
-}
+};
+
+export default AppConfirmDialog;

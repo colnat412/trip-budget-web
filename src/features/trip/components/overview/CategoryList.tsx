@@ -14,10 +14,10 @@ export interface CategoryListProps {
   currency?: string;
 }
 
-export default function CategoryList({
+const CategoryList = ({
   tripId,
   currency = 'VND',
-}: CategoryListProps) {
+}: CategoryListProps) => {
   const tExpense = useTranslations('expense');
 
   const { summary, isLoading } = useTripBudgetSummary({ tripId });
@@ -177,4 +177,6 @@ export default function CategoryList({
       })}
     </Stack>
   );
-}
+};
+
+export default CategoryList;

@@ -15,10 +15,10 @@ export interface SuggestedSettlementCardProps {
   onSettle: (settlement: SuggestedSettlement) => void;
 }
 
-export default function SuggestedSettlementCard({
+const SuggestedSettlementCard = ({
   settlement,
   onSettle,
-}: SuggestedSettlementCardProps) {
+}: SuggestedSettlementCardProps) => {
   const t = useTranslations('settlement');
 
   return (
@@ -115,4 +115,6 @@ export default function SuggestedSettlementCard({
       </Box>
     </AppCard>
   );
-}
+};
+
+export default SuggestedSettlementCard;

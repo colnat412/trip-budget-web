@@ -10,11 +10,11 @@ export interface SidebarMenuProps {
   onChange?: (id: string) => void;
 }
 
-export default function SidebarMenu({
+const SidebarMenu = ({
   items,
   selectedId,
   onChange,
-}: SidebarMenuProps) {
+}: SidebarMenuProps) => {
   const t = useTranslations("sidebar");
 
   return (
@@ -63,4 +63,6 @@ export default function SidebarMenu({
       })}
     </Stack>
   );
-}
+};
+
+export default SidebarMenu;

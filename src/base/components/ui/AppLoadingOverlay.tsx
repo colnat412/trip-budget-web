@@ -7,10 +7,10 @@ export interface AppLoadingOverlayProps {
   message?: string;
 }
 
-export default function AppLoadingOverlay({
+const AppLoadingOverlay = ({
   open,
   message,
-}: AppLoadingOverlayProps) {
+}: AppLoadingOverlayProps) => {
   return (
     <Backdrop
       open={open}
@@ -60,4 +60,6 @@ export default function AppLoadingOverlay({
       </Box>
     </Backdrop>
   );
-}
+};
+
+export default AppLoadingOverlay;

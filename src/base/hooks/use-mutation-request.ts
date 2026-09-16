@@ -21,11 +21,11 @@ interface UseMutationRequestParams<TResponse, TPayload> {
   options?: MutationCallbacks<TResponse, TPayload>;
 }
 
-export default function useMutationRequest<TResponse, TPayload>({
+const useMutationRequest = <TResponse, TPayload>({
   mutationKey,
   mutationFn,
   options,
-}: UseMutationRequestParams<TResponse, TPayload>) {
+}: UseMutationRequestParams<TResponse, TPayload>) => {
   const [data, setData] = useState<TResponse | null>(null);
   const [error, setError] = useState<ApiError | null>(null);
   const [isPending, setIsPending] = useState(false);
@@ -120,4 +120,6 @@ export default function useMutationRequest<TResponse, TPayload>({
     reset,
     clearError,
   };
-}
+};
+
+export default useMutationRequest;

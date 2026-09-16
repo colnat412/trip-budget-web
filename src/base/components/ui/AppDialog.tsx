@@ -25,7 +25,7 @@ export interface AppDialogProps {
   fullWidth?: boolean;
 }
 
-export default function AppDialog({
+const AppDialog = ({
   open,
   onClose,
   title,
@@ -35,7 +35,7 @@ export default function AppDialog({
   actions,
   maxWidth = 'sm',
   fullWidth = true,
-}: AppDialogProps) {
+}: AppDialogProps) => {
   return (
     <Dialog
       open={open}
@@ -123,4 +123,6 @@ export default function AppDialog({
       )}
     </Dialog>
   );
-}
+};
+
+export default AppDialog;

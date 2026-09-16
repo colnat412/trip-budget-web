@@ -13,7 +13,7 @@ import EditTripDialog from './EditTripDialog';
 import DeleteTripDialog from './DeleteTripDialog';
 import type { Trip } from '../types';
 
-export default function MyTrips() {
+const MyTrips = () => {
   const router = useRouter();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -139,4 +139,6 @@ export default function MyTrips() {
       />
     </Stack>
   );
-}
+};
+
+export default MyTrips;

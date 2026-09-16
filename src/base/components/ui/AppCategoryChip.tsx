@@ -75,13 +75,13 @@ type KnownCategory =
   | 'ENTERTAINMENT'
   | 'OTHER';
 
-export default function AppCategoryChip({
+const AppCategoryChip = ({
   category,
   size = 'small',
   sx,
   label: customLabel,
   ...chipProps
-}: AppCategoryChipProps) {
+}: AppCategoryChipProps) => {
   const t = useTranslations('expense.categories');
   const config = CATEGORY_CONFIG[category] || CATEGORY_CONFIG.OTHER;
   const label =
@@ -107,4 +107,6 @@ export default function AppCategoryChip({
       }}
     />
   );
-}
+};
+
+export default AppCategoryChip;

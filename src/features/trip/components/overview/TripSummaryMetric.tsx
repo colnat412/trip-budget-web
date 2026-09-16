@@ -8,11 +8,11 @@ interface TripSummaryMetricProps {
   danger?: boolean;
 }
 
-export default function TripSummaryMetric({
+const TripSummaryMetric = ({
   label,
   value,
   danger = false,
-}: TripSummaryMetricProps) {
+}: TripSummaryMetricProps) => {
   return (
     <Stack spacing={0.5} sx={{ flex: '1 1 180px', minWidth: 0 }}>
       <Typography
@@ -38,4 +38,6 @@ export default function TripSummaryMetric({
       </Typography>
     </Stack>
   );
-}
+};
+
+export default TripSummaryMetric;

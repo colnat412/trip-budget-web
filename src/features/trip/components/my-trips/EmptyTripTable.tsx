@@ -11,7 +11,7 @@ interface EmptyTripTableProps {
   onCreateTrip: () => void;
 }
 
-export default function EmptyTripTable({ onCreateTrip }: EmptyTripTableProps) {
+const EmptyTripTable = ({ onCreateTrip }: EmptyTripTableProps) => {
   const t = useTranslations('myTrips');
 
   return (
@@ -67,4 +67,6 @@ export default function EmptyTripTable({ onCreateTrip }: EmptyTripTableProps) {
       </TableCell>
     </TableRow>
   );
-}
+};
+
+export default EmptyTripTable;

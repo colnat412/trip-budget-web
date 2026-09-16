@@ -19,7 +19,7 @@ export interface UseMyTripsParams {
   enabled?: boolean;
 }
 
-export default function useMyTrips(params?: UseMyTripsParams) {
+const useMyTrips = (params?: UseMyTripsParams) => {
   const page = params?.page ?? 0;
   const size = params?.size ?? 10;
   const search = params?.search;
@@ -68,4 +68,6 @@ export default function useMyTrips(params?: UseMyTripsParams) {
     trips: query.data?.data?.items ?? [],
     pagination: query.data?.data?.pagination ?? null,
   };
-}
+};
+
+export default useMyTrips;

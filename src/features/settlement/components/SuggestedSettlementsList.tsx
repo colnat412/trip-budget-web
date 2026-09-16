@@ -14,10 +14,10 @@ export interface SuggestedSettlementsListProps {
   onSettle: (settlement: SuggestedSettlement) => void;
 }
 
-export default function SuggestedSettlementsList({
+const SuggestedSettlementsList = ({
   suggestedSettlements,
   onSettle,
-}: SuggestedSettlementsListProps) {
+}: SuggestedSettlementsListProps) => {
   const t = useTranslations('settlement');
 
   if (suggestedSettlements.length === 0) {
@@ -57,4 +57,6 @@ export default function SuggestedSettlementsList({
       ))}
     </Stack>
   );
-}
+};
+
+export default SuggestedSettlementsList;
