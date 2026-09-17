@@ -4,6 +4,8 @@ import React, { useMemo, useState } from 'react';
 import {
   Box,
   Chip,
+  Collapse,
+  LinearProgress,
   Paper,
   Skeleton,
   Stack,
@@ -30,6 +32,7 @@ const AppTable = <T,>({
   data,
   keyExtractor,
   isLoading = false,
+  isFetching = false,
   loadingRowsCount = 5,
   pagination,
   emptyState,
@@ -111,6 +114,8 @@ const AppTable = <T,>({
   }, [activeFilters]);
 
   const displayData = data;
+  const shouldShowSkeleton =
+    (isLoading || isFetching) && displayData.length === 0;
 
   const defaultKeyExtractor = (item: T, index: number): string | number => {
     if (keyExtractor) return keyExtractor(item, index);
@@ -140,7 +145,7 @@ const AppTable = <T,>({
     >
       {header && <Box>{header}</Box>}
 
-      {activeFilterEntries.length > 0 && (
+      <Collapse in={activeFilterEntries.length > 0} unmountOnExit>
         <Stack
           direction="row"
           sx={{
@@ -227,6 +232,18 @@ const AppTable = <T,>({
             {t('clearAll')}
           </AppButton>
         </Stack>
+      </Collapse>
+
+      {isFetching && !shouldShowSkeleton && (
+        <LinearProgress
+          sx={{
+            height: '3px',
+            bgcolor: 'transparent',
+            '& .MuiLinearProgress-bar': {
+              bgcolor: 'primary.main',
+            },
+          }}
+        />
       )}
 
       <TableContainer
@@ -254,8 +271,13 @@ const AppTable = <T,>({
             </TableRow>
           </TableHead>
 
-          <TableBody>
-            {isLoading ? (
+          <TableBody
+            sx={{
+              opacity: isFetching && !shouldShowSkeleton ? 0.6 : 1,
+              transition: 'opacity 0.2s ease',
+            }}
+          >
+            {shouldShowSkeleton ? (
               Array.from({ length: loadingRowsCount }).map((_, rIdx) => (
                 <TableRow key={rIdx}>
                   {columns.map((col, cIdx) => (

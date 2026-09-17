@@ -97,7 +97,8 @@ const MyTrips = () => {
 
       <TripTable
         trips={trips}
-        isLoading={isLoading || isFetching}
+        isLoading={isLoading}
+        isFetching={isFetching}
         activeTripId={activeTrip?.id ?? null}
         onSelectTrip={handleSelectTrip}
         onCreateTrip={openCreateTrip}

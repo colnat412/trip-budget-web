@@ -109,6 +109,7 @@ const ExpenseOverview = () => {
     expenses,
     pagination,
     isLoading: isExpensesLoading,
+    isFetching: isExpensesFetching,
     refetch: refetchExpenses,
   } = useTripExpenses({
     tripId,
@@ -382,6 +383,7 @@ const ExpenseOverview = () => {
       <ExpenseTable
         expenses={expenses}
         isLoading={isExpensesLoading || isSummaryLoading}
+        isFetching={isExpensesFetching}
         pagination={pagination}
         onPageChange={(newPage) => setPage(newPage)}
         onViewDetail={(expense) => setDetailExpense(expense)}

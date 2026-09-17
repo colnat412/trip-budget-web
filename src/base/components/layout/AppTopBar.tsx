@@ -85,14 +85,14 @@ const AppTopBar = () => {
           {tTrip('createTrip')}
         </AppButton>
 
-        <AppButton
+        {/* <AppButton
           size="small"
           intent="secondary"
           startIcon={<AddRoundedIcon />}
           sx={{ display: { xs: 'none', md: 'inline-flex' } }}
         >
           {t('addExpense')}
-        </AppButton>
+        </AppButton> */}
 
         <AppButton
           size="small"

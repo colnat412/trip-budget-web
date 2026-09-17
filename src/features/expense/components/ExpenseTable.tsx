@@ -23,9 +23,10 @@ import type { Expense, Pagination } from '../types';
 
 export interface ExpenseTableProps {
   expenses: Expense[];
-  isLoading: boolean;
-  pagination: Pagination | null;
-  onPageChange: (newPage: number) => void;
+  isLoading?: boolean;
+  isFetching?: boolean;
+  pagination?: Pagination | null;
+  onPageChange?: (newPage: number) => void;
   onEdit: (expense: Expense) => void;
   onDelete: (expense: Expense) => void;
   onAddNew: () => void;
@@ -39,6 +40,7 @@ export interface ExpenseTableProps {
 const ExpenseTable = ({
   expenses,
   isLoading,
+  isFetching = false,
   pagination,
   onPageChange,
   onEdit,
@@ -287,6 +289,7 @@ const ExpenseTable = ({
       columns={columns}
       data={expenses}
       isLoading={isLoading}
+      isFetching={isFetching}
       onRowClick={onViewDetail}
       sort={sort}
       onSortChange={onSortChange}
@@ -324,7 +327,7 @@ const ExpenseTable = ({
         </Stack>
       }
       pagination={
-        totalElements > 0
+        totalElements > 0 && onPageChange
           ? {
               page,
               pageSize: size,

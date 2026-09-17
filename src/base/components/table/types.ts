@@ -62,6 +62,7 @@ export interface AppTableProps<T> {
   data: T[];
   keyExtractor?: (item: T, index: number) => string | number;
   isLoading?: boolean;
+  isFetching?: boolean;
   loadingRowsCount?: number;
   pagination?: AppTablePaginationProps | null;
   emptyState?: AppTableEmptyStateProps;

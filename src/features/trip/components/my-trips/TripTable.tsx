@@ -25,8 +25,9 @@ import type { Trip } from '../../types';
 
 export interface TripTableProps {
   trips: Trip[];
-  isLoading: boolean;
-  activeTripId: string | number | null;
+  isLoading?: boolean;
+  isFetching?: boolean;
+  activeTripId?: string | number | null;
   onSelectTrip: (trip: Trip) => void;
   onCreateTrip: () => void;
   onEditTrip?: (trip: Trip) => void;
@@ -41,6 +42,7 @@ export interface TripTableProps {
 const TripTable = ({
   trips,
   isLoading,
+  isFetching = false,
   activeTripId,
   onSelectTrip,
   onCreateTrip,
@@ -261,6 +263,7 @@ const TripTable = ({
       columns={columns}
       data={trips}
       isLoading={isLoading}
+      isFetching={isFetching}
       selectedRowId={activeTripId}
       onRowClick={onSelectTrip}
       pagination={pagination}
