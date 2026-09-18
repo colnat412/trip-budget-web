@@ -35,6 +35,7 @@ export interface ExpenseTableProps {
   onSortChange?: (sort: TableSortState | null) => void;
   filters?: Record<string, ColumnFilterValue>;
   onFilterChange?: (filters: Record<string, ColumnFilterValue>) => void;
+  tableMaxHeight?: number | string;
 }
 
 const ExpenseTable = ({
@@ -51,6 +52,7 @@ const ExpenseTable = ({
   onSortChange,
   filters,
   onFilterChange,
+  tableMaxHeight,
 }: ExpenseTableProps) => {
   const t = useTranslations('expense');
   const tTable = useTranslations('expense.table');
@@ -295,6 +297,7 @@ const ExpenseTable = ({
       onSortChange={onSortChange}
       filters={filters}
       onFilterChange={onFilterChange}
+      tableMaxHeight={tableMaxHeight}
       header={
         <Stack
           direction="row"

@@ -46,6 +46,8 @@ const AppTable = <T,>({
   filters: controlledFilters,
   onFilterChange: controlledOnFilterChange,
   minWidth = 650,
+  tableMaxHeight,
+  stickyHeader,
   sx,
 }: AppTableProps<T>) => {
   const t = useTranslations('table');
@@ -251,12 +253,25 @@ const AppTable = <T,>({
         elevation={0}
         sx={{
           borderRadius: 0,
-          overflow: 'hidden',
+          overflow: tableMaxHeight ? 'auto' : 'hidden',
+          maxHeight: tableMaxHeight,
           bgcolor: 'background.paper',
         }}
       >
-        <Table sx={{ minWidth }}>
-          <TableHead sx={{ bgcolor: 'action.hover' }}>
+        <Table
+          sx={{ minWidth }}
+          stickyHeader={stickyHeader ?? Boolean(tableMaxHeight)}
+        >
+          <TableHead
+            sx={{
+              bgcolor: 'background.paper',
+              '& th': {
+                bgcolor: 'background.paper',
+                borderBottom: 1,
+                borderColor: 'divider',
+              },
+            }}
+          >
             <TableRow>
               {columns.map((column) => (
                 <AppColumnHeader

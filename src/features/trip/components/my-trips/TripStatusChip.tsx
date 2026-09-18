@@ -15,21 +15,30 @@ type StatusThemeVariant =
   | 'neutral'
   | 'error';
 
+type StatusLabelKey =
+  | 'inProgress'
+  | 'planning'
+  | 'confirmed'
+  | 'completed'
+  | 'draft'
+  | 'archived'
+  | 'cancelled';
+
 const STATUS_CONFIG_MAP: Record<
   TripStatus,
   {
     variant: StatusThemeVariant;
-    labelKey: 'inProgress' | 'planning' | 'completed' | 'draft';
+    labelKey: StatusLabelKey;
   }
 > = {
   IN_PROGRESS: { variant: 'success', labelKey: 'inProgress' },
   PLANNING: { variant: 'primary', labelKey: 'planning' },
-  CONFIRMED: { variant: 'primary', labelKey: 'planning' },
+  CONFIRMED: { variant: 'primary', labelKey: 'confirmed' },
   COMPLETED: { variant: 'secondary', labelKey: 'completed' },
   DRAFT: { variant: 'neutral', labelKey: 'draft' },
-  ARCHIVED: { variant: 'neutral', labelKey: 'draft' },
-  CANCELLED: { variant: 'error', labelKey: 'draft' },
-  DELETED: { variant: 'error', labelKey: 'draft' },
+  ARCHIVED: { variant: 'neutral', labelKey: 'archived' },
+  CANCELLED: { variant: 'error', labelKey: 'cancelled' },
+  DELETED: { variant: 'error', labelKey: 'cancelled' },
 };
 
 const TripStatusChip = ({ status }: TripStatusChipProps) => {
@@ -77,7 +86,9 @@ const TripStatusChip = ({ status }: TripStatusChipProps) => {
           const palette = theme.vars?.palette ?? theme.palette;
           switch (config.variant) {
             case 'success':
-              return palette.success.light ? 'rgba(22, 163, 74, 0.12)' : 'action.hover';
+              return palette.success.light
+                ? 'rgba(22, 163, 74, 0.12)'
+                : 'action.hover';
             case 'primary':
               return 'rgba(30, 58, 138, 0.12)';
             case 'secondary':

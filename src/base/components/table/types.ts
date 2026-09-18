@@ -76,5 +76,7 @@ export interface AppTableProps<T> {
   filters?: Record<string, ColumnFilterValue>;
   onFilterChange?: (filters: Record<string, ColumnFilterValue>) => void;
   minWidth?: number | string;
+  tableMaxHeight?: number | string;
+  stickyHeader?: boolean;
   sx?: SxProps<Theme>;
 }

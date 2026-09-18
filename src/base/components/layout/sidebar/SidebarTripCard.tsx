@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, type MouseEvent } from 'react';
+import { useMemo, useState, type MouseEvent } from 'react';
 import {
   Box,
   IconButton,
@@ -31,7 +31,18 @@ const SidebarTripCard = () => {
   const { trips, activeTrip, selectTrip, openCreateTrip, isLoading } =
     useTripContext();
 
-  const currentTrip = activeTrip || trips?.[0];
+  const inProgressTrips = useMemo(
+    () => (trips || []).filter((t) => t.status === 'IN_PROGRESS'),
+    [trips],
+  );
+
+  const currentTrip = useMemo(() => {
+    if (activeTrip && activeTrip.status === 'IN_PROGRESS') {
+      return activeTrip;
+    }
+    return inProgressTrips[0] ?? null;
+  }, [activeTrip, inProgressTrips]);
+
   const { summary } = useTripBudgetSummary({ tripId: currentTrip?.id });
 
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
@@ -74,7 +85,7 @@ const SidebarTripCard = () => {
     );
   }
 
-  if (!trips || trips.length === 0) {
+  if (!trips || trips.length === 0 || inProgressTrips.length === 0) {
     return (
       <Box
         sx={{
@@ -94,10 +105,14 @@ const SidebarTripCard = () => {
             color: 'text.primary',
           }}
         >
-          {tTrip('noTrips')}
+          {!trips || trips.length === 0
+            ? tTrip('noTrips')
+            : t('noInProgressTrip')}
         </Typography>
         <Typography sx={{ fontSize: '11px', color: 'text.secondary' }}>
-          {tTrip('createDescription')}
+          {!trips || trips.length === 0
+            ? tTrip('createDescription')
+            : t('noInProgressTripDesc')}
         </Typography>
         <AppButton
           size="small"
@@ -232,10 +247,10 @@ const SidebarTripCard = () => {
             letterSpacing: '0.5px',
           }}
         >
-          {tTrip('allTrips')} ({trips.length})
+          {tTrip('inProgress')} ({inProgressTrips.length})
         </Typography>
 
-        {trips.map((item) => {
+        {inProgressTrips.map((item) => {
           const isSelected = String(item.id) === String(currentTrip?.id);
           return (
             <MenuItem

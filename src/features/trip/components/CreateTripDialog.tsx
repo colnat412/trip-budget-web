@@ -22,6 +22,7 @@ import {
   AppTextField,
   AppToast,
 } from '@/base/components/ui';
+import DestinationAutocomplete from './DestinationAutocomplete';
 import { useTripContext } from '../context/TripContext';
 import { useCreateTrip } from '../hooks/useTripMutation';
 
@@ -45,10 +46,7 @@ const CURRENCY_OPTIONS = [
   // { value: 'THB', label: 'THB' },
 ];
 
-const CreateTripDialog = ({
-  open,
-  onClose,
-}: CreateTripDialogProps) => {
+const CreateTripDialog = ({ open, onClose }: CreateTripDialogProps) => {
   const t = useTranslations('trip');
   const { refetchTrips, selectTrip } = useTripContext();
   const { createMutation } = useCreateTrip();
@@ -246,19 +244,14 @@ const CreateTripDialog = ({
               }}
             />
 
-            <AppTextField
-              label={t('destination')}
-              placeholder={t('destinationPlaceholder')}
+            <DestinationAutocomplete
               required
               value={destination}
               error={Boolean(formErrors.destination)}
               helperText={formErrors.destination}
               disabled={createMutation.isPending}
-              // slotProps={{
-              //   inputLabel: { shrink: true },
-              // }}
-              onChange={(e) => {
-                setDestination(e.target.value);
+              onChange={(val) => {
+                setDestination(val);
                 setFormErrors((prev) => ({ ...prev, destination: undefined }));
                 createMutation.clearError();
               }}

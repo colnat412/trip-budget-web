@@ -10,8 +10,9 @@ import {
   AppTextField,
   AppToast,
 } from '@/base/components/ui';
+import DestinationAutocomplete from './DestinationAutocomplete';
 import { useUpdateTrip } from '../hooks/useTripMutation';
-import type { Trip } from '../types';
+import type { Trip, TripStatus } from '../types';
 
 interface EditTripFormProps {
   trip: Trip;
@@ -31,11 +32,7 @@ const CURRENCY_OPTIONS = [
   { value: 'USD', label: 'USD' },
 ];
 
-const EditTripForm = ({
-  trip,
-  onClose,
-  onSuccess,
-}: EditTripFormProps) => {
+const EditTripForm = ({ trip, onClose, onSuccess }: EditTripFormProps) => {
   const t = useTranslations('trip');
   const tMyTrips = useTranslations('myTrips');
 
@@ -44,9 +41,20 @@ const EditTripForm = ({
   const [startDate, setStartDate] = useState(trip.startDate);
   const [endDate, setEndDate] = useState(trip.endDate);
   const [baseCurrency, setBaseCurrency] = useState(trip.baseCurrency || 'VND');
+  const [status, setStatus] = useState<TripStatus>(trip.status || 'DRAFT');
   const [description, setDescription] = useState(trip.description || '');
   const [errors, setErrors] = useState<TripFormErrors>({});
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  const STATUS_OPTIONS: Array<{ value: TripStatus; label: string }> = [
+    { value: 'DRAFT', label: t('draft') },
+    { value: 'PLANNING', label: t('planning') },
+    { value: 'CONFIRMED', label: t('confirmed') },
+    { value: 'IN_PROGRESS', label: t('inProgress') },
+    { value: 'COMPLETED', label: t('completed') },
+    { value: 'ARCHIVED', label: t('archived') },
+    { value: 'CANCELLED', label: t('cancelled') },
+  ];
 
   const { updateTrip, isPending } = useUpdateTrip({
     tripId: trip.id,
@@ -92,6 +100,7 @@ const EditTripForm = ({
         startDate,
         endDate,
         baseCurrency,
+        status,
       },
       {
         onSuccess: (response) => {
@@ -142,16 +151,13 @@ const EditTripForm = ({
           }}
         />
 
-        <AppTextField
-          label={t('destination')}
-          placeholder={t('destinationPlaceholder')}
+        <DestinationAutocomplete
           required
           value={destination}
           error={Boolean(errors.destination)}
           helperText={errors.destination}
-          slotProps={{ inputLabel: { shrink: true } }}
-          onChange={(e) => {
-            setDestination(e.target.value);
+          onChange={(val) => {
+            setDestination(val);
             if (errors.destination) {
               setErrors((prev) => ({ ...prev, destination: undefined }));
             }
@@ -192,19 +198,39 @@ const EditTripForm = ({
           />
         </Stack>
 
-        <AppTextField
-          select
-          label={t('baseCurrency')}
-          value={baseCurrency}
-          slotProps={{ inputLabel: { shrink: true } }}
-          onChange={(e) => setBaseCurrency(e.target.value)}
-        >
-          {CURRENCY_OPTIONS.map((option) => (
-            <MenuItem key={option.value} value={option.value}>
-              {option.label}
-            </MenuItem>
-          ))}
-        </AppTextField>
+        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+          <Box sx={{ flex: 1, minWidth: 0 }}>
+            <AppTextField
+              select
+              label={t('baseCurrency')}
+              value={baseCurrency}
+              slotProps={{ inputLabel: { shrink: true } }}
+              onChange={(e) => setBaseCurrency(e.target.value)}
+            >
+              {CURRENCY_OPTIONS.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </AppTextField>
+          </Box>
+
+          <Box sx={{ flex: 1, minWidth: 0 }}>
+            <AppTextField
+              select
+              label={t('statusLabel')}
+              value={status}
+              slotProps={{ inputLabel: { shrink: true } }}
+              onChange={(e) => setStatus(e.target.value as TripStatus)}
+            >
+              {STATUS_OPTIONS.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </AppTextField>
+          </Box>
+        </Stack>
 
         <AppTextArea
           label={t('description')}

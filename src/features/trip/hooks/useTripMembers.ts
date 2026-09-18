@@ -1,5 +1,6 @@
 'use client';
 
+import { useMemo } from 'react';
 import type { ApiResponse } from '@/base/api';
 import {
   useMutationDelete,
@@ -31,12 +32,17 @@ export function useTripMembers({
     enabled: isEnabled,
   });
 
+  const rawMembers = query.data?.data;
+  const members = useMemo(() => rawMembers ?? [], [rawMembers]);
+  const activeMembers = useMemo(
+    () => (rawMembers ?? []).filter((m) => m.status === 'ACTIVE'),
+    [rawMembers],
+  );
+
   return {
     ...query,
-    members: query.data?.data ?? [],
-    activeMembers: (query.data?.data ?? []).filter(
-      (m) => m.status === 'ACTIVE',
-    ),
+    members,
+    activeMembers,
   };
 }
 

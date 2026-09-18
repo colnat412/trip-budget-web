@@ -30,6 +30,9 @@ const BudgetMetricsCards = ({
 
   const isOverBudget = remainingBudget < 0;
   const isWarning = percentageUsed > 85 && !isOverBudget;
+  const overLimitCategoriesCount = (summary?.categoryBreakdown || []).filter(
+    (item) => item.limitAmount > 0 && item.spentAmount > item.limitAmount,
+  ).length;
 
   const cardBorderLeftStyle = (colorToken: string) => ({
     borderLeft: '4px solid',
@@ -239,20 +242,45 @@ const BudgetMetricsCards = ({
             </Typography>
           </Stack>
 
-          <Typography
+          <Stack
+            direction="row"
             sx={{
-              fontSize: '11px',
-              color: isOverBudget ? 'error.main' : 'text.secondary',
-              fontFamily: 'var(--font-mono)',
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              gap: 0.5,
             }}
           >
-            {totalBudget > 0
-              ? `${t('percentOfBudget', { percent: percentageUsed.toFixed(1) })} · / ${formatCompactCurrency(totalBudget, curr)}`
-              : t('noLimit')}
-          </Typography>
+            <Typography
+              sx={{
+                fontSize: '11px',
+                color: isOverBudget ? 'error.main' : 'text.secondary',
+                fontFamily: 'var(--font-mono)',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}
+            >
+              {totalBudget > 0
+                ? `${t('percentOfBudget', { percent: percentageUsed.toFixed(1) })} · / ${formatCompactCurrency(totalBudget, curr)}`
+                : t('noLimit')}
+            </Typography>
+
+            {overLimitCategoriesCount > 0 && (
+              <Typography
+                sx={{
+                  fontSize: '11px',
+                  color: 'error.main',
+                  fontWeight: 700,
+                  fontFamily: 'var(--font-mono)',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                ⚠️{' '}
+                {t('categoriesOverLimit', { count: overLimitCategoriesCount })}
+              </Typography>
+            )}
+          </Stack>
         </AppCard>
       </Box>
 

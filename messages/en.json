@@ -53,7 +53,9 @@
     "settlement": "Settlement",
     "currentTrip": "Current trip",
     "expenseCount": "expenses",
-    "budget": "Budget"
+    "budget": "Budget",
+    "noInProgressTrip": "No trip in progress",
+    "noInProgressTripDesc": "Only trips in 'In Progress' status are displayed here."
   },
   "login": {
     "slogan": "Go further, spend smarter.",
@@ -90,8 +92,12 @@
     "namePlaceholder": "e.g. Da Nang · Hoi An",
     "nameRequired": "Please enter trip name.",
     "destination": "Destination",
-    "destinationPlaceholder": "e.g. Da Nang",
-    "destinationRequired": "Please enter destination.",
+    "destinationPlaceholder": "Search or select destination (e.g. Da Nang, Tokyo...)",
+    "destinationRequired": "Please select a destination from the list.",
+    "destinationHelper": "Select a destination from suggestions to standardize data",
+    "popularDestinations": "Popular Destinations",
+    "searchingDestinations": "Searching destinations...",
+    "noDestinationsFound": "No matching destinations found",
     "startDate": "Start Date",
     "startDateRequired": "Please select start date.",
     "endDate": "End Date",
@@ -109,9 +115,12 @@
     "inProgress": "In Progress",
     "draft": "Draft",
     "planning": "Planning",
+    "confirmed": "Confirmed",
     "completed": "Completed",
     "archived": "Archived",
-    "cancelled": "Cancelled"
+    "cancelled": "Cancelled",
+    "statusLabel": "Status",
+    "changeStatus": "Change Status"
   },
   "myTrips": {
     "title": "My Trips",
@@ -186,7 +195,8 @@
       "overBudget": "Over Budget",
       "remainingBudget": "Remaining Balance",
       "warningNeedCompensation": "Warning: Budget deficit",
-      "underControl": "Well under control"
+      "underControl": "Well under control",
+      "categoriesOverLimit": "{count} categories over limit"
     },
     "progress": {
       "title": "Budget Consumption Progress",
@@ -194,10 +204,19 @@
       "warningOverBudget": "Warning: Trip expenses have exceeded the expected budget! Please control upcoming expenses."
     },
     "categoriesList": {
-      "title": "Spending by Category",
+      "title": "Spending by Category & Budget Limits",
       "limit": "Limit: {amount}",
       "showDetails": "Details",
-      "collapse": "Collapse"
+      "collapse": "Collapse",
+      "overBudgetAlert": "{count} categories have exceeded their initial budget!",
+      "overBudgetBadge": "Over by {amount}",
+      "overBudgetCount": "{count} over limit",
+      "remaining": "{amount} left",
+      "noLimit": "No budget set",
+      "usedPercent": "{percent}% used",
+      "exceededPercent": "Over {percent}% of limit",
+      "adjustBudget": "Adjust Budget",
+      "allUnderControl": "All categories under budget"
     },
     "table": {
       "title": "Expense List ({count})",
@@ -277,6 +296,15 @@
       "categoryLabel": "Category *",
       "dateLabel": "Expense Date *",
       "splitTypeLabel": "Split Method",
+      "payerLabel": "Paid By *",
+      "receiptUrlLabel": "Receipt / Invoice URL (Optional)",
+      "receiptUrlPlaceholder": "https://... or receipt photo link",
+      "splitsTitle": "Member Split Breakdown",
+      "allocatedTotal": "Allocated",
+      "remainingToAllocate": "Remaining",
+      "autoFillRemaining": "Fill Remaining",
+      "exactMatch": "100% Match",
+      "sharesUnit": "shares",
       "noteLabel": "Detailed Notes",
       "notePlaceholder": "Add notes about location, participants...",
       "cancel": "Cancel",
@@ -285,7 +313,11 @@
       "errors": {
         "titleRequired": "Please enter expense title",
         "amountPositive": "Amount must be greater than 0",
-        "totalBudgetRequired": "Total budget cannot be empty or negative"
+        "totalBudgetRequired": "Total budget cannot be empty or negative",
+        "splitErrorExact": "Total split amount ({sum}) must equal total expense ({total})!",
+        "splitErrorPercent": "Total percentage ({sum}%) must equal exactly 100%!",
+        "splitErrorNoMembers": "Please select at least one member to split!",
+        "splitErrorPositiveShare": "Each person's share count must be greater than 0!"
       }
     },
     "toasts": {

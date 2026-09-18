@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { Box, Stack } from '@mui/material';
 import HotelRoundedIcon from '@mui/icons-material/HotelRounded';
 import DirectionsSubwayRoundedIcon from '@mui/icons-material/DirectionsSubwayRounded';
@@ -21,8 +21,10 @@ import type { TripMember } from '@/features/trip/types/member.types';
 import type {
   CreateExpensePayload,
   ExpenseCategory,
+  SplitItemPayload,
   SplitType,
 } from '../types';
+import SplitAllocationSection from './SplitAllocationSection';
 
 export interface AddExpenseFormProps {
   tripCurrency?: string;
@@ -109,6 +111,8 @@ const AddExpenseForm = ({
     () => [
       { value: 'EQUAL', label: tSplits('EQUAL') },
       { value: 'EXACT_AMOUNT', label: tSplits('EXACT_AMOUNT') },
+      { value: 'PERCENTAGE', label: tSplits('PERCENTAGE') },
+      { value: 'SHARE', label: tSplits('SHARE') },
     ],
     [tSplits],
   );
@@ -123,7 +127,19 @@ const AddExpenseForm = ({
   const [payerId, setPayerId] = useState<string | number | ''>(() => {
     return members.length > 0 ? members[0].userId : '';
   });
+  const [receiptUrl, setReceiptUrl] = useState('');
   const [note, setNote] = useState('');
+
+  const splitsRef = useRef<SplitItemPayload[]>([]);
+  const isSplitValidRef = useRef<boolean>(true);
+
+  const handleSplitChange = useCallback(
+    (newSplits: SplitItemPayload[], valid: boolean) => {
+      splitsRef.current = newSplits;
+      isSplitValidRef.current = valid;
+    },
+    [],
+  );
 
   const [errors, setErrors] = useState<{ title?: string; amount?: string }>({});
 
@@ -136,7 +152,7 @@ const AddExpenseForm = ({
       newErrors.amount = tForm('errors.amountPositive');
     }
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    return Object.keys(newErrors).length === 0 && isSplitValidRef.current;
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -151,7 +167,9 @@ const AddExpenseForm = ({
       expenseDate,
       splitType,
       payerId: payerId ? payerId : undefined,
+      receiptUrl: receiptUrl.trim() || undefined,
       note: note.trim() || undefined,
+      splits: splitsRef.current.length > 0 ? splitsRef.current : undefined,
     });
   };
 
@@ -226,7 +244,7 @@ const AddExpenseForm = ({
 
       {members && members.length > 1 && (
         <AppSelect
-          label="Người thanh toán (Payer)"
+          label={tForm('payerLabel')}
           value={payerId}
           options={members.map((m) => ({
             value: m.userId,
@@ -235,6 +253,23 @@ const AddExpenseForm = ({
           onChange={(e) => setPayerId(e.target.value as string | number)}
         />
       )}
+
+      {members && members.length > 0 && (
+        <SplitAllocationSection
+          splitType={splitType}
+          totalAmount={Number(amount) || 0}
+          currency={tripCurrency}
+          members={members}
+          onChange={handleSplitChange}
+        />
+      )}
+
+      <AppTextField
+        label={tForm('receiptUrlLabel')}
+        placeholder={tForm('receiptUrlPlaceholder')}
+        value={receiptUrl}
+        onChange={(e) => setReceiptUrl(e.target.value)}
+      />
 
       <AppTextField
         label={tForm('noteLabel')}

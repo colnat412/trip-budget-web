@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { Box, Stack } from '@mui/material';
 import HotelRoundedIcon from '@mui/icons-material/HotelRounded';
 import DirectionsSubwayRoundedIcon from '@mui/icons-material/DirectionsSubwayRounded';
@@ -20,12 +20,17 @@ import {
 import type {
   Expense,
   ExpenseCategory,
+  SplitItemPayload,
   SplitType,
   UpdateExpensePayload,
 } from '../types';
+import SplitAllocationSection, {
+  type SplitMember,
+} from './SplitAllocationSection';
 
 export interface EditExpenseFormProps {
   expense: Expense;
+  members?: SplitMember[];
   isLoading?: boolean;
   onSubmit: (payload: UpdateExpensePayload) => void;
   onCancel: () => void;
@@ -33,6 +38,7 @@ export interface EditExpenseFormProps {
 
 const EditExpenseForm = ({
   expense,
+  members = [],
   isLoading = false,
   onSubmit,
   onCancel,
@@ -113,12 +119,45 @@ const EditExpenseForm = ({
     [tSplits],
   );
 
+  const allMembers: SplitMember[] = useMemo(() => {
+    if (members && members.length > 0) return members;
+    return (expense.splits || []).map((s) => ({
+      userId: s.userId,
+      name: s.userName,
+      email: s.userEmail,
+      avatarUrl: s.userAvatarUrl,
+    }));
+  }, [members, expense.splits]);
+
+  const initialSplits: SplitItemPayload[] = useMemo(() => {
+    return (expense.splits || []).map((s) => ({
+      userId: s.userId,
+      allocatedAmount: s.allocatedAmount,
+      splitValue: s.splitValue,
+    }));
+  }, [expense.splits]);
+
   const [title, setTitle] = useState(expense.title);
   const [amount, setAmount] = useState(String(expense.amount));
   const [category, setCategory] = useState<ExpenseCategory>(expense.category);
   const [expenseDate, setExpenseDate] = useState(expense.expenseDate);
   const [splitType, setSplitType] = useState<SplitType>(expense.splitType);
+  const [payerId, setPayerId] = useState<string | number | ''>(
+    expense.payerId || '',
+  );
+  const [receiptUrl, setReceiptUrl] = useState(expense.receiptUrl || '');
   const [note, setNote] = useState(expense.note || '');
+
+  const splitsRef = useRef<SplitItemPayload[]>(initialSplits);
+  const isSplitValidRef = useRef<boolean>(true);
+
+  const handleSplitChange = useCallback(
+    (newSplits: SplitItemPayload[], valid: boolean) => {
+      splitsRef.current = newSplits;
+      isSplitValidRef.current = valid;
+    },
+    [],
+  );
 
   const [errors, setErrors] = useState<{ title?: string; amount?: string }>({});
 
@@ -131,7 +170,7 @@ const EditExpenseForm = ({
       newErrors.amount = tForm('errors.amountPositive');
     }
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    return Object.keys(newErrors).length === 0 && isSplitValidRef.current;
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -145,7 +184,10 @@ const EditExpenseForm = ({
       currency: expense.currency,
       expenseDate,
       splitType,
+      payerId: payerId ? payerId : undefined,
+      receiptUrl: receiptUrl.trim() || undefined,
       note: note.trim() || undefined,
+      splits: splitsRef.current.length > 0 ? splitsRef.current : undefined,
     });
   };
 
@@ -216,8 +258,39 @@ const EditExpenseForm = ({
         </Box>
       </Stack>
 
+      {allMembers && allMembers.length > 1 && (
+        <AppSelect
+          label={tForm('payerLabel')}
+          value={payerId}
+          options={allMembers.map((m) => ({
+            value: m.userId,
+            label: `${m.name || m.email || m.userId} (${m.email || ''})`,
+          }))}
+          onChange={(e) => setPayerId(e.target.value as string | number)}
+        />
+      )}
+
+      {allMembers && allMembers.length > 0 && (
+        <SplitAllocationSection
+          splitType={splitType}
+          totalAmount={Number(amount) || 0}
+          currency={expense.currency}
+          members={allMembers}
+          initialSplits={initialSplits}
+          onChange={handleSplitChange}
+        />
+      )}
+
+      <AppTextField
+        label={tForm('receiptUrlLabel')}
+        placeholder={tForm('receiptUrlPlaceholder')}
+        value={receiptUrl}
+        onChange={(e) => setReceiptUrl(e.target.value)}
+      />
+
       <AppTextField
         label={tForm('noteLabel')}
+        placeholder={tForm('notePlaceholder')}
         multiline
         rows={2}
         value={note}

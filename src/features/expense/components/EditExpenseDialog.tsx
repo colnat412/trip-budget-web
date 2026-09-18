@@ -4,6 +4,7 @@ import React from 'react';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import { useTranslations } from 'next-intl';
 import { AppDialog } from '@/base/components/ui';
+import { useTripMembers } from '@/features/trip/hooks/useTripMembers';
 import EditExpenseForm from './EditExpenseForm';
 import type { Expense, UpdateExpensePayload } from '../types';
 
@@ -23,6 +24,10 @@ const EditExpenseDialog = ({
   isLoading = false,
 }: EditExpenseDialogProps) => {
   const t = useTranslations('expense');
+  const { activeMembers } = useTripMembers({
+    tripId: expense?.tripId,
+    enabled: open && Boolean(expense?.tripId),
+  });
 
   if (!expense) return null;
 
@@ -37,6 +42,7 @@ const EditExpenseDialog = ({
       <EditExpenseForm
         key={expense.id}
         expense={expense}
+        members={activeMembers}
         isLoading={isLoading}
         onSubmit={onSubmit}
         onCancel={onClose}

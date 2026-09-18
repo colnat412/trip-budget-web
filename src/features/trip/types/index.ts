@@ -56,4 +56,5 @@ export interface UpdateTripPayload {
   startDate?: string;
   endDate?: string;
   baseCurrency?: string;
+  status?: TripStatus;
 }

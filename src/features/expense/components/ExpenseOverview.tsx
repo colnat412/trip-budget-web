@@ -343,48 +343,38 @@ const ExpenseOverview = () => {
         </Stack>
       </Stack>
 
-      {(() => {
-        const hasCategoryBreakdown = Boolean(
-          summary?.categoryBreakdown &&
-          summary.categoryBreakdown.some(
-            (c) => c.spentAmount > 0 || (c.limitAmount && c.limitAmount > 0),
-          ),
-        );
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: {
+            xs: '1fr',
+            sm: 'repeat(3, 1fr)',
+          },
+          gap: 2,
+          alignItems: 'stretch',
+        }}
+      >
+        <BudgetMetricsCards
+          summary={summary}
+          currency={activeTrip.baseCurrency}
+          onOpenSetBudget={() => setSetBudgetOpen(true)}
+        />
+      </Box>
 
-        return (
-          <Box
-            sx={{
-              display: 'grid',
-              gridTemplateColumns: {
-                xs: '1fr',
-                sm: 'repeat(2, 1fr)',
-                lg: hasCategoryBreakdown ? 'repeat(4, 1fr)' : 'repeat(3, 1fr)',
-              },
-              gap: 2,
-              alignItems: 'stretch',
-            }}
-          >
-            <BudgetMetricsCards
-              summary={summary}
-              currency={activeTrip.baseCurrency}
-              onOpenSetBudget={() => setSetBudgetOpen(true)}
-            />
-
-            {hasCategoryBreakdown && summary?.categoryBreakdown && (
-              <CategorySpendingList
-                breakdown={summary.categoryBreakdown}
-                currency={activeTrip.baseCurrency}
-              />
-            )}
-          </Box>
-        );
-      })()}
+      {summary?.categoryBreakdown && (
+        <CategorySpendingList
+          breakdown={summary.categoryBreakdown}
+          currency={activeTrip.baseCurrency}
+          onOpenSetBudget={() => setSetBudgetOpen(true)}
+        />
+      )}
 
       <ExpenseTable
         expenses={expenses}
         isLoading={isExpensesLoading || isSummaryLoading}
         isFetching={isExpensesFetching}
         pagination={pagination}
+        tableMaxHeight={380}
         onPageChange={(newPage) => setPage(newPage)}
         onViewDetail={(expense) => setDetailExpense(expense)}
         onEdit={(expense) => setEditingExpense(expense)}

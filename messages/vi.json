@@ -53,7 +53,9 @@
     "settlement": "Quyết toán",
     "currentTrip": "Đang đi",
     "expenseCount": "khoản chi",
-    "budget": "Ngân sách"
+    "budget": "Ngân sách",
+    "noInProgressTrip": "Không có chuyến đi đang diễn ra",
+    "noInProgressTripDesc": "Chỉ các chuyến đi có trạng thái Đang đi mới hiển thị tại đây."
   },
   "login": {
     "slogan": "Đi xa hơn, chi tiêu thông minh hơn.",
@@ -90,8 +92,12 @@
     "namePlaceholder": "Ví dụ: Đà Nẵng · Hội An",
     "nameRequired": "Vui lòng nhập tên chuyến đi.",
     "destination": "Điểm đến",
-    "destinationPlaceholder": "Ví dụ: Đà Nẵng",
-    "destinationRequired": "Vui lòng nhập điểm đến.",
+    "destinationPlaceholder": "Tìm hoặc chọn điểm đến (Ví dụ: Đà Nẵng, Tokyo...)",
+    "destinationRequired": "Vui lòng chọn điểm đến từ danh sách.",
+    "destinationHelper": "Chọn điểm đến từ danh sách gợi ý để chuẩn hóa dữ liệu",
+    "popularDestinations": "Điểm đến thịnh hành",
+    "searchingDestinations": "Đang tìm kiếm địa điểm...",
+    "noDestinationsFound": "Không tìm thấy địa điểm phù hợp",
     "startDate": "Ngày bắt đầu",
     "startDateRequired": "Vui lòng chọn ngày bắt đầu.",
     "endDate": "Ngày kết thúc",
@@ -109,9 +115,12 @@
     "inProgress": "Đang đi",
     "draft": "Nháp",
     "planning": "Lên kế hoạch",
+    "confirmed": "Đã xác nhận",
     "completed": "Hoàn thành",
     "archived": "Lưu trữ",
-    "cancelled": "Đã hủy"
+    "cancelled": "Đã hủy",
+    "statusLabel": "Trạng thái",
+    "changeStatus": "Đổi trạng thái"
   },
   "myTrips": {
     "title": "Chuyến đi của tôi",
@@ -186,7 +195,8 @@
       "overBudget": "Đã Vượt Ngân Sách",
       "remainingBudget": "Số Dư Còn Lại",
       "warningNeedCompensation": "Cảnh báo: Cần bù thâm hụt",
-      "underControl": "Trong vùng kiểm soát"
+      "underControl": "Trong vùng kiểm soát",
+      "categoriesOverLimit": "{count} danh mục vượt hạn mức"
     },
     "progress": {
       "title": "Tiến Độ Tiêu Hao Ngân Sách",
@@ -194,10 +204,19 @@
       "warningOverBudget": "Cảnh báo: Chuyến đi đã vượt ngân sách dự kiến! Hãy kiểm soát các khoản chi tiếp theo."
     },
     "categoriesList": {
-      "title": "Chi Tiêu Theo Hạng Mục",
+      "title": "Chi Tiêu Theo Hạng Mục & Hạn Mức",
       "limit": "Hạn mức: {amount}",
       "showDetails": "Chi tiết",
-      "collapse": "Thu gọn"
+      "collapse": "Thu gọn",
+      "overBudgetAlert": "Có {count} danh mục đã chi tiêu vượt quá ngân sách ban đầu!",
+      "overBudgetBadge": "Vượt {amount}",
+      "overBudgetCount": "{count} mục vượt mức",
+      "remaining": "Còn {amount}",
+      "noLimit": "Chưa đặt hạn mức",
+      "usedPercent": "Đã dùng {percent}%",
+      "exceededPercent": "Vượt {percent}% hạn mức",
+      "adjustBudget": "Điều chỉnh ngân sách",
+      "allUnderControl": "Tất cả danh mục trong tầm kiểm soát"
     },
     "table": {
       "title": "Danh Sách Khoản Chi ({count})",
@@ -277,6 +296,15 @@
       "categoryLabel": "Danh mục *",
       "dateLabel": "Ngày chi tiêu *",
       "splitTypeLabel": "Cách chia tiền",
+      "payerLabel": "Người thanh toán *",
+      "receiptUrlLabel": "Đường dẫn hóa đơn / Chứng từ (Tùy chọn)",
+      "receiptUrlPlaceholder": "https://... hoặc link ảnh biên lai",
+      "splitsTitle": "Phân bổ tiền cho từng thành viên",
+      "allocatedTotal": "Đã phân bổ",
+      "remainingToAllocate": "Còn lại",
+      "autoFillRemaining": "Điền phần còn lại",
+      "exactMatch": "Khớp 100%",
+      "sharesUnit": "phần",
       "noteLabel": "Ghi chú chi tiết",
       "notePlaceholder": "Ghi chú thêm về địa điểm, người tham gia...",
       "cancel": "Hủy bỏ",
@@ -285,7 +313,11 @@
       "errors": {
         "titleRequired": "Vui lòng nhập tên khoản chi",
         "amountPositive": "Số tiền phải lớn hơn 0",
-        "totalBudgetRequired": "Tổng ngân sách không được để trống hoặc âm"
+        "totalBudgetRequired": "Tổng ngân sách không được để trống hoặc âm",
+        "splitErrorExact": "Tổng số tiền chia ({sum}) phải bằng đúng tổng khoản chi ({total})!",
+        "splitErrorPercent": "Tổng phần trăm ({sum}%) phải bằng đúng 100%!",
+        "splitErrorNoMembers": "Vui lòng chọn ít nhất một thành viên tham gia chia tiền!",
+        "splitErrorPositiveShare": "Số phần của mỗi người phải lớn hơn 0!"
       }
     },
     "toasts": {

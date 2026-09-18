@@ -17,10 +17,7 @@ export interface AppShellProps {
   sidebarDisabledPaths?: readonly string[];
 }
 
-const AppShell = ({
-  children,
-  sidebarDisabledPaths = [],
-}: AppShellProps) => {
+const AppShell = ({ children, sidebarDisabledPaths = [] }: AppShellProps) => {
   const pathname = usePathname();
   const showSidebar = !sidebarDisabledPaths.includes(pathname);
 
@@ -35,17 +32,19 @@ const AppShell = ({
           sx={{
             display: 'flex',
             bgcolor: 'background.paper',
-            minHeight: '100dvh',
+            height: '100dvh',
+            overflow: 'hidden',
           }}
         >
           <AppSidebar />
           <Box
             sx={{
               minWidth: 0,
-              minHeight: '100dvh',
+              height: '100dvh',
               display: 'flex',
               flexDirection: 'column',
               flex: 1,
+              overflow: 'hidden',
             }}
           >
             <AppTopBar />
@@ -55,7 +54,7 @@ const AppShell = ({
                 minWidth: 0,
                 minHeight: 0,
                 flexGrow: 1,
-                overflow: 'auto',
+                overflowY: 'auto',
               }}
             >
               {children}
