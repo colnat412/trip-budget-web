@@ -48,6 +48,7 @@
     "navigation": "Main navigation",
     "overview": "Overview",
     "trips": "My Trips",
+    "plan": "Plan",
     "expenses": "Expenses",
     "scan": "Scan receipt",
     "settlement": "Settlement",
@@ -469,6 +470,87 @@
       "createError": "Failed to record payment. Please try again.",
       "deleteSuccess": "Payment transaction cancelled.",
       "deleteError": "Failed to cancel transaction. Please try again."
+    }
+  },
+  "plan": {
+    "pageTitle": "Trip Itinerary & Plan",
+    "pageSubtitle": "Plan day-by-day activities and manage pre-trip preparation checklist",
+    "noActiveTrip": "Please select a trip to view and manage its plan.",
+    "addActivity": "Add Activity",
+    "checklistBtn": "Packing Checklist",
+    "totalDays": "Total Days",
+    "totalActivities": "Activities",
+    "completedActivities": "Completed",
+    "totalEstimatedCost": "Estimated Cost",
+    "dayTab": "Day {day}",
+    "emptyActivities": "No activities planned for this day yet",
+    "emptyActivitiesDesc": "Plan your sightseeing, meals, or travel to make the most of your trip!",
+    "addFirstActivity": "Add First Activity",
+    "estimatedCost": "Estimated: {cost}",
+    "spentChip": "Paid",
+    "categories": {
+      "FOOD_BEVERAGE": "Food & Drink",
+      "TRANSPORTATION": "Transport",
+      "SIGHTSEEING": "Sightseeing",
+      "ACCOMMODATION": "Accommodation",
+      "SHOPPING": "Shopping",
+      "ENTERTAINMENT": "Entertainment",
+      "OTHER": "Other"
+    },
+    "statuses": {
+      "PLANNED": "Planned",
+      "IN_PROGRESS": "In Progress",
+      "COMPLETED": "Completed",
+      "SKIPPED": "Skipped"
+    },
+    "checklistCategories": {
+      "DOCUMENTS": "Documents",
+      "CLOTHING": "Clothing & Gear",
+      "ELECTRONICS": "Electronics",
+      "MEDICAL": "Medical & Care",
+      "TASKS": "Tasks & Booking",
+      "OTHER": "Other"
+    },
+    "dialog": {
+      "addTitle": "Add New Activity",
+      "editTitle": "Edit Activity",
+      "titleLabel": "Activity Title *",
+      "titlePlaceholder": "e.g., Breakfast, Old Quarter walking tour...",
+      "categoryLabel": "Category",
+      "startTimeLabel": "Start Time",
+      "endTimeLabel": "End Time",
+      "locationLabel": "Location",
+      "locationPlaceholder": "e.g., 06 Tran Hung Dao St, Hoan Kiem...",
+      "estimatedCostLabel": "Estimated Cost",
+      "statusLabel": "Status",
+      "noteLabel": "Notes",
+      "notePlaceholder": "Dress code, tickets, booking tips...",
+      "cancelBtn": "Cancel",
+      "saveBtn": "Save Activity",
+      "deleteTitle": "Delete Activity",
+      "deleteDesc": "Are you sure you want to delete this activity from your itinerary?",
+      "confirmDelete": "Delete Activity",
+      "convertToExpense": "Record as Expense",
+      "markCompleted": "Mark as Completed",
+      "markPlanned": "Set to Planned"
+    },
+    "checklist": {
+      "title": "Pre-Trip Packing & Tasks Checklist",
+      "subtitle": "Check off all essential items and tasks before departure",
+      "inputPlaceholder": "Add item or task (e.g., Passport, Power bank, Book hotel...)",
+      "categorySelect": "Category",
+      "addBtn": "Add",
+      "completedCount": "{completed} of {total} items prepared",
+      "emptyChecklist": "No items in preparation checklist yet."
+    },
+    "toasts": {
+      "createActivitySuccess": "Activity added to itinerary successfully!",
+      "updateActivitySuccess": "Activity updated successfully!",
+      "deleteActivitySuccess": "Activity removed from itinerary.",
+      "statusUpdateSuccess": "Activity status updated!",
+      "createChecklistSuccess": "Checklist item added!",
+      "deleteChecklistSuccess": "Checklist item removed.",
+      "error": "An error occurred. Please try again."
     }
   }
 }

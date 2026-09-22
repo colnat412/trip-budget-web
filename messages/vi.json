@@ -48,6 +48,7 @@
     "navigation": "Điều hướng chính",
     "overview": "Tổng quan",
     "trips": "Chuyến đi",
+    "plan": "Kế hoạch",
     "expenses": "Chi tiêu",
     "scan": "Quét hóa đơn",
     "settlement": "Quyết toán",
@@ -469,6 +470,87 @@
       "createError": "Không thể ghi nhận thanh toán. Vui lòng thử lại.",
       "deleteSuccess": "Đã hủy giao dịch thanh toán.",
       "deleteError": "Không thể hủy giao dịch. Vui lòng thử lại."
+    }
+  },
+  "plan": {
+    "pageTitle": "Kế hoạch chuyến đi",
+    "pageSubtitle": "Lên lịch trình theo từng ngày và chuẩn bị hành lý cho chuyến đi",
+    "noActiveTrip": "Vui lòng chọn một chuyến đi để xem và lập kế hoạch.",
+    "addActivity": "Thêm hoạt động",
+    "checklistBtn": "Chuẩn bị hành lý",
+    "totalDays": "Số ngày",
+    "totalActivities": "Hoạt động",
+    "completedActivities": "Đã hoàn thành",
+    "totalEstimatedCost": "Chi phí dự kiến",
+    "dayTab": "Ngày {day}",
+    "emptyActivities": "Chưa có hoạt động nào trong ngày này",
+    "emptyActivitiesDesc": "Hãy lên lịch các điểm tham quan, ăn uống hoặc di chuyển để chuyến đi thật trọn vẹn!",
+    "addFirstActivity": "Thêm hoạt động đầu tiên",
+    "estimatedCost": "Chi phí ước tính: {cost}",
+    "spentChip": "Đã chi",
+    "categories": {
+      "FOOD_BEVERAGE": "Ăn uống",
+      "TRANSPORTATION": "Di chuyển",
+      "SIGHTSEEING": "Tham quan",
+      "ACCOMMODATION": "Lưu trú",
+      "SHOPPING": "Mua sắm",
+      "ENTERTAINMENT": "Giải trí",
+      "OTHER": "Khác"
+    },
+    "statuses": {
+      "PLANNED": "Dự kiến",
+      "IN_PROGRESS": "Đang diễn ra",
+      "COMPLETED": "Hoàn thành",
+      "SKIPPED": "Bỏ qua"
+    },
+    "checklistCategories": {
+      "DOCUMENTS": "Giấy tờ tùy thân",
+      "CLOTHING": "Quần áo & phụ kiện",
+      "ELECTRONICS": "Đồ công nghệ",
+      "MEDICAL": "Y tế & chăm sóc",
+      "TASKS": "Việc cần làm",
+      "OTHER": "Khác"
+    },
+    "dialog": {
+      "addTitle": "Thêm hoạt động mới",
+      "editTitle": "Chỉnh sửa hoạt động",
+      "titleLabel": "Tên hoạt động *",
+      "titlePlaceholder": "Ví dụ: Ăn sáng Bún bò, Tham quan Phố cổ...",
+      "categoryLabel": "Danh mục",
+      "startTimeLabel": "Giờ bắt đầu",
+      "endTimeLabel": "Giờ kết thúc",
+      "locationLabel": "Địa điểm",
+      "locationPlaceholder": "Ví dụ: 06 Trần Hưng Đạo, Hoàn Kiếm...",
+      "estimatedCostLabel": "Chi phí dự kiến",
+      "statusLabel": "Trạng thái",
+      "noteLabel": "Ghi chú",
+      "notePlaceholder": "Lưu ý trang phục, vé tham quan, đặt bàn trước...",
+      "cancelBtn": "Hủy",
+      "saveBtn": "Lưu hoạt động",
+      "deleteTitle": "Xóa hoạt động",
+      "deleteDesc": "Bạn có chắc chắn muốn xóa hoạt động này khỏi lịch trình không?",
+      "confirmDelete": "Xóa hoạt động",
+      "convertToExpense": "Ghi nhận thành chi tiêu",
+      "markCompleted": "Đánh dấu hoàn thành",
+      "markPlanned": "Đặt lại dự kiến"
+    },
+    "checklist": {
+      "title": "Danh mục đồ dùng & việc chuẩn bị",
+      "subtitle": "Kiểm tra kỹ lưỡng hành lý trước khi lên đường",
+      "inputPlaceholder": "Nhập đồ đạc hoặc việc cần làm (vd: Hộ chiếu, Sạc dự phòng...)",
+      "categorySelect": "Phân loại",
+      "addBtn": "Thêm",
+      "completedCount": "Đã chuẩn bị {completed}/{total} mục",
+      "emptyChecklist": "Chưa có mục nào trong danh sách chuẩn bị."
+    },
+    "toasts": {
+      "createActivitySuccess": "Đã thêm hoạt động vào lịch trình!",
+      "updateActivitySuccess": "Đã cập nhật hoạt động!",
+      "deleteActivitySuccess": "Đã xóa hoạt động khỏi lịch trình.",
+      "statusUpdateSuccess": "Đã cập nhật trạng thái hoạt động!",
+      "createChecklistSuccess": "Đã thêm mục chuẩn bị!",
+      "deleteChecklistSuccess": "Đã xóa mục chuẩn bị.",
+      "error": "Đã có lỗi xảy ra. Vui lòng thử lại sau."
     }
   }
 }

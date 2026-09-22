@@ -1,3 +1,4 @@
+import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
 import DocumentScannerOutlinedIcon from '@mui/icons-material/DocumentScannerOutlined';
 import FlightTakeoffOutlinedIcon from '@mui/icons-material/FlightTakeoffOutlined';
 import HandshakeOutlinedIcon from '@mui/icons-material/HandshakeOutlined';
@@ -21,6 +22,13 @@ export const DEFAULT_SIDEBAR_MENU: SidebarMenuItem[] = [
     label: 'Chuyến đi',
     messageKey: 'trips',
     icon: <FlightTakeoffOutlinedIcon />,
+  },
+  {
+    id: 'plan',
+    href: '/plan',
+    label: 'Kế hoạch',
+    messageKey: 'plan',
+    icon: <CalendarMonthOutlinedIcon />,
   },
   {
     id: 'expenses',

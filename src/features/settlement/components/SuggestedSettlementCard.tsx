@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Box, Typography } from '@mui/material';
+import { alpha } from '@mui/material/styles';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import PaymentRoundedIcon from '@mui/icons-material/PaymentRounded';
 import { useTranslations } from 'next-intl';
@@ -36,7 +37,9 @@ const SuggestedSettlementCard = ({
         gap: 2,
         transition: 'all 0.2s ease',
         '&:hover': {
-          boxShadow: '0 4px 12px rgba(0,0,0,0.06)',
+          boxShadow: (theme) => {
+            return `0 4px 12px ${alpha(theme.palette.text.primary, 0.06)}`;
+          },
           borderColor: 'primary.main',
         },
       }}

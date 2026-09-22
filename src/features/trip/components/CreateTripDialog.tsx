@@ -118,11 +118,11 @@ const CreateTripDialog = ({ open, onClose }: CreateTripDialogProps) => {
         description: description.trim() || undefined,
       },
       {
-        onSuccess: (response) => {
+        onSuccess: async (response) => {
           setSuccessToastOpen(true);
           resetForm();
           onClose();
-          void refetchTrips();
+          await refetchTrips('created');
           if (response?.data?.id) {
             selectTrip(response.data.id);
           }

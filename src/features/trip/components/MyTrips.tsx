@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Stack } from '@mui/material';
 import { useRouter } from 'next/navigation';
 
@@ -48,8 +48,32 @@ const MyTrips = () => {
     sortBy: sort?.columnId,
     sortDirection: sort?.direction,
   });
-  const { activeTrip, selectTrip, openCreateTrip, refetchTrips } =
-    useTripContext();
+  const {
+    activeTrip,
+    selectTrip,
+    openCreateTrip,
+    refetchTrips,
+    subscribeTrips,
+  } = useTripContext();
+
+  useEffect(() => {
+    return subscribeTrips((event) => {
+      if (event === 'created') {
+        const hasCustomState =
+          page !== 0 || Object.keys(filters).length > 0 || sort !== null;
+
+        setPage(0);
+        setFilters({});
+        setSort(null);
+
+        if (!hasCustomState) {
+          void refetch();
+        }
+      } else {
+        void refetch();
+      }
+    });
+  }, [subscribeTrips, page, filters, sort, refetch]);
 
   const handleSelectTrip = useCallback(
     (trip: Trip) => {
@@ -73,14 +97,12 @@ const MyTrips = () => {
   );
 
   const handleEditSuccess = useCallback(() => {
-    refetch();
-    refetchTrips();
-  }, [refetch, refetchTrips]);
+    void refetchTrips('updated');
+  }, [refetchTrips]);
 
   const handleDeleteSuccess = useCallback(() => {
-    refetch();
-    refetchTrips();
-  }, [refetch, refetchTrips]);
+    void refetchTrips('deleted');
+  }, [refetchTrips]);
 
   const totalCount = pagination?.totalElements ?? trips.length;
 

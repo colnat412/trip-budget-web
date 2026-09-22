@@ -1,6 +1,7 @@
 'use client';
 
 import { Box, Chip } from '@mui/material';
+import { alpha } from '@mui/material/styles';
 import { useTranslations } from 'next-intl';
 import type { TripStatus } from '../../types';
 
@@ -20,43 +21,46 @@ type StatusLabelKey =
   | 'planning'
   | 'confirmed'
   | 'completed'
-  | 'draft'
   | 'archived'
-  | 'cancelled';
+  | 'cancelled'
+  | 'draft';
 
-const STATUS_CONFIG_MAP: Record<
-  TripStatus,
-  {
-    variant: StatusThemeVariant;
-    labelKey: StatusLabelKey;
-  }
-> = {
+interface StatusConfig {
+  variant: StatusThemeVariant;
+  labelKey: StatusLabelKey;
+}
+
+const STATUS_CONFIG_MAP: Record<TripStatus, StatusConfig> = {
   IN_PROGRESS: { variant: 'success', labelKey: 'inProgress' },
   PLANNING: { variant: 'primary', labelKey: 'planning' },
   CONFIRMED: { variant: 'primary', labelKey: 'confirmed' },
   COMPLETED: { variant: 'secondary', labelKey: 'completed' },
-  DRAFT: { variant: 'neutral', labelKey: 'draft' },
   ARCHIVED: { variant: 'neutral', labelKey: 'archived' },
   CANCELLED: { variant: 'error', labelKey: 'cancelled' },
   DELETED: { variant: 'error', labelKey: 'cancelled' },
+  DRAFT: { variant: 'neutral', labelKey: 'draft' },
 };
 
 const TripStatusChip = ({ status }: TripStatusChipProps) => {
   const t = useTranslations('trip');
-  const config = STATUS_CONFIG_MAP[status] || STATUS_CONFIG_MAP.DRAFT;
-  const label = t(config.labelKey) || status;
+  const config = STATUS_CONFIG_MAP[status] ?? {
+    variant: 'neutral' as StatusThemeVariant,
+    labelKey: 'draft' as StatusLabelKey,
+  };
 
   return (
     <Chip
       size="small"
-      label={label}
+      label={t(config.labelKey)}
       icon={
         <Box
+          component="span"
           sx={{
             width: 6,
             height: 6,
             borderRadius: '50%',
-            ml: 0.5,
+            ml: '6px !important',
+            mr: '-2px !important',
             bgcolor: (theme) => {
               const palette = theme.vars?.palette ?? theme.palette;
               switch (config.variant) {
@@ -65,7 +69,7 @@ const TripStatusChip = ({ status }: TripStatusChipProps) => {
                 case 'primary':
                   return palette.primary.main;
                 case 'secondary':
-                  return palette.secondary.dark;
+                  return palette.secondary.main;
                 case 'error':
                   return palette.error.main;
                 case 'neutral':
@@ -83,21 +87,18 @@ const TripStatusChip = ({ status }: TripStatusChipProps) => {
         border: 'none',
         height: 24,
         bgcolor: (theme) => {
-          const palette = theme.vars?.palette ?? theme.palette;
           switch (config.variant) {
             case 'success':
-              return palette.success.light
-                ? 'rgba(22, 163, 74, 0.12)'
-                : 'action.hover';
+              return alpha(theme.palette.success.main, 0.12);
             case 'primary':
-              return 'rgba(30, 58, 138, 0.12)';
+              return alpha(theme.palette.primary.main, 0.12);
             case 'secondary':
-              return 'rgba(249, 115, 22, 0.12)';
+              return alpha(theme.palette.secondary.main, 0.12);
             case 'error':
-              return 'rgba(220, 38, 38, 0.12)';
+              return alpha(theme.palette.error.main, 0.12);
             case 'neutral':
             default:
-              return palette.action.hover;
+              return (theme.vars?.palette ?? theme.palette).action.hover;
           }
         },
         color: (theme) => {

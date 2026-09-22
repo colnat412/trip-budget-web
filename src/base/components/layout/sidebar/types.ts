@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 export type SidebarMessageKey =
   | 'overview'
   | 'trips'
+  | 'plan'
   | 'expenses'
   | 'scan'
   | 'settlement';

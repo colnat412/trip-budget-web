@@ -49,16 +49,8 @@ const CategorySpendingList = ({
     (item) => item.limitAmount && item.limitAmount > 0,
   );
 
-  const sortedItems = [...activeItems].sort((a, b) => {
-    const aOver = a.limitAmount > 0 && a.spentAmount > a.limitAmount;
-    const bOver = b.limitAmount > 0 && b.spentAmount > b.limitAmount;
-    if (aOver && !bOver) return -1;
-    if (!aOver && bOver) return 1;
-    if (aOver && bOver) {
-      return b.spentAmount - b.limitAmount - (a.spentAmount - a.limitAmount);
-    }
-    return b.spentAmount - a.spentAmount;
-  });
+  // Backend (/api/trip/{id}/expenses/summary) returns categoryBreakdown already pre-sorted (over-limit first, then highest spent)
+  const sortedItems = activeItems;
 
   return (
     <Box sx={{ width: '100%', minWidth: 0 }}>
@@ -408,9 +400,11 @@ const CategorySpendingList = ({
                   minWidth: 0,
                   transition: 'all 0.2s ease',
                   '&:hover': {
-                    boxShadow: isOver
-                      ? '0 2px 10px rgba(211,47,47,0.15)'
-                      : '0 2px 8px rgba(0,0,0,0.05)',
+                    boxShadow: (theme) => {
+                      return isOver
+                        ? `0 2px 10px ${alpha(theme.palette.error.main, 0.15)}`
+                        : `0 2px 8px ${alpha(theme.palette.text.primary, 0.05)}`;
+                    },
                   },
                 }}
               >

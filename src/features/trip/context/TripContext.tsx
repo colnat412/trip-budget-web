@@ -5,12 +5,15 @@ import {
   useCallback,
   useContext,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from 'react';
 import type { ApiError } from '@/base/api';
 import useMyTrips from '../hooks/useMyTrips';
 import type { Trip } from '../types';
+
+export type TripMutationEvent = 'created' | 'updated' | 'deleted' | 'general';
 
 interface TripContextValue {
   trips: Trip[];
@@ -20,7 +23,9 @@ interface TripContextValue {
   isLoading: boolean;
   isFetching: boolean;
   error: ApiError | null;
-  refetchTrips: () => Promise<unknown>;
+  refetchTrips: (event?: TripMutationEvent) => Promise<unknown>;
+  subscribeTrips: (listener: (event?: TripMutationEvent) => void) => () => void;
+  tripsVersion: number;
   isCreateTripOpen: boolean;
   openCreateTrip: () => void;
   closeCreateTrip: () => void;
@@ -32,14 +37,46 @@ interface TripContextValue {
 
 const TripContext = createContext<TripContextValue | null>(null);
 
-export function TripProvider({ children }: { children: ReactNode }) {
-  const { trips, isLoading, isFetching, error, refetch } = useMyTrips();
+const TripProvider = ({ children }: { children: ReactNode }) => {
+  const { trips, isLoading, isFetching, error, refetch } = useMyTrips({
+    size: 100,
+  });
+  const [tripsVersion, setTripsVersion] = useState(0);
+  const listenersRef = useRef<Set<(event?: TripMutationEvent) => void>>(
+    new Set(),
+  );
+
   const [selectedTripId, setSelectedTripId] = useState<string | number | null>(
     null,
   );
   const [isCreateTripOpen, setIsCreateTripOpen] = useState(false);
   const [isMembersOpen, setIsMembersOpen] = useState(false);
   const [isInviteInitial, setIsInviteInitial] = useState(false);
+
+  const subscribeTrips = useCallback(
+    (listener: (event?: TripMutationEvent) => void) => {
+      listenersRef.current.add(listener);
+      return () => {
+        listenersRef.current.delete(listener);
+      };
+    },
+    [],
+  );
+
+  const refetchTrips = useCallback(
+    async (event: TripMutationEvent = 'general') => {
+      setTripsVersion((v) => v + 1);
+      listenersRef.current.forEach((listener) => {
+        try {
+          listener(event);
+        } catch (err) {
+          console.error('Trip listener error:', err);
+        }
+      });
+      return refetch();
+    },
+    [refetch],
+  );
 
   const activeTrip = useMemo(() => {
     if (!trips || trips.length === 0) return null;
@@ -89,7 +126,9 @@ export function TripProvider({ children }: { children: ReactNode }) {
       isLoading,
       isFetching,
       error,
-      refetchTrips: refetch,
+      refetchTrips,
+      subscribeTrips,
+      tripsVersion,
       isCreateTripOpen,
       openCreateTrip,
       closeCreateTrip,
@@ -106,7 +145,9 @@ export function TripProvider({ children }: { children: ReactNode }) {
       isLoading,
       isFetching,
       error,
-      refetch,
+      refetchTrips,
+      subscribeTrips,
+      tripsVersion,
       isCreateTripOpen,
       openCreateTrip,
       closeCreateTrip,
@@ -118,12 +159,15 @@ export function TripProvider({ children }: { children: ReactNode }) {
   );
 
   return <TripContext.Provider value={value}>{children}</TripContext.Provider>;
-}
+};
 
-export function useTripContext(): TripContextValue {
+const useTripContext = (): TripContextValue => {
   const context = useContext(TripContext);
   if (!context) {
     throw new Error('useTripContext must be used within a TripProvider');
   }
   return context;
-}
+};
+
+export { TripProvider, useTripContext };
+export default TripProvider;

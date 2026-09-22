@@ -2,6 +2,7 @@
 
 import React, { useMemo, useState } from 'react';
 import { Box, Stack, Typography, Divider } from '@mui/material';
+import { alpha } from '@mui/material/styles';
 import { useTranslations } from 'next-intl';
 import { AppButton, AppNumberInput } from '@/base/components/ui';
 import { formatCurrency } from '@/base/utils';
@@ -69,6 +70,26 @@ const SetBudgetForm = ({
   >(initialCategoryLimits);
 
   const [error, setError] = useState<string | undefined>();
+
+  const handleCategoryChange = (key: ExpenseCategory, val: string) => {
+    const updatedLimits: Partial<Record<ExpenseCategory, string>> = {
+      ...categoryLimits,
+      [key]: val,
+    };
+    setCategoryLimits(updatedLimits);
+
+    const calculatedTotal = Object.values(updatedLimits).reduce<number>(
+      (sum, limitVal) => {
+        if (!limitVal) return sum;
+        const n = Number(limitVal);
+        return !isNaN(n) && n > 0 ? sum + n : sum;
+      },
+      0,
+    );
+
+    setTotalBudget(calculatedTotal > 0 ? String(calculatedTotal) : '');
+    if (error) setError(undefined);
+  };
 
   const numericTotalBudget = useMemo(() => {
     if (!totalBudget || isNaN(Number(totalBudget))) return 0;
@@ -149,9 +170,11 @@ const SetBudgetForm = ({
           sx={{
             p: 2,
             borderRadius: '12px',
-            bgcolor: isOverAllocated
-              ? 'rgba(239, 68, 68, 0.08)'
-              : 'action.hover',
+            bgcolor: (theme) => {
+              return isOverAllocated
+                ? alpha(theme.palette.error.main, 0.08)
+                : (theme.vars?.palette ?? theme.palette).action.hover;
+            },
             border: 1,
             borderColor: isOverAllocated ? 'error.main' : 'divider',
             transition: 'all 0.2s ease',
@@ -295,13 +318,7 @@ const SetBudgetForm = ({
               placeholder="0"
               currencySuffix={tripCurrency}
               value={categoryLimits[cat.key] ?? ''}
-              onChange={(e) => {
-                const val = e.target.value;
-                setCategoryLimits((prev) => ({
-                  ...prev,
-                  [cat.key]: val,
-                }));
-              }}
+              onChange={(e) => handleCategoryChange(cat.key, e.target.value)}
             />
           </Box>
         ))}
