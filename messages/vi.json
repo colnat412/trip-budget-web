@@ -487,6 +487,8 @@
     "emptyActivitiesDesc": "Hãy lên lịch các điểm tham quan, ăn uống hoặc di chuyển để chuyến đi thật trọn vẹn!",
     "addFirstActivity": "Thêm hoạt động đầu tiên",
     "estimatedCost": "Chi phí ước tính: {cost}",
+    "dayTotalCostLabel": "Dự kiến trong ngày",
+    "dayTotalCost": "Tổng chi phí dự kiến trong ngày: {cost}",
     "spentChip": "Đã chi",
     "categories": {
       "FOOD_BEVERAGE": "Ăn uống",

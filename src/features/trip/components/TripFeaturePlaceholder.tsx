@@ -2,6 +2,8 @@ import ConstructionRoundedIcon from '@mui/icons-material/ConstructionRounded';
 import { Box, Stack, Typography } from '@mui/material';
 import { getTranslations } from 'next-intl/server';
 
+import { AppPageContainer } from '@/base/components/ui';
+
 type TripFeatureKey = 'expenses' | 'scan' | 'settlement' | 'ai';
 
 interface TripFeaturePlaceholderProps {
@@ -14,14 +16,10 @@ const TripFeaturePlaceholder = async ({
   const t = await getTranslations('tripFeature');
 
   return (
-    <Box
+    <AppPageContainer
       sx={{
-        minHeight: '100%',
-        display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        p: 3,
-        bgcolor: 'action.hover',
       }}
     >
       <Stack
@@ -52,14 +50,17 @@ const TripFeaturePlaceholder = async ({
         >
           <ConstructionRoundedIcon sx={{ fontSize: '28px' }} />
         </Box>
-        <Typography component="h1" sx={{ color: 'text.primary', fontSize: '24px', fontWeight: 800 }}>
+        <Typography
+          component="h1"
+          sx={{ color: 'text.primary', fontSize: '24px', fontWeight: 800 }}
+        >
           {t(`${feature}.title`)}
         </Typography>
         <Typography sx={{ color: 'text.secondary', fontSize: '15px' }}>
           {t('description')}
         </Typography>
       </Stack>
-    </Box>
+    </AppPageContainer>
   );
 };
 

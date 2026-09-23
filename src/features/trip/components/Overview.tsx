@@ -4,6 +4,7 @@ import { Box, Skeleton, Stack, Typography } from '@mui/material';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 
+import { AppPageContainer } from '@/base/components/ui';
 import { useTripContext } from '../context/TripContext';
 import ActiveTripBanner from './overview/ActiveTripBanner';
 import CategoryList from './overview/CategoryList';
@@ -16,10 +17,7 @@ const Overview = () => {
 
   if (isLoading) {
     return (
-      <Stack
-        spacing={3}
-        sx={{ p: { xs: 2, md: 3 }, bgcolor: 'action.hover', minHeight: '100%' }}
-      >
+      <AppPageContainer>
         <Skeleton
           variant="rounded"
           width="100%"
@@ -40,28 +38,22 @@ const Overview = () => {
             sx={{ borderRadius: '20px' }}
           />
         </Stack>
-      </Stack>
+      </AppPageContainer>
     );
   }
 
   if (!trips || trips.length === 0) {
     return (
-      <Stack
-        spacing={3}
-        sx={{ p: { xs: 2, md: 3 }, bgcolor: 'action.hover', minHeight: '100%' }}
-      >
+      <AppPageContainer>
         <EmptyTripState onCreateTrip={openCreateTrip} />
-      </Stack>
+      </AppPageContainer>
     );
   }
 
   const currentTrip = activeTrip || trips[0];
 
   return (
-    <Stack
-      spacing={3}
-      sx={{ p: { xs: 2, md: 3 }, bgcolor: 'action.hover', minHeight: '100%' }}
-    >
+    <AppPageContainer>
       <ActiveTripBanner trip={currentTrip} />
 
       <Box
@@ -141,7 +133,7 @@ const Overview = () => {
           />
         </Stack>
       </Box>
-    </Stack>
+    </AppPageContainer>
   );
 };
 

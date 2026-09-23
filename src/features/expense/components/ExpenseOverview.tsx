@@ -10,6 +10,8 @@ import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import {
   AppButton,
+  AppPageContainer,
+  AppPageHeader,
   AppToast,
   type AppToastSeverity,
   type ColumnFilterValue,
@@ -209,14 +211,12 @@ const ExpenseOverview = () => {
 
   if (!activeTrip) {
     return (
-      <Stack
-        spacing={3}
+      <AppPageContainer
         sx={{
-          py: 10,
-          px: 3,
           alignItems: 'center',
           justifyContent: 'center',
           textAlign: 'center',
+          py: 10,
         }}
       >
         <Box
@@ -256,92 +256,47 @@ const ExpenseOverview = () => {
         <AppButton intent="primary" onClick={() => router.push('/trips')}>
           {t('viewTrips')}
         </AppButton>
-      </Stack>
+      </AppPageContainer>
     );
   }
 
   return (
-    <Stack
-      spacing={3}
-      sx={{
-        p: { xs: 2, md: 3 },
-        bgcolor: 'action.hover',
-        minHeight: '100%',
-      }}
-    >
-      <Stack
-        direction={{ xs: 'column', md: 'row' }}
-        spacing={2}
-        sx={{
-          justifyContent: 'space-between',
-          alignItems: { xs: 'flex-start', md: 'center' },
-        }}
-      >
-        <Stack spacing={0.5}>
-          <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-            <AccountBalanceWalletRoundedIcon
-              sx={{ color: 'primary.main', fontSize: '24px' }}
-            />
-            <Typography
-              component="h1"
-              sx={{
-                fontFamily: 'var(--font-display)',
-                fontSize: { xs: '24px', sm: '28px' },
-                fontWeight: 800,
-                color: 'text.primary',
-              }}
-            >
-              {t('pageTitle')}
-            </Typography>
-            <Box
-              sx={{
-                px: 1,
-                py: 0.25,
-                borderRadius: '999px',
-                bgcolor: 'background.paper',
-                border: 1,
-                borderColor: 'divider',
-                fontSize: '12px',
-                fontWeight: 700,
-                color: 'primary.main',
-              }}
-            >
-              {activeTrip.baseCurrency}
-            </Box>
-          </Stack>
-          <Typography sx={{ color: 'text.secondary', fontSize: '14px' }}>
+    <AppPageContainer>
+      <AppPageHeader
+        icon={<AccountBalanceWalletRoundedIcon sx={{ fontSize: '24px' }} />}
+        title={t('pageTitle')}
+        badge={activeTrip.baseCurrency}
+        subtitle={
+          <>
             {t('trip')}:{' '}
             <Box component="strong" sx={{ color: 'primary.main' }}>
               {activeTrip.name}
             </Box>{' '}
             • {t('destination')}:{' '}
             <strong>{activeTrip.destination || t('notUpdated')}</strong>
-          </Typography>
-        </Stack>
-
-        <Stack
-          direction="row"
-          spacing={1.5}
-          sx={{ alignItems: 'center', flexShrink: 0 }}
-        >
-          <AppButton
-            intent="secondary"
-            size="medium"
-            startIcon={<TuneRoundedIcon fontSize="small" />}
-            onClick={() => setSetBudgetOpen(true)}
-          >
-            {t('setBudget')}
-          </AppButton>
-          <AppButton
-            intent="primary"
-            size="medium"
-            startIcon={<AddRoundedIcon fontSize="small" />}
-            onClick={() => setAddOpen(true)}
-          >
-            {t('addExpense')}
-          </AppButton>
-        </Stack>
-      </Stack>
+          </>
+        }
+        actions={
+          <>
+            <AppButton
+              intent="secondary"
+              size="medium"
+              startIcon={<TuneRoundedIcon fontSize="small" />}
+              onClick={() => setSetBudgetOpen(true)}
+            >
+              {t('setBudget')}
+            </AppButton>
+            <AppButton
+              intent="primary"
+              size="medium"
+              startIcon={<AddRoundedIcon fontSize="small" />}
+              onClick={() => setAddOpen(true)}
+            >
+              {t('addExpense')}
+            </AppButton>
+          </>
+        }
+      />
 
       <Box
         sx={{
@@ -433,7 +388,7 @@ const ExpenseOverview = () => {
         severity={toast.severity}
         onClose={() => setToast((prev) => ({ ...prev, open: false }))}
       />
-    </Stack>
+    </AppPageContainer>
   );
 };
 

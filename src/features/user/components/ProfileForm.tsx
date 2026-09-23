@@ -173,7 +173,6 @@ const ProfileForm = ({ onClose, user }: ProfileFormProps) => {
             value={currentEmail}
             disabled
             slotProps={{ inputLabel: { shrink: true } }}
-            // helperText="Email tài khoản được đồng bộ từ Identity Service"
           />
 
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
@@ -204,23 +203,6 @@ const ProfileForm = ({ onClose, user }: ProfileFormProps) => {
             slotProps={{ inputLabel: { shrink: true } }}
             onChange={(e) => setBio(e.target.value)}
           />
-
-          <Box
-            sx={{
-              p: 1.5,
-              borderRadius: '10px',
-              bgcolor: 'action.hover',
-              border: 1,
-              borderColor: 'divider',
-            }}
-          >
-            <Typography
-              variant="caption"
-              sx={{ color: 'text.secondary', fontStyle: 'italic' }}
-            >
-              💡 {t('saveNote')}
-            </Typography>
-          </Box>
         </DialogContent>
 
         <DialogActions sx={{ p: 2, gap: 1.5 }}>

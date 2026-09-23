@@ -487,6 +487,8 @@
     "emptyActivitiesDesc": "Plan your sightseeing, meals, or travel to make the most of your trip!",
     "addFirstActivity": "Add First Activity",
     "estimatedCost": "Estimated: {cost}",
+    "dayTotalCostLabel": "Day Estimated",
+    "dayTotalCost": "Total estimated cost for this day: {cost}",
     "spentChip": "Paid",
     "categories": {
       "FOOD_BEVERAGE": "Food & Drink",

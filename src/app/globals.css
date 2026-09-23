@@ -1,20 +1,25 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --font-comfortaa: var(--font-comfortaa);
   --font-sans:
-    var(--font-outfit), ui-sans-serif, system-ui, sans-serif,
+    var(--font-comfortaa), 'Comfortaa', ui-sans-serif, system-ui, sans-serif,
     'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   --font-mono: var(--font-dm-mono), 'DM Mono', monospace;
-  --font-display:
-    var(--font-dm-serif-display), 'DM Serif Display', Georgia, serif;
-  --font-body: var(--font-outfit), 'Outfit', system-ui, sans-serif;
+  --font-display: var(--font-comfortaa), 'Comfortaa', cursive, sans-serif;
+  --font-body:
+    var(--font-comfortaa), 'Comfortaa', cursive, system-ui, sans-serif;
+  --font-outfit: var(--font-comfortaa), 'Comfortaa', sans-serif;
+  --font-dm-serif-display: var(--font-comfortaa), 'Comfortaa', sans-serif;
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
   --default-transition-duration: 0.15s;
   --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-html { height: 100%; }
+html {
+  height: 100%;
+}
 
 html,
 body {

@@ -94,19 +94,19 @@ const ActivityTimelineCard = ({
     >
       <Box
         sx={{
-          width: { xs: '65px', sm: '85px' },
+          width: { xs: '95px', sm: '110px' },
           flexShrink: 0,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'flex-end',
-          pt: 1.5,
+          pt: { xs: 2, md: 2.75 },
         }}
       >
         {timeDisplay ? (
           <Typography
             sx={{
               fontFamily: 'var(--font-mono)',
-              fontSize: '13px',
+              fontSize: { xs: '12px', sm: '13px' },
               fontWeight: 700,
               color: isCompleted ? 'text.secondary' : 'primary.main',
               whiteSpace: 'nowrap',
@@ -128,6 +128,7 @@ const ActivityTimelineCard = ({
           alignItems: 'center',
           flexShrink: 0,
           width: '20px',
+          pt: { xs: 2.25, md: 3 },
         }}
       >
         <Box
@@ -135,7 +136,6 @@ const ActivityTimelineCard = ({
             width: 14,
             height: 14,
             borderRadius: '50%',
-            mt: 1.75,
             bgcolor: isCompleted
               ? 'success.main'
               : activity.status === 'IN_PROGRESS'
@@ -163,8 +163,7 @@ const ActivityTimelineCard = ({
         sx={{
           flexGrow: 1,
           minWidth: 0,
-          p: { xs: 1.75, sm: 2 },
-          mb: 1.5,
+          p: { xs: 2, md: 3 },
           borderRadius: '16px',
           bgcolor: 'background.paper',
           border: 1,

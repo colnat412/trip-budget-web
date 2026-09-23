@@ -6,18 +6,20 @@ import { alpha } from '@mui/material/styles';
 import CalendarTodayRoundedIcon from '@mui/icons-material/CalendarTodayRounded';
 import { useTranslations } from 'next-intl';
 
-import { formatDate } from '@/base/utils';
+import { formatCurrency, formatDate } from '@/base/utils';
 import type { PlanDay } from '../types';
 
 export interface PlanDayTabsProps {
   days: PlanDay[];
   selectedDayId: string;
+  currency?: string;
   onSelectDay: (dayId: string) => void;
 }
 
 const PlanDayTabs = ({
   days,
   selectedDayId,
+  currency = 'VND',
   onSelectDay,
 }: PlanDayTabsProps) => {
   const t = useTranslations('plan');
@@ -25,11 +27,11 @@ const PlanDayTabs = ({
   return (
     <Box
       sx={{
+        width: '100%',
         display: 'flex',
         alignItems: 'center',
         gap: 1.5,
         overflowX: 'auto',
-        pb: 0.5,
         '&::-webkit-scrollbar': { height: 6 },
         '&::-webkit-scrollbar-thumb': {
           bgcolor: 'action.hover',
@@ -51,6 +53,7 @@ const PlanDayTabs = ({
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'flex-start',
+              justifyContent: 'center',
               gap: 0.5,
               py: 1.25,
               px: 2,
@@ -60,6 +63,7 @@ const PlanDayTabs = ({
               bgcolor: isSelected ? 'primary.main' : 'background.paper',
               color: isSelected ? 'primary.contrastText' : 'text.primary',
               minWidth: 120,
+              minHeight: 74,
               flexShrink: 0,
               textAlign: 'left',
               transition: 'all 0.2s ease',
@@ -113,7 +117,7 @@ const PlanDayTabs = ({
               </Box>
             </Box>
 
-            {formattedDate && (
+            {formattedDate ? (
               <Box
                 sx={{
                   display: 'flex',
@@ -121,12 +125,31 @@ const PlanDayTabs = ({
                   gap: 0.5,
                   opacity: isSelected ? 0.9 : 0.75,
                   fontSize: '11px',
+                  minHeight: '16px',
                 }}
               >
                 <CalendarTodayRoundedIcon sx={{ fontSize: '12px' }} />
                 <span>{formattedDate}</span>
               </Box>
+            ) : (
+              <Box sx={{ minHeight: '16px' }} />
             )}
+
+            <Typography
+              sx={{
+                fontSize: '11px',
+                fontWeight: 700,
+                fontFamily: 'var(--font-mono)',
+                color: isSelected
+                  ? 'primary.contrastText'
+                  : day.totalEstimatedCost && day.totalEstimatedCost > 0
+                    ? 'success.main'
+                    : 'text.secondary',
+                opacity: isSelected ? 0.95 : 0.8,
+              }}
+            >
+              {formatCurrency(day.totalEstimatedCost ?? 0, currency)}
+            </Typography>
           </ButtonBase>
         );
       })}

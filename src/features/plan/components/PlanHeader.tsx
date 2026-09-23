@@ -37,12 +37,12 @@ const PlanHeader = ({
   return (
     <Box
       sx={{
+        width: '100%',
         display: 'flex',
         flexDirection: { xs: 'column', md: 'row' },
         justifyContent: 'space-between',
         alignItems: { xs: 'flex-start', md: 'center' },
         gap: 2,
-        pb: 1,
       }}
     >
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>

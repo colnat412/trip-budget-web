@@ -1,10 +1,13 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import { Stack } from '@mui/material';
 import { useRouter } from 'next/navigation';
 
-import type { ColumnFilterValue, TableSortState } from '@/base/components/ui';
+import {
+  AppPageContainer,
+  type ColumnFilterValue,
+  type TableSortState,
+} from '@/base/components/ui';
 import useMyTrips from '../hooks/useMyTrips';
 import { useTripContext } from '../context/TripContext';
 import MyTripsHeader from './my-trips/MyTripsHeader';
@@ -107,14 +110,7 @@ const MyTrips = () => {
   const totalCount = pagination?.totalElements ?? trips.length;
 
   return (
-    <Stack
-      spacing={3}
-      sx={{
-        p: { xs: 2, md: 3 },
-        bgcolor: 'action.hover',
-        minHeight: '100%',
-      }}
-    >
+    <AppPageContainer>
       <MyTripsHeader totalTrips={totalCount} onCreateTrip={openCreateTrip} />
 
       <TripTable
@@ -160,7 +156,7 @@ const MyTrips = () => {
         onClose={() => setDeletingTrip(null)}
         onSuccess={handleDeleteSuccess}
       />
-    </Stack>
+    </AppPageContainer>
   );
 };
 

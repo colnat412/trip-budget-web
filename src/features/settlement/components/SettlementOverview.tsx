@@ -9,6 +9,8 @@ import { useTranslations } from 'next-intl';
 import {
   AppButton,
   AppCard,
+  AppPageContainer,
+  AppPageHeader,
   AppToast,
   type AppToastSeverity,
 } from '@/base/components/ui';
@@ -118,12 +120,9 @@ const SettlementOverview = () => {
     }
   };
 
-  if (isTripLoading || (isSummaryLoading && !summary)) {
+  if (isTripLoading || (tripId && isSummaryLoading)) {
     return (
-      <Stack
-        spacing={3}
-        sx={{ p: { xs: 2, md: 3 }, bgcolor: 'action.hover', minHeight: '100%' }}
-      >
+      <AppPageContainer>
         <Skeleton
           variant="rounded"
           width="100%"
@@ -142,16 +141,13 @@ const SettlementOverview = () => {
           height={300}
           sx={{ borderRadius: '20px' }}
         />
-      </Stack>
+      </AppPageContainer>
     );
   }
 
   if (!currentTrip) {
     return (
-      <Stack
-        spacing={3}
-        sx={{ p: { xs: 2, md: 3 }, bgcolor: 'action.hover', minHeight: '100%' }}
-      >
+      <AppPageContainer>
         <AppCard sx={{ p: 5, textAlign: 'center', borderRadius: '20px' }}>
           <Stack spacing={2} sx={{ alignItems: 'center' }}>
             <LuggageRoundedIcon sx={{ fontSize: 48, color: 'text.disabled' }} />
@@ -163,7 +159,7 @@ const SettlementOverview = () => {
             </AppButton>
           </Stack>
         </AppCard>
-      </Stack>
+      </AppPageContainer>
     );
   }
 
@@ -175,53 +171,12 @@ const SettlementOverview = () => {
   const currency = summary?.currency || currentTrip.baseCurrency || 'VND';
 
   return (
-    <Box
-      sx={{ p: { xs: 2, md: 3 }, bgcolor: 'action.hover', minHeight: '100%' }}
-    >
-      <Stack spacing={3}>
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: { xs: 'column', sm: 'row' },
-            justifyContent: 'space-between',
-            alignItems: { xs: 'flex-start', sm: 'center' },
-            gap: 2,
-          }}
-        >
-          <Stack spacing={0.5}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-              <Typography
-                component="h1"
-                sx={{
-                  fontSize: { xs: '20px', md: '24px' },
-                  fontWeight: 800,
-                  color: 'text.primary',
-                  letterSpacing: '-0.5px',
-                }}
-              >
-                {t('pageTitle')}
-              </Typography>
-              <Box
-                sx={{
-                  px: 1.5,
-                  py: 0.5,
-                  borderRadius: '999px',
-                  bgcolor: 'action.hover',
-                  border: 1,
-                  borderColor: 'divider',
-                  color: 'primary.main',
-                  fontSize: '12px',
-                  fontWeight: 700,
-                }}
-              >
-                {currentTrip.name}
-              </Box>
-            </Box>
-            <Typography sx={{ fontSize: '13px', color: 'text.secondary' }}>
-              {t('pageSubtitle')}
-            </Typography>
-          </Stack>
-
+    <AppPageContainer>
+      <AppPageHeader
+        title={t('pageTitle')}
+        badge={currentTrip.name}
+        subtitle={t('pageSubtitle')}
+        actions={
           <AppButton
             intent="primary"
             startIcon={<HandshakeRoundedIcon sx={{ fontSize: '18px' }} />}
@@ -229,45 +184,45 @@ const SettlementOverview = () => {
           >
             {t('recordPayment')}
           </AppButton>
+        }
+      />
+
+      <MyBalanceCard
+        myBalance={summary?.myBalance ?? 0}
+        myStatus={summary?.myStatus ?? 'SETTLED'}
+        currency={currency}
+        totalExpenses={summary?.totalExpenses ?? 0}
+        totalSettled={summary?.totalSettled ?? 0}
+        onOpenRecordPayment={() => handleOpenRecordPayment()}
+      />
+
+      <Stack spacing={1.5}>
+        <Box>
+          <Typography
+            sx={{ fontSize: '16px', fontWeight: 700, color: 'text.primary' }}
+          >
+            {t('suggestedTitle')}
+          </Typography>
+          <Typography sx={{ fontSize: '12px', color: 'text.secondary' }}>
+            {t('suggestedDesc')}
+          </Typography>
         </Box>
 
-        <MyBalanceCard
-          myBalance={summary?.myBalance ?? 0}
-          myStatus={summary?.myStatus ?? 'SETTLED'}
-          currency={currency}
-          totalExpenses={summary?.totalExpenses ?? 0}
-          totalSettled={summary?.totalSettled ?? 0}
-          onOpenRecordPayment={() => handleOpenRecordPayment()}
-        />
-
-        <Stack spacing={1.5}>
-          <Box>
-            <Typography
-              sx={{ fontSize: '16px', fontWeight: 700, color: 'text.primary' }}
-            >
-              {t('suggestedTitle')}
-            </Typography>
-            <Typography sx={{ fontSize: '12px', color: 'text.secondary' }}>
-              {t('suggestedDesc')}
-            </Typography>
-          </Box>
-
-          <SuggestedSettlementsList
-            suggestedSettlements={summary?.suggestedSettlements ?? []}
-            onSettle={(settlement) => handleOpenRecordPayment(settlement)}
-          />
-        </Stack>
-
-        <MemberBalancesTable
-          memberBalances={summary?.memberBalances ?? []}
-          currency={currency}
-        />
-
-        <SettlementHistoryTable
-          settlements={summary?.settlementHistory ?? []}
-          onDelete={handleDeleteSettlement}
+        <SuggestedSettlementsList
+          suggestedSettlements={summary?.suggestedSettlements ?? []}
+          onSettle={(settlement) => handleOpenRecordPayment(settlement)}
         />
       </Stack>
+
+      <MemberBalancesTable
+        memberBalances={summary?.memberBalances ?? []}
+        currency={currency}
+      />
+
+      <SettlementHistoryTable
+        settlements={summary?.settlementHistory ?? []}
+        onDelete={handleDeleteSettlement}
+      />
 
       {dialogOpen && (
         <RecordSettlementDialog
@@ -287,7 +242,7 @@ const SettlementOverview = () => {
         severity={toast.severity}
         onClose={() => setToast((prev) => ({ ...prev, open: false }))}
       />
-    </Box>
+    </AppPageContainer>
   );
 };
 

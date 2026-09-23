@@ -33,12 +33,12 @@ const DayTimelineList = ({
   return (
     <Box
       sx={{
+        width: '100%',
         display: 'flex',
         flexDirection: 'column',
-        py: 1,
       }}
     >
-      <Stack spacing={0}>
+      <Stack spacing={2}>
         {activities.map((activity) => (
           <ActivityTimelineCard
             key={activity.id}

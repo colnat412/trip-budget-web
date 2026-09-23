@@ -643,6 +643,31 @@ For wrapping rows, use Flexbox gap:
 
 This rule applies to new feature/layout code and project wrapper components. Browser/MUI reset styles such as `body: { margin: 0 }`, or internal MUI component styles already recorded in the current theme, are not layout techniques for spacing siblings. Do not silently rewrite the supplied theme; if strict removal of an internal MUI margin such as `MuiFormHelperText.marginTop` is desired, propose that theme change separately.
 
+### Quy Chuẩn Kiến Trúc Layout & Phân Cấp Spacing Trang (Page Layout & Spacing Architecture Standard)
+
+Để loại bỏ hoàn toàn tình trạng các component con phải tự đo đạc, tự thêm padding/margin cục bộ (`px: 3`, `mb: 1.5`, `mt: 0.5`...) dẫn đến xô lệch lề và vỡ bố cục giao diện khi ghép nối từ Header đến Body, toàn bộ Frontend tuân thủ nghiêm ngặt **Kiến trúc Phân Cấp Spacing 4 Tầng**:
+
+1. **Tầng 1 — Page Shell / Container (`AppPageContainer`)**:
+   - Duy nhất component này sở hữu lề trong của trang (`p: { xs: 2, md: 3 }`), màu nền trang (`bgcolor: 'action.hover'`), và `minHeight: '100%'`.
+   - `AppPageContainer` điều phối khoảng cách giữa các khối lớn cấp cao (Header, Tabs, Banners, Cards, Tables, Timeline) thông qua `gap: 3` (24px).
+   - Mọi trang trong ứng dụng (`/overview`, `/trips`, `/expenses`, `/settlement`, `/plan`...) **bắt buộc bọc nội dung bằng `AppPageContainer`**.
+
+2. **Tầng 2 — Page Header (`AppPageHeader`)**:
+   - Mọi trang phải sử dụng `AppPageHeader` chuẩn hóa (hoặc tuân thủ 100% cấu trúc của nó): Icon, Title (`h1`, `fontSize: { xs: '24px', sm: '28px' }`, `fontWeight: 800`), Badge/Pill ngữ cảnh, Subtitle/Metadata, và cụm nút thao tác (`actions`) căn phải responsive.
+   - Tuyệt đối không thêm `pb: 1` hay margin đáy cục bộ làm méo mó khoảng cách giữa Header và các khối bên dưới.
+
+3. **Tầng 3 — Các Khối Nội Dung (Page Content Blocks / Sections)**:
+   - Mọi component là con trực tiếp của `AppPageContainer` (Header, Tabs, Cards, Tables, Banners, Timeline...) **bắt buộc phải có `width: '100%'`**, **KHÔNG có outer margin** (`m: 0`), và **KHÔNG có outer padding** (`p: 0`, `px: 0`).
+   - Mép trái của mọi khối con luôn bắt đầu thẳng hàng tuyệt đối tại `x = 0` (được căn chuẩn bởi padding của `AppPageContainer`).
+
+4. **Tầng 4 — Nội dung bên trong Khối (Internal Card / Component Content)**:
+   - Các khối dạng Card (`AppCard`, Paper, Table container) sở hữu **internal padding** (`p: { xs: 2, md: 3 }` hoặc `p: 2.5`), nhưng viền ngoài của Card luôn khít mép `x = 0` của container.
+   - Tuyệt đối cấm component con tự ý thêm `px`, `py` hoặc `mb` ở thẻ root để "bù trừ" hay "căn chỉnh" với phần tử khác.
+
+5. **Quy tắc Bố Cục Dạng Cột Phức Tạp / Timeline**:
+   - Trong các bố cục dạng timeline hoặc nhiều cột ngang, cột bên trái (như cột hiển thị thời gian) phải có kích thước đủ rộng (ví dụ `width: { xs: '95px', sm: '110px' }`, `flexShrink: 0`) để chữ không bị tràn (`overflow`) ra ngoài lề trái của container, gây cắt qua vạch chuẩn lề trang.
+   - Danh sách timeline (`DayTimelineList`) sử dụng `<Stack spacing={2}>` để điều phối khoảng cách giữa các thẻ; các thẻ con (`ActivityTimelineCard`) tuyệt đối không mang `mb: 1.5` hay `px: 3`.
+
 ### CSS unit rule: prefer pixels, not `em` or `rem`
 
 For explicit design measurements in frontend code, use `px` instead of `em` or `rem`.
@@ -1605,6 +1630,37 @@ If the user has already supplied a specific task, do not block on a broad questi
     - **Kiểm thử chất lượng**:
       - `npx tsc --noEmit && npm run lint` -> 0 errors, 0 warnings.
       - `mvn test-compile -q -o` -> BUILD SUCCESS (0 errors).
+
+26. **Chuyển Đổi Phông Chữ Toàn Bộ Ứng Dụng Sang "Comfortaa" & Tối Ưu Hiển Thị Chi Phí Ngày Trên Tabs (`/plan`)**:
+    - **Font "Comfortaa" (Google Fonts)**:
+      - Cấu hình tại `src/app/layout.tsx`: Nạp `Comfortaa` từ `next/font/google` với các subsets `['latin', 'latin-ext', 'vietnamese']`, thiết lập CSS variable `--font-comfortaa`, `display: 'swap'`.
+      - Cấu hình CSS Variables tại `src/app/globals.css`: Gán `--font-display`, `--font-body`, `--font-sans` sang Comfortaa; thêm alias tương thích ngược `--font-outfit`, `--font-dm-serif-display` sang Comfortaa.
+      - Tối ưu MUI Typography tại `src/base/theme/theme.ts`: Sử dụng `fontFamily: "var(--font-body)"` cho body, buttons và `MuiCssBaseline`; `var(--font-display)` cho `h1` - `h6` với letterSpacing phù hợp nét tròn của Comfortaa (`-0.5px` đến `0px`). Giữ nguyên font mono cho các bảng số liệu tài chính.
+    - **Tối Ưu Tabs Ngày & Đồng Bộ Padding Timeline (`/plan`)**:
+      - `PlanDayTabs.tsx`: Luôn hiển thị tổng chi phí dự kiến (kể cả khi không có hoạt động hoặc chi phí bằng 0 sẽ hiển thị `0 ₫`), đặt `minHeight: 74` và `minHeight: 16` cho hàng ngày tháng để toàn bộ các tab luôn có kích thước và chiều cao đồng đều 100%.
+      - `ActivityTimelineCard.tsx`: Chuẩn hóa padding thẻ hoạt động thành `p: { xs: 2, md: 3 }` đồng bộ hoàn hảo với padding tổng quan trang `PlanOverview` (`p: { xs: 2, md: 3 }`).
+      - `DayTimelineList.tsx`: Loại bỏ `py: 1` dư thừa, để `gap: 3` của `PlanOverview` điều phối khoảng cách tự nhiên; không bọc card tổng kết dư thừa.
+      - `PlanEmptyState.tsx`: Chuẩn hóa padding responsive `px: { xs: 2, md: 3 }, py: { xs: 6, md: 8 }`.
+      - `PlanOverview.tsx`: Bổ sung `bgcolor: 'action.hover', minHeight: '100%'` đồng bộ thiết kế với toàn bộ các trang tổng quan (`Overview`, `Expenses`, `Settlement`, `My Trips`).
+    - **Kiểm thử**: `npx tsc --noEmit && npm run lint` -> 0 errors, 0 warnings.
+
+27. **Chuẩn Hóa Toàn Diện Kiến Trúc Layout Frontend & Khắc Phục Triệt Để Lệch Căn Lề Timeline (Page Layout Architecture & Alignment Fix)**:
+    - **Nguyên nhân cốt lõi phát hiện**:
+      - `AppShell.tsx` để trống padding trên thẻ `<Box component="main">`, dẫn đến tình trạng các trang con phải tự định nghĩa padding, và các component con (Tabs, Timeline, Banners) phải tự ước chừng padding/margin cục bộ để bù trừ.
+      - Tại `/plan`, chuỗi thời gian `"07:00 – 08:00"` (101px độ rộng) bị gói trong hộp 85px căn phải (`alignItems: 'flex-end'`), gây tràn lề trái 16px vượt ra ngoài lề trang, cắt ngang vạch chuẩn xanh.
+    - **Base Layout Primitives (`src/base/components/layout/`)**:
+      - `AppPageContainer.tsx`: Đóng vai trò duy nhất sở hữu lề trong của trang (`p: { xs: 2, md: 3 }`), màu nền (`bgcolor: 'action.hover'`), chiều cao (`minHeight: '100%'`), và điều phối khoảng cách giữa các khối lớn bằng `gap: 3` (24px).
+      - `AppPageHeader.tsx`: Header trang chuẩn hóa toàn diện (Icon, Title `h1` 800, Badge/Pill ngữ cảnh, Subtitle/Metadata, và cụm Actions căn phải).
+    - **Khắc phục Lệch Timeline (`src/features/plan/`)**:
+      - `ActivityTimelineCard.tsx`: Gỡ bỏ hoàn toàn `px: 3` và `mb: 1.5`, mở rộng cột thời gian lên `width: { xs: '95px', sm: '110px' }` (chứa vừa vặn 101px text, chấm dứt hoàn toàn hiện tượng tràn lề trái).
+      - `DayTimelineList.tsx`: Sử dụng `<Stack spacing={2}>` điều phối khoảng cách giữa các thẻ hoạt động.
+      - `PlanHeader.tsx` & `PlanDayTabs.tsx`: Gỡ bỏ các `pb: 1`, `pb: 0.5` cục bộ. Mọi khối con (`PlanHeader`, `PlanDayTabs`, `DayTimelineList`) đều bắt đầu chuẩn xác tại `x = 0` thẳng tắp theo vạch chuẩn.
+      - `PlanOverview.tsx`: Sử dụng `AppPageContainer`.
+    - **Đồng Bộ Hoá Toàn Bộ Các Trang Còn Lại**:
+      - Chuyển đổi `Overview.tsx`, `MyTrips.tsx`, `MyTripsHeader.tsx`, `ExpenseOverview.tsx`, `SettlementOverview.tsx`, `TripFeaturePlaceholder.tsx` sang sử dụng `AppPageContainer` và `AppPageHeader`.
+      - Xóa toàn bộ child margins (`mt: 0.5`, `mb: 1.5`) và padding cục bộ.
+    - **Kiểm thử chất lượng**:
+      - `npx tsc --noEmit && npm run lint` -> 0 errors, 0 warnings.
 
 ### Immediate likely next tasks:
 

@@ -1,49 +1,42 @@
-import type { Metadata } from "next";
-import { DM_Mono, DM_Serif_Display, Outfit } from "next/font/google";
-import InitColorSchemeScript from "@mui/material/InitColorSchemeScript";
-import { NextIntlClientProvider } from "next-intl";
-import { getLocale } from "next-intl/server";
+import type { Metadata } from 'next';
+import { Comfortaa, DM_Mono } from 'next/font/google';
+import InitColorSchemeScript from '@mui/material/InitColorSchemeScript';
+import { NextIntlClientProvider } from 'next-intl';
+import { getLocale } from 'next-intl/server';
 
-import { AppShell } from "@/base/components/layout";
-import AppThemeProvider from "@/base/providers/AppThemProvider";
+import { AppShell } from '@/base/components/layout';
+import AppThemeProvider from '@/base/providers/AppThemProvider';
 
-import "./globals.css";
+import './globals.css';
 
-const bodyFont = Outfit({
-  subsets: ["latin", "latin-ext"],
-  variable: "--font-outfit",
-  display: "swap",
-});
-
-const displayFont = DM_Serif_Display({
-  weight: "400",
-  subsets: ["latin", "latin-ext"],
-  variable: "--font-dm-serif-display",
-  display: "swap",
+const comfortaa = Comfortaa({
+  subsets: ['latin', 'latin-ext', 'vietnamese'],
+  variable: '--font-comfortaa',
+  display: 'swap',
 });
 
 const monoFont = DM_Mono({
-  weight: ["400", "500"],
-  subsets: ["latin", "latin-ext"],
-  variable: "--font-dm-mono",
-  display: "swap",
+  weight: ['400', '500'],
+  subsets: ['latin', 'latin-ext'],
+  variable: '--font-dm-mono',
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
-  title: "Trip Budget",
+  title: 'Trip Budget',
 };
 
 // add path name to hide sidebar here
-const sidebarDisabledPaths: readonly string[] = ["/login"];
+const sidebarDisabledPaths: readonly string[] = ['/login'];
 
-const RootLayout = async ({ children }: LayoutProps<"/">) => {
+const RootLayout = async ({ children }: LayoutProps<'/'>) => {
   const locale = await getLocale();
 
   return (
     <html
       lang={locale}
       suppressHydrationWarning
-      className={`${bodyFont.variable} ${displayFont.variable} ${monoFont.variable}`}
+      className={`${comfortaa.variable} ${monoFont.variable}`}
     >
       <body>
         <InitColorSchemeScript attribute="data" defaultMode="light" />

@@ -6,7 +6,11 @@ import LuggageRoundedIcon from '@mui/icons-material/LuggageRounded';
 import { useTranslations } from 'next-intl';
 
 import { axiosClient } from '@/base/api';
-import { AppToast, type AppToastSeverity } from '@/base/components/ui';
+import {
+  AppPageContainer,
+  AppToast,
+  type AppToastSeverity,
+} from '@/base/components/ui';
 import { useTripContext } from '@/features/trip/context/TripContext';
 import AddExpenseDialog from '@/features/expense/components/AddExpenseDialog';
 import type { CreateExpensePayload } from '@/features/expense/types';
@@ -80,7 +84,6 @@ const PlanOverview = () => {
   const selectedDay =
     days.find((d) => String(d.id) === String(activeDayId)) ?? days[0] ?? null;
 
-  // Mutation hooks
   const { createActivityAsync, isPending: isCreatingActivity } =
     useCreateActivity({
       tripId: tripId ?? '',
@@ -215,7 +218,12 @@ const PlanOverview = () => {
 
   if (!tripId) {
     return (
-      <Box sx={{ p: { xs: 2, md: 3 } }}>
+      <AppPageContainer
+        sx={{
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
         <Card
           sx={{
             p: { xs: 4, md: 6 },
@@ -263,19 +271,12 @@ const PlanOverview = () => {
             {t('noActiveTrip')}
           </Typography>
         </Card>
-      </Box>
+      </AppPageContainer>
     );
   }
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 3,
-        p: { xs: 2, md: 3 },
-      }}
-    >
+    <AppPageContainer>
       {isLoading ? (
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
           <Skeleton variant="text" width={220} height={40} />
@@ -311,6 +312,7 @@ const PlanOverview = () => {
         <PlanDayTabs
           days={overview.days}
           selectedDayId={activeDayId}
+          currency={overview?.baseCurrency ?? activeTrip?.baseCurrency ?? 'VND'}
           onSelectDay={(dayId) => setSelectedDayId(dayId)}
         />
       ) : null}
@@ -401,7 +403,7 @@ const PlanOverview = () => {
         severity={toast.severity}
         onClose={() => setToast((prev) => ({ ...prev, open: false }))}
       />
-    </Box>
+    </AppPageContainer>
   );
 };
 
