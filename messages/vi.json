@@ -530,6 +530,7 @@
       "endTimeLabel": "Giờ kết thúc",
       "locationLabel": "Địa điểm",
       "locationPlaceholder": "Ví dụ: 06 Trần Hưng Đạo, Hoàn Kiếm...",
+      "useRawText": "Sử dụng địa chỉ tự do này",
       "estimatedCostLabel": "Chi phí dự kiến",
       "statusLabel": "Trạng thái",
       "noteLabel": "Ghi chú",
@@ -552,11 +553,39 @@
       "completedCount": "Đã chuẩn bị {completed}/{total} mục",
       "emptyChecklist": "Chưa có mục nào trong danh sách chuẩn bị."
     },
+    "distance": {
+      "dayTotalTitle": "Lộ trình di chuyển trong ngày: {dist} ({time})",
+      "dayTotalSub": "{count} chặng di chuyển giữa các địa điểm",
+      "optimizeBtn": "Tối ưu lộ trình",
+      "openInGoogleMaps": "Xem chỉ đường trên Google Maps",
+      "estimatedLabel": "Ước tính",
+      "estimatedTooltip": "Khoảng cách ước tính. Cấu hình NEXT_PUBLIC_GOOGLE_MAPS_API_KEY để đo trực tiếp từ Google Maps."
+    },
+    "optimize": {
+      "title": "Tối ưu lộ trình di chuyển (Ngày {day})",
+      "subtitle": "Sắp xếp lại thứ tự các địa điểm để giảm tối đa quãng đường và thời gian đi lại",
+      "notEnoughLocations": "Cần ít nhất 2 hoạt động có địa chỉ cụ thể để tối ưu lộ trình.",
+      "calculating": "Đang đo khoảng cách Google Maps và tính toán lộ trình tối ưu...",
+      "startPointLabel": "Điểm xuất phát trong ngày",
+      "startPointDesc": "Lộ trình sẽ giữ cố định điểm này làm điểm bắt đầu hành trình.",
+      "startPoint": "Chọn điểm xuất phát",
+      "currentRoute": "Lộ trình hiện tại",
+      "optimizedRoute": "Lộ trình đề xuất",
+      "savingsText": "Tiết kiệm {dist} (-{pct}%)",
+      "timeSavingsText": "Tiết kiệm {time} di chuyển",
+      "alreadyOptimal": "Lộ trình hiện tại đã là ngắn nhất!",
+      "optimizedSequenceTitle": "Thứ tự di chuyển đề xuất:",
+      "footerNote": "* Dữ liệu khoảng cách và thời gian di chuyển được tính theo ô tô/xe máy từ Google Maps Distance Matrix và được lưu cache cục bộ để bảo vệ hạn mức miễn phí hàng tháng ($200 credit).",
+      "cancel": "Đóng",
+      "applyBtn": "Áp dụng lộ trình tối ưu",
+      "applying": "Đang cập nhật..."
+    },
     "toasts": {
       "createActivitySuccess": "Đã thêm hoạt động vào lịch trình!",
       "updateActivitySuccess": "Đã cập nhật hoạt động!",
       "deleteActivitySuccess": "Đã xóa hoạt động khỏi lịch trình.",
       "statusUpdateSuccess": "Đã cập nhật trạng thái hoạt động!",
+      "optimizeSuccess": "Đã tối ưu hóa và cập nhật thứ tự lộ trình thành công!",
       "createChecklistSuccess": "Đã thêm mục chuẩn bị!",
       "deleteChecklistSuccess": "Đã xóa mục chuẩn bị.",
       "error": "Đã có lỗi xảy ra. Vui lòng thử lại sau."

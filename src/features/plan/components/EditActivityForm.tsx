@@ -19,6 +19,7 @@ import type {
   PlanActivity,
   UpdateActivityPayload,
 } from '../types';
+import LocationAutocompleteInput from './LocationAutocompleteInput';
 
 export interface EditActivityFormProps {
   activity: PlanActivity;
@@ -190,11 +191,11 @@ const EditActivityForm = ({
           }}
         >
           <Box sx={{ flex: 1, minWidth: 0 }}>
-            <AppTextField
+            <LocationAutocompleteInput
               label={tDialog('locationLabel')}
               placeholder={tDialog('locationPlaceholder')}
               value={location}
-              onChange={(e) => setLocation(e.target.value)}
+              onChange={(newVal) => setLocation(newVal)}
               fullWidth
             />
           </Box>

@@ -530,6 +530,7 @@
       "endTimeLabel": "End Time",
       "locationLabel": "Location",
       "locationPlaceholder": "e.g., 06 Tran Hung Dao St, Hoan Kiem...",
+      "useRawText": "Use this custom location",
       "estimatedCostLabel": "Estimated Cost",
       "statusLabel": "Status",
       "noteLabel": "Notes",
@@ -552,11 +553,39 @@
       "completedCount": "{completed} of {total} items prepared",
       "emptyChecklist": "No items in preparation checklist yet."
     },
+    "distance": {
+      "dayTotalTitle": "Day Travel Route: {dist} ({time})",
+      "dayTotalSub": "{count} travel legs between activities",
+      "optimizeBtn": "Optimize Route",
+      "openInGoogleMaps": "Get directions on Google Maps",
+      "estimatedLabel": "Estimated",
+      "estimatedTooltip": "Estimated distance. Configure NEXT_PUBLIC_GOOGLE_MAPS_API_KEY for real-time Google Maps measurements."
+    },
+    "optimize": {
+      "title": "Optimize Travel Route (Day {day})",
+      "subtitle": "Reorder locations to minimize total travel distance and commute time",
+      "notEnoughLocations": "At least 2 activities with specific locations are required to optimize the route.",
+      "calculating": "Calculating Google Maps distances and finding optimal route...",
+      "startPointLabel": "Starting Point of the Day",
+      "startPointDesc": "The route will keep this location fixed as the journey departure point.",
+      "startPoint": "Select start point",
+      "currentRoute": "Current Route",
+      "optimizedRoute": "Optimized Route",
+      "savingsText": "Save {dist} (-{pct}%)",
+      "timeSavingsText": "Save {time} travel time",
+      "alreadyOptimal": "Current route is already the most optimal!",
+      "optimizedSequenceTitle": "Proposed Itinerary Sequence:",
+      "footerNote": "* Distance and duration are computed via Google Maps Distance Matrix (driving mode) and cached locally to conserve monthly free quota ($200 credit).",
+      "cancel": "Close",
+      "applyBtn": "Apply Optimized Route",
+      "applying": "Updating..."
+    },
     "toasts": {
       "createActivitySuccess": "Activity added to itinerary successfully!",
       "updateActivitySuccess": "Activity updated successfully!",
       "deleteActivitySuccess": "Activity removed from itinerary.",
       "statusUpdateSuccess": "Activity status updated!",
+      "optimizeSuccess": "Route optimized and updated successfully!",
       "createChecklistSuccess": "Checklist item added!",
       "deleteChecklistSuccess": "Checklist item removed.",
       "error": "An error occurred. Please try again."

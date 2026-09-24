@@ -124,3 +124,49 @@ export interface UpdateChecklistPayload {
   isCompleted?: boolean;
   assigneeId?: string;
 }
+
+export interface DistanceInfo {
+  text: string;
+  value: number; // meters
+}
+
+export interface DurationInfo {
+  text: string;
+  value: number; // seconds
+}
+
+export interface DistanceResult {
+  distance: DistanceInfo;
+  duration: DurationInfo;
+  isEstimated?: boolean;
+}
+
+export interface RouteSegment {
+  fromActivityId: string;
+  toActivityId: string;
+  origin: string;
+  destination: string;
+  distance: DistanceInfo;
+  duration: DurationInfo;
+  isEstimated?: boolean;
+}
+
+export interface OptimizationResult {
+  originalActivities: PlanActivity[];
+  optimizedActivities: PlanActivity[];
+  originalDistanceMeters: number;
+  optimizedDistanceMeters: number;
+  originalDurationSeconds: number;
+  optimizedDurationSeconds: number;
+  savedDistanceMeters: number;
+  savedPercentage: number;
+  savedDurationSeconds: number;
+  formattedOriginalDistance: string;
+  formattedOptimizedDistance: string;
+  formattedSavedDistance: string;
+  formattedOriginalDuration: string;
+  formattedOptimizedDuration: string;
+  formattedSavedDuration: string;
+  isImprovement: boolean;
+  segments: RouteSegment[];
+}

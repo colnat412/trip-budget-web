@@ -1774,6 +1774,51 @@ If the user has already supplied a specific task, do not block on a broad questi
     - **Kiểm thử chất lượng**:
       - `export PATH="/home/hanbiro/.nvm/versions/node/v20.20.2/bin:$PATH" && npx tsc --noEmit && npm run lint` -> 0 errors, 0 warnings.
 
+35. **Triển Khai Tính Năng Đo Khoảng Cách Giữa Các Hoạt Động & Tối Ưu Hóa Lộ Trình Di Chuyển (Smart Route / TSP) Sử Dụng Lượng Free Của Google Maps API (`/plan`)**:
+    - **Yêu cầu & Mục tiêu**:
+      - Người dùng cần đo khoảng cách và thời gian di chuyển giữa các hoạt động (Activity A $\to$ B) trong lịch trình ngày.
+      - Sắp xếp lại thứ tự các hoạt động trong ngày sao cho tổng quãng đường di chuyển là ngắn nhất (Route Optimization / Traveling Salesperson Problem).
+      - Tận dụng lượng miễn phí hàng tháng của Google Maps Platform ($200 USD free monthly credit / ~40.000 lượt Distance Matrix) một cách tiết kiệm, an toàn, không sợ bị cạn hạn mức hoặc phát sinh chi phí ngoài ý muốn.
+    - **Kiến trúc triển khai & Giải pháp kỹ thuật**:
+      - **Tầng 1: Next.js API Route Handler (`src/app/api/maps/distance/route.ts`)**:
+        - Đóng vai trò Backend Proxy bảo mật `GOOGLE_MAPS_API_KEY` (hoặc `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`), loại bỏ lỗi CORS của trình duyệt.
+        - Tích hợp **Server-side in-memory Cache** cho các cặp `origin:::destination`. Nếu cặp địa điểm đã từng được tính toán, hệ thống trả về ngay từ RAM mà không gửi thêm bất kỳ HTTP request nào đến Google Maps.
+        - Cơ chế **Fallback Resilience**: Nếu chưa cấu hình API Key trong `.env` hoặc Google Maps bị lỗi mạng/hết quota, route tự động sinh khoảng cách ước tính logic (`isEstimated: true`) giúp UI và thuật toán tối ưu luôn hoạt động 100% trơn tru, không bao giờ bị gián đoạn hay văng lỗi 500.
+      - **Tầng 2: Client Service & Thuật toán Tối ưu Lộ trình (`src/features/plan/services/googleMapsService.ts`)**:
+        - Tích hợp **Client-side LocalStorage Cache** (`tb_distance_v1:`). Khi người dùng duyệt các ngày trong lịch trình hoặc đổi tab, dữ liệu được đọc trực tiếp từ LocalStorage với 0 lượt gọi API.
+        - **Thuật toán Heuristic TSP (Nearest-Neighbor + 2-Opt Local Search)**:
+          - Chạy trực tiếp trên trình duyệt bằng TypeScript (< 1ms).
+          - Giữ cố định điểm xuất phát đầu ngày (người dùng có thể tùy chọn điểm xuất phát bất kỳ trong danh sách), sau đó hoán vị tối ưu thứ tự các điểm tiếp theo để tổng số km di chuyển là ngắn nhất.
+          - Tính toán trực tiếp số km và thời gian tiết kiệm được (`savedDistanceMeters`, `savedPercentage`, `savedDurationSeconds`).
+      - **Tầng 3: UI Components Trực Quan & Thẩm Mỹ Cao**:
+        - `ActivityDistanceConnector.tsx`: Khối đo khoảng cách đặt tại cột thời gian (bên trái timeline), hiển thị badge nhỏ gọn gồm khoảng cách, thời gian di chuyển và nút mở Google Maps, giúp khu vực Activity Card bên phải hoàn toàn thông thoáng, trực quan và liền mạch.
+        - `DayTimelineList.tsx`: Hiển thị thanh tóm tắt di chuyển đầu ngày (`🚗 Lộ trình di chuyển trong ngày: 14.8 km (~35 phút) • 3 chặng`) và nút `⚡ Tối ưu lộ trình`.
+        - `OptimizeRouteDialog.tsx`: Modal so sánh trực quan Lộ trình hiện tại vs Lộ trình đề xuất tối ưu (Hiển thị rõ % quãng đường giảm được, thời gian tiết kiệm được, danh sách thứ tự mới có số thứ tự #1, #2, #3...), cho phép chọn điểm xuất phát và nút `⚡ Áp dụng lộ trình tối ưu` tự động cập nhật `orderIndex` của các activity vào database.
+        - `PlanOverview.tsx`: Kết nối state dialog và gọi cập nhật `orderIndex` hàng loạt khi áp dụng thành công.
+        - Đa ngôn ngữ đầy đủ trong `messages/vi.json` và `messages/en.json`.
+    - **Kiểm thử chất lượng**:
+      - `export PATH="/home/hanbiro/.nvm/versions/node/v20.20.2/bin:$PATH" && npx tsc --noEmit && npm run lint` -> 0 errors, 0 warnings.
+
+36. **Tích Hợp Tìm Kiếm & Tự Động Gợi Ý Địa Điểm Bản Đồ (`LocationAutocompleteInput.tsx`) Cho Form Activity (`AddActivityForm` & `EditActivityForm`)**:
+    - **Yêu cầu & Mục tiêu**:
+      - Khi tạo/sửa hoạt động trong kế hoạch, ô nhập "Địa điểm" có thể tìm kiếm gợi ý địa điểm như trên Google Maps / OpenStreetMap.
+      - **Bảo toàn văn bản tự do (Free-solo Text)**: Nếu không tìm thấy địa điểm trên bản đồ hoặc người dùng muốn nhập địa chỉ riêng biệt (ví dụ: _"Nhà của Nam"_, _"Quán cà phê cóc gần khách sạn"_), hệ thống vẫn giữ nguyên 100% text gốc mà người dùng đã gõ mà không bị ép buộc chọn từ dropdown.
+    - **Kiến trúc triển khai & Giải pháp kỹ thuật**:
+      - **Tầng Backend-for-Frontend (`/api/maps/places`)**:
+        - Route Handler `GET /api/maps/places?q=...&lang=...` hỗ trợ tìm kiếm địa điểm thông minh.
+        - Tự động gọi **Google Places Autocomplete API** nếu có cấu hình `GOOGLE_MAPS_API_KEY`.
+        - Tự động **fallback sang OpenStreetMap Nominatim** (hoàn toàn miễn phí, không cần bất kỳ API key nào) nếu không có Google key hoặc lỗi kết nối.
+        - Tích hợp in-memory cache theo từ khóa tìm kiếm (`placeCache`) để tiết kiệm tối đa lượt gọi API.
+      - **Tầng UI Component (`LocationAutocompleteInput.tsx`)**:
+        - Sử dụng MUI `Autocomplete` với chế độ `freeSolo={true}`.
+        - Kỹ thuật Debounce 320ms giảm thiểu request khi người dùng đang gõ phím.
+        - Dropdown hiển thị tên địa điểm chính (in đậm), địa chỉ chi tiết (phụ đề), icon `Place` và badge nguồn dữ liệu (`Google Maps` hoặc `Bản đồ`).
+        - Tùy chọn đặc biệt đầu danh sách: `"Sử dụng địa chỉ tự do này: [text đã gõ]"` cho phép người dùng chủ động bấm chọn hoặc tiếp tục gõ văn bản tự do.
+        - Trạng thái tải trực quan với `CircularProgress` tích hợp trong `endAdornment`.
+        - Áp dụng đồng bộ vào cả `AddActivityForm.tsx` và `EditActivityForm.tsx`.
+    - **Kiểm thử chất lượng**:
+      - `export PATH="/home/hanbiro/.nvm/versions/node/v20.20.2/bin:$PATH" && npx tsc --noEmit && npm run lint` -> 0 errors, 0 warnings.
+
 ### Immediate likely next tasks:
 
 1. **Kết nối Dữ liệu Thực tế cho Trang Tổng quan (`/overview`)**: Thay thế dữ liệu mock trong `RecentExpenseList` và `CategoryList` bằng dữ liệu thực tế từ API chi tiêu của chuyến đi đang diễn ra.

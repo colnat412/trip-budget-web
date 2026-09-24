@@ -14,6 +14,7 @@ import {
 } from '@/base/components/ui';
 import { getCategorySelectOptions } from '@/base/constants';
 import type { ActivityCategory, CreateActivityPayload } from '../types';
+import LocationAutocompleteInput from './LocationAutocompleteInput';
 
 export interface AddActivityFormProps {
   tripCurrency?: string;
@@ -156,11 +157,11 @@ const AddActivityForm = ({
           </Box>
         </Box>
 
-        <AppTextField
+        <LocationAutocompleteInput
           label={tDialog('locationLabel')}
           placeholder={tDialog('locationPlaceholder')}
           value={location}
-          onChange={(e) => setLocation(e.target.value)}
+          onChange={(newVal) => setLocation(newVal)}
           fullWidth
         />
 

@@ -34,6 +34,7 @@ import ChecklistDialog from './ChecklistDialog';
 import DayTimelineList from './DayTimelineList';
 import DeleteActivityDialog from './DeleteActivityDialog';
 import EditActivityDialog from './EditActivityDialog';
+import OptimizeRouteDialog from './OptimizeRouteDialog';
 import PlanDayTabs from './PlanDayTabs';
 import PlanHeader from './PlanHeader';
 
@@ -47,6 +48,7 @@ const PlanOverview = () => {
   const [selectedDayId, setSelectedDayId] = useState<string>('');
   const [addActivityOpen, setAddActivityOpen] = useState(false);
   const [checklistOpen, setChecklistOpen] = useState(false);
+  const [optimizeDialogOpen, setOptimizeDialogOpen] = useState(false);
   const [editingActivity, setEditingActivity] = useState<PlanActivity | null>(
     null,
   );
@@ -223,6 +225,33 @@ const PlanOverview = () => {
     }
   };
 
+  const handleApplyOptimizedRoute = async (
+    optimizedActivities: PlanActivity[],
+  ) => {
+    try {
+      const updates = optimizedActivities.map((act, index) => {
+        return axiosClient.put(`/trip/${tripId}/plan/activities/${act.id}`, {
+          title: act.title,
+          startTime: act.startTime || undefined,
+          endTime: act.endTime || undefined,
+          location: act.location || undefined,
+          category: act.category,
+          estimatedCost: act.estimatedCost,
+          status: act.status,
+          orderIndex: index,
+          note: act.note || undefined,
+          expenseId: act.expenseId || undefined,
+        });
+      });
+
+      await Promise.all(updates);
+      showToast(t('toasts.optimizeSuccess'));
+      refetch();
+    } catch {
+      showToast(t('toasts.error'), 'error');
+    }
+  };
+
   if (!tripId) {
     return (
       <AppPageContainer
@@ -344,6 +373,7 @@ const PlanOverview = () => {
           onDeleteActivity={(activity) => setDeletingActivity(activity)}
           onToggleStatus={handleToggleActivityStatus}
           onConvertToExpense={handleConvertToExpense}
+          onOpenOptimizeRoute={() => setOptimizeDialogOpen(true)}
         />
       )}
 
@@ -390,6 +420,14 @@ const PlanOverview = () => {
         onToggle={handleToggleChecklist}
         onDelete={handleDeleteChecklist}
         isLoading={isCreatingChecklist}
+      />
+
+      <OptimizeRouteDialog
+        open={optimizeDialogOpen}
+        onClose={() => setOptimizeDialogOpen(false)}
+        dayNumber={selectedDay?.dayNumber ?? 1}
+        activities={selectedDay?.activities ?? []}
+        onApplyRoute={handleApplyOptimizedRoute}
       />
 
       {convertExpenseActivity && (
