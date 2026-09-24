@@ -98,6 +98,11 @@ const RecordSettlementForm = ({
       return;
     }
 
+    if (!settledAt || !settledAt.trim()) {
+      setError(tDialog('errors.dateRequired'));
+      return;
+    }
+
     onSubmit({
       payerId,
       payeeId,

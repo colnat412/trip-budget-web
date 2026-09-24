@@ -314,6 +314,8 @@
       "errors": {
         "titleRequired": "Please enter expense title",
         "amountPositive": "Amount must be greater than 0",
+        "dateRequired": "Please select expense date",
+        "payerRequired": "Please select who paid",
         "totalBudgetRequired": "Total budget cannot be empty or negative",
         "splitErrorExact": "Total split amount ({sum}) must equal total expense ({total})!",
         "splitErrorPercent": "Total percentage ({sum}%) must equal exactly 100%!",
@@ -341,6 +343,8 @@
     "inviteSubtitle": "Enter the email of a registered TripBudget user to add them to this trip.",
     "emailLabel": "Member email *",
     "emailPlaceholder": "enter.email@example.com",
+    "emailRequired": "Please enter member email address",
+    "emailInvalid": "Invalid email address format",
     "roleLabel": "Role *",
     "sendInvite": "Send invitation",
     "cancel": "Cancel",
@@ -456,7 +460,8 @@
         "payerRequired": "Please select payer",
         "payeeRequired": "Please select payee",
         "samePerson": "Payer and payee cannot be the same person",
-        "invalidAmount": "Payment amount must be greater than 0"
+        "invalidAmount": "Payment amount must be greater than 0",
+        "dateRequired": "Please select settlement date"
       }
     },
     "deleteConfirm": {
@@ -491,13 +496,13 @@
     "dayTotalCost": "Total estimated cost for this day: {cost}",
     "spentChip": "Paid",
     "categories": {
-      "FOOD_BEVERAGE": "Food & Drink",
-      "TRANSPORTATION": "Transport",
-      "SIGHTSEEING": "Sightseeing",
-      "ACCOMMODATION": "Accommodation",
-      "SHOPPING": "Shopping",
+      "FOOD_BEVERAGE": "Food & Dining",
+      "ACCOMMODATION": "Hotels & Homestays",
+      "TRANSPORTATION": "Transportation & Tickets",
+      "SIGHTSEEING": "Sightseeing & Tours",
+      "SHOPPING": "Shopping & Souvenirs",
       "ENTERTAINMENT": "Entertainment",
-      "OTHER": "Other"
+      "OTHER": "Other Expenses"
     },
     "statuses": {
       "PLANNED": "Planned",
@@ -518,6 +523,8 @@
       "editTitle": "Edit Activity",
       "titleLabel": "Activity Title *",
       "titlePlaceholder": "e.g., Breakfast, Old Quarter walking tour...",
+      "titleRequired": "Please enter activity title",
+      "timeOrderInvalid": "End time must be after start time",
       "categoryLabel": "Category",
       "startTimeLabel": "Start Time",
       "endTimeLabel": "End Time",

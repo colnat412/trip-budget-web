@@ -63,13 +63,13 @@ const InviteMemberForm = ({
     e.preventDefault();
     const cleanEmail = email.trim();
     if (!cleanEmail) {
-      setError(t('emailLabel'));
+      setError(t('emailRequired'));
       return;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(cleanEmail)) {
-      setError('Email không hợp lệ');
+      setError(t('emailInvalid'));
       return;
     }
 

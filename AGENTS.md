@@ -1662,6 +1662,82 @@ If the user has already supplied a specific task, do not block on a broad questi
     - **Kiểm thử chất lượng**:
       - `npx tsc --noEmit && npm run lint` -> 0 errors, 0 warnings.
 
+28. **Khắc Phục Lỗi Hiển Thị Tiêu Đề & Icon Trên TopBar Khi Vào Trang Lập Kế Hoạch (`/plan`)**:
+    - **Nguyên nhân phát hiện**:
+      - `PAGE_MESSAGE_KEYS` trong `AppTopBar.tsx` bị thiếu khai báo mapping cho route `'/plan'`. Khi người dùng truy cập `/plan`, hàm `matchedPath` trả về `undefined`, kích hoạt giá trị fallback mặc định là `'overview'`.
+      - Tiêu đề bị gán cứng thành "Tổng quan" / "Overview", đồng thời icon bị hardcode cố định là `HomeRoundedIcon` cho toàn bộ các trang.
+    - **Giải pháp**:
+      - Thêm `'/plan': 'plan'` vào `PAGE_MESSAGE_KEYS`.
+      - Tạo từ điển icon động `PAGE_ICONS`: ánh xạ tương ứng icon cho từng trang (`HomeRoundedIcon` cho Overview, `CalendarMonthRoundedIcon` cho Plan, `FlightTakeoffRoundedIcon` cho Trips, `SavingsRoundedIcon` cho Expenses, `HandshakeRoundedIcon` cho Settlement, `DocumentScannerRoundedIcon` cho Scan, `SmartToyRoundedIcon` cho AI).
+    - **Kiểm thử chất lượng**:
+      - `npx tsc --noEmit && npm run lint` -> 0 errors, 0 warnings.
+
+29. **Thiết Lập Mặc Định Khi Chuyển Hoạt Động Thành Khoản Chi & Thống Nhất Danh Mục Dùng Chung (`Expense` & `Plan`)**:
+    - **Yêu cầu & Mục tiêu**:
+      - Khi bấm "Chuyển thành khoản chi" từ một hoạt động trong kế hoạch (`PlanActivity`), hộp thoại thêm chi tiêu (`AddExpenseDialog`) tự động điền sẵn các trường: tiêu đề (`title`), số tiền (`amount`), danh mục (`category`), ngày phát sinh (`expenseDate`).
+      - Các giá trị này chỉ là mặc định ban đầu (initial defaults); người dùng hoàn toàn có thể chỉnh sửa tự do trước khi tạo.
+      - Thống nhất 100% bộ danh mục (`category`) dùng chung giữa phân hệ Kế hoạch (`Plan`) và Chi tiêu (`Expense`).
+    - **Triển khai kiến trúc Base Category Constants (`src/base/constants/`)**:
+      - `category.constants.tsx`: Định nghĩa kiểu dữ liệu `TripCategory` (7 danh mục: `FOOD_BEVERAGE`, `ACCOMMODATION`, `TRANSPORTATION`, `SIGHTSEEING`, `SHOPPING`, `ENTERTAINMENT`, `OTHER`), danh sách `TRIP_CATEGORIES`, bảng màu/biểu tượng `CATEGORY_CONFIG`, và hàm tạo danh sách lựa chọn dropdown `getCategorySelectOptions(tCat)`.
+      - Export tập trung qua `src/base/constants/index.ts`.
+    - **Đồng bộ Types & Components**:
+      - `ExpenseCategory` và `ActivityCategory` cùng alias sang `TripCategory`.
+      - `AddExpenseDialog.tsx` & `AddExpenseForm.tsx`: Bổ sung prop `initialData?: AddExpenseInitialData` để khởi tạo state mặc định cho `title`, `amount`, `category`, `expenseDate`. Người dùng tự do nhập/sửa trên form. Sử dụng `key` động trên form để remount sạch sẽ khi mở hoạt động mới.
+      - `PlanOverview.tsx`: Truyền `initialData` lấy từ `activity.title`, `activity.estimatedCost`, `activity.category`, và `day.planDate`. Đồng thời bảo toàn toàn bộ dữ liệu của hoạt động trong API `PUT /trip/{tripId}/plan/activities/{id}` khi gắn `expenseId`.
+      - `AppCategoryChip.tsx`: Sử dụng trực tiếp `TripCategory` và `CATEGORY_CONFIG`.
+      - `ActivityTimelineCard.tsx`: Thay thế chip đơn giản bằng `AppCategoryChip` đồng bộ màu sắc và icon với chi tiêu.
+      - `EditExpenseForm.tsx`, `AddActivityForm.tsx`, `EditActivityForm.tsx`, `SetBudgetForm.tsx`: Đồng bộ sử dụng `getCategorySelectOptions` và `TRIP_CATEGORIES`.
+      - `messages/vi.json` & `messages/en.json`: Đồng bộ nhãn dịch của `plan.categories` khớp 100% với `expense.categories`.
+    - **Kiểm thử chất lượng**:
+      - `npx tsc --noEmit && npm run lint` -> 0 errors, 0 warnings.
+      - `mvn test-compile -q -o` -> BUILD SUCCESS.
+
+30. **Khắc Phục Lỗi Hoạt Động Vẫn Hiển Thị 'PAID' Sau Khi Xóa Khoản Chi Tiêu Liên Kết (Expense Deletion Activity Unlinking & Self-Healing Sync)**:
+    - **Nguyên nhân phát hiện**:
+      - Khi xóa một khoản chi (`DELETE /trip/{tripId}/expenses/{expenseId}`), phương thức `ExpenseService.deleteExpense` trước đây chỉ thực hiện đánh dấu xóa trên entity `ExpenseEntity` (`isDel = true`, `status = DELETED`), nhưng hoàn toàn không cập nhật trường `expense_id` trên các hoạt động trong kế hoạch (`PlanActivityEntity`) đang liên kết với khoản chi đó.
+      - Do đó, `activity.expenseId` vẫn giữ nguyên giá trị ID cũ trong cơ sở dữ liệu.
+      - Khi người dùng quay lại trang Lập kế hoạch (`/plan`), API `GET /trip/{tripId}/plan` vẫn trả về chuỗi `expenseId`. Trên giao diện, điều kiện `{activity.expenseId && <Chip label={t('spentChip')} />}` tiếp tục render chip "Đã chi" / "PAID", đồng thời menu 3 chấm ẩn đi tùy chọn "Chuyển thành khoản chi".
+    - **Giải pháp xử lý 2 tầng (Immediate Unlink + Self-Healing Check)**:
+      - **Tầng 1 (Immediate Unlink tại `ExpenseService.deleteExpense`)**:
+        - Inject `PlanActivityRepository` vào `ExpenseService`.
+        - Khi xóa khoản chi, truy vấn toàn bộ các hoạt động có `expenseId` tương ứng (`findAllByExpenseIdAndIsDelFalse`).
+        - Xóa liên kết (`activity.setExpenseId(null)`). Nếu hoạt động đang ở trạng thái `COMPLETED` do chuyển đổi từ chi tiêu, tự động hoàn tác về trạng thái `PLANNED` (`activity.updateStatus(ActivityStatus.PLANNED)`), sau đó lưu vào DB.
+      - **Tầng 2 (Self-Healing tại `PlanService.getTripPlanOverview`)**:
+        - Inject `ExpenseRepository` vào `PlanService`.
+        - Khi tải tổng quan kế hoạch chuyến đi, thu thập toàn bộ `expenseId` của các hoạt động trong chuyến đi và truy vấn các khoản chi còn active (`!isDel && status != DELETED`).
+        - Nếu phát hiện bất kỳ hoạt động nào trỏ tới một `expenseId` không còn tồn tại hoặc đã bị xóa trước đó, hệ thống tự động dọn sạch `act.setExpenseId(null)`, khôi phục `status = PLANNED` và lưu vào DB (tự phục hồi dữ liệu cũ đã bị lỗi).
+    - **Kiểm thử chất lượng**:
+      - `mvn test-compile -q -o` -> BUILD SUCCESS (0 errors).
+      - `npx tsc --noEmit && npm run lint` -> 0 errors, 0 warnings.
+
+31. **Chuẩn Hóa Toàn Diện Cơ Chế Validation Form 2 Lớp (Backend & Frontend) Cho Các Trường Bắt Buộc (Required Fields)**:
+    - **Nguyên nhân phát hiện**:
+      - Trên Frontend (`trip-budget-web`):
+        - Tại `AddExpenseForm.tsx` và `EditExpenseForm.tsx`, nhãn hiển thị `"Ngày chi tiêu *"` và `"Người thanh toán *"`, tuy nhiên hàm `validate()` chỉ kiểm tra `title` và `amount`. Nếu người dùng xóa trống ngày chi tiêu hoặc không chọn người trả tiền, hàm `validate()` vẫn trả về `true` và gửi form lên server. Ngoài ra, `AppTextField` (ngày) và `AppSelect` (người trả) không được truyền các props `error` và `helperText`.
+        - Tại `AddActivityForm.tsx` và `EditActivityForm.tsx`, khi để trống tiêu đề, form gọi `setTitleError(tDialog('titleLabel'))` khiến thông báo lỗi hiển thị lại nhãn `"Tên hoạt động *"` thay vì thông báo lỗi rõ ràng. Đồng thời không kiểm tra thứ tự giờ bắt đầu / kết thúc (`endTime < startTime`).
+        - Tại `InviteMemberForm.tsx`, khi để trống email, `setError(t('emailLabel'))` hiển thị nhãn `"Email thành viên *"`.
+        - Tại `RecordSettlementForm.tsx`, thiếu kiểm tra ngày thanh toán (`settledAt`).
+      - Trên Backend DTOs (`tripbudget-core`):
+        - `CreateExpenseRequest.java` và `UpdateExpenseRequest.java`: thiếu `@NotNull` trên `expenseDate`. Trong `ExpenseService.java`, nếu `expenseDate == null` backend tự động fallback sang `LocalDate.now()`, và nếu `payerId == null` fallback sang `currentUserId`. Do đó dù người dùng không nhập trường bắt buộc ở UI, request vẫn lọt qua backend và được lưu tự động!
+        - `CreateTripRequest.java` và `UpdateTripRequest.java`: thiếu `@NotBlank` trên `destination` và `@NotNull` trên ngày bắt đầu/kết thúc.
+        - `UpdateActivityRequest.java`: thiếu `@NotBlank` trên `title`.
+    - **Giải pháp xử lý triệt để 2 lớp**:
+      - **Lớp 1: Backend DTOs Validation (`tripbudget-core`)**:
+        - `CreateExpenseRequest.java`: Thêm `@NotNull(message = "Expense date is required")` trên `expenseDate`.
+        - `UpdateExpenseRequest.java`: Thêm `@NotBlank` trên `title`, `@NotNull` trên `category`, `@NotNull @Positive` trên `amount`, `@NotNull` trên `expenseDate`.
+        - `CreateTripRequest.java`: Thêm `@NotBlank(message = "Destination is required")` trên `destination`.
+        - `UpdateTripRequest.java`: Thêm `@NotBlank` trên `name`, `destination`, và `@NotNull` trên `startDate`, `endDate`.
+        - `UpdateActivityRequest.java`: Thêm `@NotBlank(message = "Title is required")` trên `title`.
+      - **Lớp 2: Frontend Form Validation & UI Error Feedback (`trip-budget-web`)**:
+        - `AddExpenseForm.tsx` & `EditExpenseForm.tsx`: Mở rộng state `errors` quản lý `expenseDate` và `payerId`. Kiểm tra bắt buộc trong `validate()`, hiển thị `error` và `helperText` màu đỏ dưới ô nhập liệu tương ứng.
+        - `AddActivityForm.tsx` & `EditActivityForm.tsx`: Thay `setTitleError(tDialog('titleLabel'))` bằng `setTitleError(tDialog('titleRequired'))`, bổ sung kiểm tra `endTime < startTime` và hiển thị thông báo lỗi `timeOrderInvalid`.
+        - `InviteMemberForm.tsx`: Bổ sung `emailRequired` và `emailInvalid` chuẩn đa ngôn ngữ.
+        - `RecordSettlementForm.tsx`: Kiểm tra bắt buộc ngày thanh toán `settledAt`.
+        - `messages/vi.json` & `messages/en.json`: Bổ sung đầy đủ các chuỗi thông báo lỗi bản địa hóa tương ứng.
+    - **Kiểm thử chất lượng**:
+      - `export PATH="/home/hanbiro/.nvm/versions/node/v20.20.2/bin:$PATH" && npx tsc --noEmit && npm run lint` -> 0 errors, 0 warnings.
+      - `mvn test-compile -q -o` -> BUILD SUCCESS (0 errors).
+
 ### Immediate likely next tasks:
 
 1. **Kết nối Dữ liệu Thực tế cho Trang Tổng quan (`/overview`)**: Thay thế dữ liệu mock trong `RecentExpenseList` và `CategoryList` bằng dữ liệu thực tế từ API chi tiêu của chuyến đi đang diễn ra.

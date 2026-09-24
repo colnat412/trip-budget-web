@@ -12,7 +12,11 @@ import ReceiptLongRoundedIcon from '@mui/icons-material/ReceiptLongRounded';
 import RadioButtonUncheckedRoundedIcon from '@mui/icons-material/RadioButtonUncheckedRounded';
 import { useTranslations } from 'next-intl';
 
-import { AppActionMenu, type AppActionMenuItem } from '@/base/components/ui';
+import {
+  AppActionMenu,
+  AppCategoryChip,
+  type AppActionMenuItem,
+} from '@/base/components/ui';
 import { formatCurrency } from '@/base/utils';
 import type { ActivityStatus, PlanActivity } from '../types';
 
@@ -34,7 +38,6 @@ const ActivityTimelineCard = ({
   onConvertToExpense,
 }: ActivityTimelineCardProps) => {
   const t = useTranslations('plan');
-  const tCat = useTranslations('plan.categories');
   const tStatus = useTranslations('plan.statuses');
   const tDialog = useTranslations('plan.dialog');
 
@@ -216,16 +219,11 @@ const ActivityTimelineCard = ({
                 {activity.title}
               </Typography>
 
-              <Chip
-                label={tCat(activity.category)}
-                size="small"
+              <AppCategoryChip
+                category={activity.category}
                 sx={{
                   height: 22,
                   fontSize: '11px',
-                  fontWeight: 600,
-                  borderRadius: '6px',
-                  bgcolor: 'action.hover',
-                  color: 'text.secondary',
                 }}
               />
 

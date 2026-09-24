@@ -1,11 +1,13 @@
-export type ExpenseCategory =
-  | 'ACCOMMODATION'
-  | 'TRANSPORTATION'
-  | 'FOOD_BEVERAGE'
-  | 'SIGHTSEEING'
-  | 'SHOPPING'
-  | 'ENTERTAINMENT'
-  | 'OTHER';
+import type { TripCategory } from '@/base/constants';
+
+export type ExpenseCategory = TripCategory;
+
+export interface AddExpenseInitialData {
+  title?: string;
+  amount?: number;
+  category?: ExpenseCategory;
+  expenseDate?: string;
+}
 
 export type SplitType = 'EQUAL' | 'EXACT_AMOUNT' | 'PERCENTAGE' | 'SHARE';
 

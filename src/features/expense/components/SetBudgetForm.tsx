@@ -5,6 +5,7 @@ import { Box, Stack, Typography, Divider } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 import { useTranslations } from 'next-intl';
 import { AppButton, AppNumberInput } from '@/base/components/ui';
+import { TRIP_CATEGORIES } from '@/base/constants';
 import { formatCurrency } from '@/base/utils';
 import type {
   ExpenseCategory,
@@ -20,15 +21,7 @@ export interface SetBudgetFormProps {
   onCancel: () => void;
 }
 
-const CATEGORY_KEYS: ExpenseCategory[] = [
-  'FOOD_BEVERAGE',
-  'ACCOMMODATION',
-  'TRANSPORTATION',
-  'SIGHTSEEING',
-  'SHOPPING',
-  'ENTERTAINMENT',
-  'OTHER',
-];
+const CATEGORY_KEYS = TRIP_CATEGORIES;
 
 const SetBudgetForm = ({
   summary,

@@ -1,11 +1,6 @@
-export type ActivityCategory =
-  | 'FOOD_BEVERAGE'
-  | 'TRANSPORTATION'
-  | 'SIGHTSEEING'
-  | 'ACCOMMODATION'
-  | 'SHOPPING'
-  | 'ENTERTAINMENT'
-  | 'OTHER';
+import type { TripCategory } from '@/base/constants';
+
+export type ActivityCategory = TripCategory;
 
 export type ActivityStatus =
   | 'PLANNED'

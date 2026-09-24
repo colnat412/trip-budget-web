@@ -2,13 +2,6 @@
 
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { Box, Stack } from '@mui/material';
-import HotelRoundedIcon from '@mui/icons-material/HotelRounded';
-import DirectionsSubwayRoundedIcon from '@mui/icons-material/DirectionsSubwayRounded';
-import RestaurantRoundedIcon from '@mui/icons-material/RestaurantRounded';
-import ConfirmationNumberRoundedIcon from '@mui/icons-material/ConfirmationNumberRounded';
-import ShoppingBagRoundedIcon from '@mui/icons-material/ShoppingBagRounded';
-import SportsEsportsRoundedIcon from '@mui/icons-material/SportsEsportsRounded';
-import MoreHorizRoundedIcon from '@mui/icons-material/MoreHorizRounded';
 import { useTranslations } from 'next-intl';
 import {
   AppButton,
@@ -17,8 +10,10 @@ import {
   AppSelect,
   type AppSelectOption,
 } from '@/base/components/ui';
+import { getCategorySelectOptions } from '@/base/constants';
 import type { TripMember } from '@/features/trip/types/member.types';
 import type {
+  AddExpenseInitialData,
   CreateExpensePayload,
   ExpenseCategory,
   SplitItemPayload,
@@ -32,6 +27,7 @@ export interface AddExpenseFormProps {
   members?: TripMember[];
   onSubmit: (payload: CreateExpensePayload) => void;
   onCancel: () => void;
+  initialData?: AddExpenseInitialData;
 }
 
 const AddExpenseForm = ({
@@ -40,70 +36,14 @@ const AddExpenseForm = ({
   members = [],
   onSubmit,
   onCancel,
+  initialData,
 }: AddExpenseFormProps) => {
   const tForm = useTranslations('expense.form');
   const tCat = useTranslations('expense.categories');
   const tSplits = useTranslations('expense.splits.options');
 
   const categoryOptions: AppSelectOption[] = useMemo(
-    () => [
-      {
-        value: 'FOOD_BEVERAGE',
-        label: tCat('FOOD_BEVERAGE'),
-        icon: (
-          <RestaurantRoundedIcon fontSize="small" sx={{ color: '#e65100' }} />
-        ),
-      },
-      {
-        value: 'ACCOMMODATION',
-        label: tCat('ACCOMMODATION'),
-        icon: <HotelRoundedIcon fontSize="small" sx={{ color: '#512da8' }} />,
-      },
-      {
-        value: 'TRANSPORTATION',
-        label: tCat('TRANSPORTATION'),
-        icon: (
-          <DirectionsSubwayRoundedIcon
-            fontSize="small"
-            sx={{ color: '#1565c0' }}
-          />
-        ),
-      },
-      {
-        value: 'SIGHTSEEING',
-        label: tCat('SIGHTSEEING'),
-        icon: (
-          <ConfirmationNumberRoundedIcon
-            fontSize="small"
-            sx={{ color: '#00695c' }}
-          />
-        ),
-      },
-      {
-        value: 'SHOPPING',
-        label: tCat('SHOPPING'),
-        icon: (
-          <ShoppingBagRoundedIcon fontSize="small" sx={{ color: '#c2185b' }} />
-        ),
-      },
-      {
-        value: 'ENTERTAINMENT',
-        label: tCat('ENTERTAINMENT'),
-        icon: (
-          <SportsEsportsRoundedIcon
-            fontSize="small"
-            sx={{ color: '#7b1fa2' }}
-          />
-        ),
-      },
-      {
-        value: 'OTHER',
-        label: tCat('OTHER'),
-        icon: (
-          <MoreHorizRoundedIcon fontSize="small" sx={{ color: '#546e7a' }} />
-        ),
-      },
-    ],
+    () => getCategorySelectOptions(tCat),
     [tCat],
   );
 
@@ -117,12 +57,19 @@ const AddExpenseForm = ({
     [tSplits],
   );
 
-  const [title, setTitle] = useState('');
-  const [amount, setAmount] = useState('');
-  const [category, setCategory] = useState<ExpenseCategory>('FOOD_BEVERAGE');
-  const [expenseDate, setExpenseDate] = useState(
-    new Date().toISOString().split('T')[0],
+  const [title, setTitle] = useState(initialData?.title || '');
+  const [amount, setAmount] = useState(
+    initialData?.amount != null && initialData.amount > 0
+      ? String(initialData.amount)
+      : '',
   );
+  const [category, setCategory] = useState<ExpenseCategory>(
+    initialData?.category || 'FOOD_BEVERAGE',
+  );
+  const [expenseDate, setExpenseDate] = useState(
+    initialData?.expenseDate || new Date().toISOString().split('T')[0],
+  );
+
   const [splitType, setSplitType] = useState<SplitType>('EQUAL');
   const [payerId, setPayerId] = useState<string | number | ''>(() => {
     return members.length > 0 ? members[0].userId : '';
@@ -141,15 +88,31 @@ const AddExpenseForm = ({
     [],
   );
 
-  const [errors, setErrors] = useState<{ title?: string; amount?: string }>({});
+  const [errors, setErrors] = useState<{
+    title?: string;
+    amount?: string;
+    expenseDate?: string;
+    payerId?: string;
+  }>({});
 
   const validate = () => {
-    const newErrors: { title?: string; amount?: string } = {};
+    const newErrors: {
+      title?: string;
+      amount?: string;
+      expenseDate?: string;
+      payerId?: string;
+    } = {};
     if (!title.trim()) {
       newErrors.title = tForm('errors.titleRequired');
     }
     if (!amount.trim() || isNaN(Number(amount)) || Number(amount) <= 0) {
       newErrors.amount = tForm('errors.amountPositive');
+    }
+    if (!expenseDate || !expenseDate.trim()) {
+      newErrors.expenseDate = tForm('errors.dateRequired');
+    }
+    if (members && members.length > 1 && !payerId) {
+      newErrors.payerId = tForm('errors.payerRequired');
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0 && isSplitValidRef.current;
@@ -227,7 +190,14 @@ const AddExpenseForm = ({
             label={tForm('dateLabel')}
             type="date"
             value={expenseDate}
-            onChange={(e) => setExpenseDate(e.target.value)}
+            onChange={(e) => {
+              setExpenseDate(e.target.value);
+              if (errors.expenseDate) {
+                setErrors((prev) => ({ ...prev, expenseDate: undefined }));
+              }
+            }}
+            error={Boolean(errors.expenseDate)}
+            helperText={errors.expenseDate}
             slotProps={{ inputLabel: { shrink: true } }}
           />
         </Box>
@@ -250,7 +220,14 @@ const AddExpenseForm = ({
             value: m.userId,
             label: `${m.name} (${m.email})`,
           }))}
-          onChange={(e) => setPayerId(e.target.value as string | number)}
+          onChange={(e) => {
+            setPayerId(e.target.value as string | number);
+            if (errors.payerId) {
+              setErrors((prev) => ({ ...prev, payerId: undefined }));
+            }
+          }}
+          error={Boolean(errors.payerId)}
+          helperText={errors.payerId}
         />
       )}
 

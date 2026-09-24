@@ -2,13 +2,6 @@
 
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { Box, Stack } from '@mui/material';
-import HotelRoundedIcon from '@mui/icons-material/HotelRounded';
-import DirectionsSubwayRoundedIcon from '@mui/icons-material/DirectionsSubwayRounded';
-import RestaurantRoundedIcon from '@mui/icons-material/RestaurantRounded';
-import ConfirmationNumberRoundedIcon from '@mui/icons-material/ConfirmationNumberRounded';
-import ShoppingBagRoundedIcon from '@mui/icons-material/ShoppingBagRounded';
-import SportsEsportsRoundedIcon from '@mui/icons-material/SportsEsportsRounded';
-import MoreHorizRoundedIcon from '@mui/icons-material/MoreHorizRounded';
 import { useTranslations } from 'next-intl';
 import {
   AppButton,
@@ -17,6 +10,7 @@ import {
   AppSelect,
   type AppSelectOption,
 } from '@/base/components/ui';
+import { getCategorySelectOptions } from '@/base/constants';
 import type {
   Expense,
   ExpenseCategory,
@@ -48,64 +42,7 @@ const EditExpenseForm = ({
   const tSplits = useTranslations('expense.splits.options');
 
   const categoryOptions: AppSelectOption[] = useMemo(
-    () => [
-      {
-        value: 'FOOD_BEVERAGE',
-        label: tCat('FOOD_BEVERAGE'),
-        icon: (
-          <RestaurantRoundedIcon fontSize="small" sx={{ color: '#e65100' }} />
-        ),
-      },
-      {
-        value: 'ACCOMMODATION',
-        label: tCat('ACCOMMODATION'),
-        icon: <HotelRoundedIcon fontSize="small" sx={{ color: '#512da8' }} />,
-      },
-      {
-        value: 'TRANSPORTATION',
-        label: tCat('TRANSPORTATION'),
-        icon: (
-          <DirectionsSubwayRoundedIcon
-            fontSize="small"
-            sx={{ color: '#1565c0' }}
-          />
-        ),
-      },
-      {
-        value: 'SIGHTSEEING',
-        label: tCat('SIGHTSEEING'),
-        icon: (
-          <ConfirmationNumberRoundedIcon
-            fontSize="small"
-            sx={{ color: '#00695c' }}
-          />
-        ),
-      },
-      {
-        value: 'SHOPPING',
-        label: tCat('SHOPPING'),
-        icon: (
-          <ShoppingBagRoundedIcon fontSize="small" sx={{ color: '#c2185b' }} />
-        ),
-      },
-      {
-        value: 'ENTERTAINMENT',
-        label: tCat('ENTERTAINMENT'),
-        icon: (
-          <SportsEsportsRoundedIcon
-            fontSize="small"
-            sx={{ color: '#7b1fa2' }}
-          />
-        ),
-      },
-      {
-        value: 'OTHER',
-        label: tCat('OTHER'),
-        icon: (
-          <MoreHorizRoundedIcon fontSize="small" sx={{ color: '#616161' }} />
-        ),
-      },
-    ],
+    () => getCategorySelectOptions(tCat),
     [tCat],
   );
 
@@ -159,15 +96,31 @@ const EditExpenseForm = ({
     [],
   );
 
-  const [errors, setErrors] = useState<{ title?: string; amount?: string }>({});
+  const [errors, setErrors] = useState<{
+    title?: string;
+    amount?: string;
+    expenseDate?: string;
+    payerId?: string;
+  }>({});
 
   const validate = () => {
-    const newErrors: { title?: string; amount?: string } = {};
+    const newErrors: {
+      title?: string;
+      amount?: string;
+      expenseDate?: string;
+      payerId?: string;
+    } = {};
     if (!title.trim()) {
       newErrors.title = tForm('errors.titleRequired');
     }
     if (!amount.trim() || isNaN(Number(amount)) || Number(amount) <= 0) {
       newErrors.amount = tForm('errors.amountPositive');
+    }
+    if (!expenseDate || !expenseDate.trim()) {
+      newErrors.expenseDate = tForm('errors.dateRequired');
+    }
+    if (allMembers && allMembers.length > 1 && !payerId) {
+      newErrors.payerId = tForm('errors.payerRequired');
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0 && isSplitValidRef.current;
@@ -243,7 +196,14 @@ const EditExpenseForm = ({
             label={tForm('dateLabel')}
             type="date"
             value={expenseDate}
-            onChange={(e) => setExpenseDate(e.target.value)}
+            onChange={(e) => {
+              setExpenseDate(e.target.value);
+              if (errors.expenseDate) {
+                setErrors((prev) => ({ ...prev, expenseDate: undefined }));
+              }
+            }}
+            error={Boolean(errors.expenseDate)}
+            helperText={errors.expenseDate}
             slotProps={{ inputLabel: { shrink: true } }}
           />
         </Box>
@@ -266,7 +226,14 @@ const EditExpenseForm = ({
             value: m.userId,
             label: `${m.name || m.email || m.userId} (${m.email || ''})`,
           }))}
-          onChange={(e) => setPayerId(e.target.value as string | number)}
+          onChange={(e) => {
+            setPayerId(e.target.value as string | number);
+            if (errors.payerId) {
+              setErrors((prev) => ({ ...prev, payerId: undefined }));
+            }
+          }}
+          error={Boolean(errors.payerId)}
+          helperText={errors.payerId}
         />
       )}
 

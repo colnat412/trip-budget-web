@@ -2,13 +2,6 @@
 
 import React, { useMemo, useState } from 'react';
 import { Box, Stack } from '@mui/material';
-import RestaurantRoundedIcon from '@mui/icons-material/RestaurantRounded';
-import DirectionsSubwayRoundedIcon from '@mui/icons-material/DirectionsSubwayRounded';
-import ConfirmationNumberRoundedIcon from '@mui/icons-material/ConfirmationNumberRounded';
-import HotelRoundedIcon from '@mui/icons-material/HotelRounded';
-import ShoppingBagRoundedIcon from '@mui/icons-material/ShoppingBagRounded';
-import SportsEsportsRoundedIcon from '@mui/icons-material/SportsEsportsRounded';
-import MoreHorizRoundedIcon from '@mui/icons-material/MoreHorizRounded';
 import { useTranslations } from 'next-intl';
 
 import {
@@ -19,6 +12,7 @@ import {
   AppTextField,
   type AppSelectOption,
 } from '@/base/components/ui';
+import { getCategorySelectOptions } from '@/base/constants';
 import type {
   ActivityCategory,
   ActivityStatus,
@@ -64,45 +58,10 @@ const EditActivityForm = ({
   );
   const [note, setNote] = useState(activity.note || '');
   const [titleError, setTitleError] = useState('');
+  const [timeError, setTimeError] = useState('');
 
   const categoryOptions: AppSelectOption[] = useMemo(
-    () => [
-      {
-        value: 'FOOD_BEVERAGE',
-        label: tCat('FOOD_BEVERAGE'),
-        icon: <RestaurantRoundedIcon fontSize="small" />,
-      },
-      {
-        value: 'TRANSPORTATION',
-        label: tCat('TRANSPORTATION'),
-        icon: <DirectionsSubwayRoundedIcon fontSize="small" />,
-      },
-      {
-        value: 'SIGHTSEEING',
-        label: tCat('SIGHTSEEING'),
-        icon: <ConfirmationNumberRoundedIcon fontSize="small" />,
-      },
-      {
-        value: 'ACCOMMODATION',
-        label: tCat('ACCOMMODATION'),
-        icon: <HotelRoundedIcon fontSize="small" />,
-      },
-      {
-        value: 'SHOPPING',
-        label: tCat('SHOPPING'),
-        icon: <ShoppingBagRoundedIcon fontSize="small" />,
-      },
-      {
-        value: 'ENTERTAINMENT',
-        label: tCat('ENTERTAINMENT'),
-        icon: <SportsEsportsRoundedIcon fontSize="small" />,
-      },
-      {
-        value: 'OTHER',
-        label: tCat('OTHER'),
-        icon: <MoreHorizRoundedIcon fontSize="small" />,
-      },
-    ],
+    () => getCategorySelectOptions(tCat),
     [tCat],
   );
 
@@ -119,10 +78,16 @@ const EditActivityForm = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim()) {
-      setTitleError(tDialog('titleLabel'));
+      setTitleError(tDialog('titleRequired'));
       return;
     }
     setTitleError('');
+
+    if (startTime && endTime && endTime < startTime) {
+      setTimeError(tDialog('timeOrderInvalid'));
+      return;
+    }
+    setTimeError('');
 
     onSubmit({
       title: title.trim(),
@@ -192,7 +157,10 @@ const EditActivityForm = ({
               label={tDialog('startTimeLabel')}
               type="time"
               value={startTime}
-              onChange={(e) => setStartTime(e.target.value)}
+              onChange={(e) => {
+                setStartTime(e.target.value);
+                if (timeError) setTimeError('');
+              }}
               slotProps={{ inputLabel: { shrink: true } }}
               fullWidth
             />
@@ -202,7 +170,12 @@ const EditActivityForm = ({
               label={tDialog('endTimeLabel')}
               type="time"
               value={endTime}
-              onChange={(e) => setEndTime(e.target.value)}
+              onChange={(e) => {
+                setEndTime(e.target.value);
+                if (timeError) setTimeError('');
+              }}
+              error={!!timeError}
+              helperText={timeError}
               slotProps={{ inputLabel: { shrink: true } }}
               fullWidth
             />

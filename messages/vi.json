@@ -314,6 +314,8 @@
       "errors": {
         "titleRequired": "Vui lòng nhập tên khoản chi",
         "amountPositive": "Số tiền phải lớn hơn 0",
+        "dateRequired": "Vui lòng chọn ngày chi tiêu",
+        "payerRequired": "Vui lòng chọn người thanh toán",
         "totalBudgetRequired": "Tổng ngân sách không được để trống hoặc âm",
         "splitErrorExact": "Tổng số tiền chia ({sum}) phải bằng đúng tổng khoản chi ({total})!",
         "splitErrorPercent": "Tổng phần trăm ({sum}%) phải bằng đúng 100%!",
@@ -341,6 +343,8 @@
     "inviteSubtitle": "Nhập địa chỉ email người dùng đã đăng ký TripBudget để thêm vào nhóm.",
     "emailLabel": "Email thành viên *",
     "emailPlaceholder": "nhap.email@example.com",
+    "emailRequired": "Vui lòng nhập địa chỉ email thành viên",
+    "emailInvalid": "Định dạng email không hợp lệ",
     "roleLabel": "Vai trò *",
     "sendInvite": "Gửi lời mời",
     "cancel": "Hủy",
@@ -456,7 +460,8 @@
         "payerRequired": "Vui lòng chọn người chuyển tiền",
         "payeeRequired": "Vui lòng chọn người nhận tiền",
         "samePerson": "Người chuyển tiền và người nhận tiền không được trùng nhau",
-        "invalidAmount": "Số tiền thanh toán phải lớn hơn 0"
+        "invalidAmount": "Số tiền thanh toán phải lớn hơn 0",
+        "dateRequired": "Vui lòng chọn ngày thanh toán"
       }
     },
     "deleteConfirm": {
@@ -491,13 +496,13 @@
     "dayTotalCost": "Tổng chi phí dự kiến trong ngày: {cost}",
     "spentChip": "Đã chi",
     "categories": {
-      "FOOD_BEVERAGE": "Ăn uống",
-      "TRANSPORTATION": "Di chuyển",
-      "SIGHTSEEING": "Tham quan",
-      "ACCOMMODATION": "Lưu trú",
-      "SHOPPING": "Mua sắm",
-      "ENTERTAINMENT": "Giải trí",
-      "OTHER": "Khác"
+      "FOOD_BEVERAGE": "Ăn uống & Nhà hàng",
+      "ACCOMMODATION": "Khách sạn & Homestay",
+      "TRANSPORTATION": "Di chuyển & Vé xe/tàu",
+      "SIGHTSEEING": "Vé tham quan & Tour",
+      "SHOPPING": "Mua sắm & Quà lưu niệm",
+      "ENTERTAINMENT": "Vui chơi & Giải trí",
+      "OTHER": "Chi phí khác"
     },
     "statuses": {
       "PLANNED": "Dự kiến",
@@ -518,6 +523,8 @@
       "editTitle": "Chỉnh sửa hoạt động",
       "titleLabel": "Tên hoạt động *",
       "titlePlaceholder": "Ví dụ: Ăn sáng Bún bò, Tham quan Phố cổ...",
+      "titleRequired": "Vui lòng nhập tên hoạt động",
+      "timeOrderInvalid": "Giờ kết thúc phải sau giờ bắt đầu",
       "categoryLabel": "Danh mục",
       "startTimeLabel": "Giờ bắt đầu",
       "endTimeLabel": "Giờ kết thúc",

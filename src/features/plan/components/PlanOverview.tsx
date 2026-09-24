@@ -203,6 +203,13 @@ const PlanOverview = () => {
         await axiosClient.put(
           `/trip/${tripId}/plan/activities/${convertExpenseActivity.id}`,
           {
+            title: convertExpenseActivity.title,
+            category: convertExpenseActivity.category,
+            startTime: convertExpenseActivity.startTime || undefined,
+            endTime: convertExpenseActivity.endTime || undefined,
+            location: convertExpenseActivity.location || undefined,
+            estimatedCost: convertExpenseActivity.estimatedCost,
+            note: convertExpenseActivity.note || undefined,
             expenseId: createdExpenseId,
             status: 'COMPLETED',
           },
@@ -394,6 +401,17 @@ const PlanOverview = () => {
             overview?.baseCurrency ?? activeTrip?.baseCurrency ?? 'VND'
           }
           tripId={tripId}
+          initialData={{
+            title: convertExpenseActivity.title,
+            amount:
+              convertExpenseActivity.estimatedCost > 0
+                ? convertExpenseActivity.estimatedCost
+                : undefined,
+            category: convertExpenseActivity.category,
+            expenseDate:
+              overview?.days.find((d) => d.id === convertExpenseActivity.dayId)
+                ?.planDate || undefined,
+          }}
         />
       )}
 
