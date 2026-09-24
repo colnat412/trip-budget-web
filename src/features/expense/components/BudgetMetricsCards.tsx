@@ -5,7 +5,7 @@ import { Box, Typography, Stack } from '@mui/material';
 import AccountBalanceWalletRoundedIcon from '@mui/icons-material/AccountBalanceWalletRounded';
 import ShoppingCartRoundedIcon from '@mui/icons-material/ShoppingCartRounded';
 import SavingsRoundedIcon from '@mui/icons-material/SavingsRounded';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { AppCard, AppButton } from '@/base/components/ui';
 import { formatCurrency, formatCompactCurrency } from '@/base/utils';
 import type { TripBudgetSummary } from '../types';
@@ -21,6 +21,7 @@ const BudgetMetricsCards = ({
   currency = 'VND',
   onOpenSetBudget,
 }: BudgetMetricsCardsProps) => {
+  const locale = useLocale();
   const t = useTranslations('expense.metrics');
   const totalBudget = summary?.totalBudget ?? 0;
   const actualSpent = summary?.actualSpent ?? 0;
@@ -262,7 +263,7 @@ const BudgetMetricsCards = ({
               }}
             >
               {totalBudget > 0
-                ? `${t('percentOfBudget', { percent: percentageUsed.toFixed(1) })} · / ${formatCompactCurrency(totalBudget, curr)}`
+                ? `${t('percentOfBudget', { percent: percentageUsed.toFixed(1) })} · / ${formatCompactCurrency(totalBudget, curr, locale)}`
                 : t('noLimit')}
             </Typography>
 

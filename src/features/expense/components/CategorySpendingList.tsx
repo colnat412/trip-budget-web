@@ -7,7 +7,7 @@ import CategoryRoundedIcon from '@mui/icons-material/CategoryRounded';
 import WarningAmberRoundedIcon from '@mui/icons-material/WarningAmberRounded';
 import TrendingUpRoundedIcon from '@mui/icons-material/TrendingUpRounded';
 import TuneRoundedIcon from '@mui/icons-material/TuneRounded';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { AppCard, AppButton } from '@/base/components/ui';
 import { CATEGORY_CONFIG } from '@/base/components/ui/AppCategoryChip';
 import { formatCurrency, formatCompactCurrency } from '@/base/utils';
@@ -24,6 +24,7 @@ const CategorySpendingList = ({
   currency = 'VND',
   onOpenSetBudget,
 }: CategorySpendingListProps) => {
+  const locale = useLocale();
   const t = useTranslations('expense.categoriesList');
   const tCategories = useTranslations('expense.categories');
 
@@ -457,7 +458,11 @@ const CategorySpendingList = ({
                         />
                       }
                       label={t('overBudgetBadge', {
-                        amount: formatCompactCurrency(overAmount, currency),
+                        amount: formatCompactCurrency(
+                          overAmount,
+                          currency,
+                          locale,
+                        ),
                       })}
                       color="error"
                       sx={{
@@ -540,7 +545,12 @@ const CategorySpendingList = ({
                         fontWeight: 600,
                       }}
                     >
-                      / {formatCompactCurrency(item.limitAmount, currency)}
+                      /{' '}
+                      {formatCompactCurrency(
+                        item.limitAmount,
+                        currency,
+                        locale,
+                      )}
                     </Typography>
                   ) : (
                     <Typography
@@ -617,11 +627,12 @@ const CategorySpendingList = ({
                         }}
                       >
                         {isOver
-                          ? `+${formatCompactCurrency(overAmount, currency)}`
+                          ? `+${formatCompactCurrency(overAmount, currency, locale)}`
                           : t('remaining', {
                               amount: formatCompactCurrency(
                                 remainingAmount,
                                 currency,
+                                locale,
                               ),
                             })}
                       </Typography>

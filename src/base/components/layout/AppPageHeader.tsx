@@ -109,7 +109,7 @@ const AppPageHeader = ({
               {subtitle}
             </Typography>
           ) : (
-            subtitle
+            <Box sx={{ minWidth: 0 }}>{subtitle}</Box>
           ))}
       </Box>
 

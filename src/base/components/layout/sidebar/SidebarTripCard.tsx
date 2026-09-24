@@ -13,7 +13,7 @@ import {
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import UnfoldMoreRoundedIcon from '@mui/icons-material/UnfoldMoreRounded';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 
 import { AppButton, AppLinearProgress } from '../../ui';
 import {
@@ -26,6 +26,7 @@ import useTripBudgetSummary from '@/features/expense/hooks/useTripBudgetSummary'
 import type { Trip } from '@/features/trip/types';
 
 const SidebarTripCard = () => {
+  const locale = useLocale();
   const t = useTranslations('sidebar');
   const tTrip = useTranslations('trip');
   const { trips, activeTrip, selectTrip, openCreateTrip, isLoading } =
@@ -210,13 +211,18 @@ const SidebarTripCard = () => {
           >
             {currentTrip.name}
           </Typography>
-
           <Typography
             variant="caption"
             sx={{ opacity: 0.85, fontSize: '11px' }}
           >
             {currentTrip.destination}
-            {dateRange ? ` · ${dateRange}` : ''}
+          </Typography>
+
+          <Typography
+            variant="caption"
+            sx={{ opacity: 0.85, fontSize: '11px' }}
+          >
+            {dateRange ? ` ${dateRange}` : ''}
           </Typography>
         </Box>
       </Box>
@@ -329,18 +335,22 @@ const SidebarTripCard = () => {
           const fullSpent = formatCurrency(
             totalSpent,
             currentTrip.baseCurrency,
+            locale,
           );
           const fullBudget = formatCurrency(
             totalBudget,
             currentTrip.baseCurrency,
+            locale,
           );
           const compactSpent = formatCompactCurrency(
             totalSpent,
             currentTrip.baseCurrency,
+            locale,
           );
           const compactBudget = formatCompactCurrency(
             totalBudget,
             currentTrip.baseCurrency,
+            locale,
           );
 
           return (

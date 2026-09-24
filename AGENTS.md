@@ -1738,6 +1738,42 @@ If the user has already supplied a specific task, do not block on a broad questi
       - `export PATH="/home/hanbiro/.nvm/versions/node/v20.20.2/bin:$PATH" && npx tsc --noEmit && npm run lint` -> 0 errors, 0 warnings.
       - `mvn test-compile -q -o` -> BUILD SUCCESS (0 errors).
 
+32. **Khắc Phục Lỗi Vỡ Layout Dòng Phụ Đề (Subtitle) Trên Header Trang Quản Lý Chi Tiêu (`/expenses`)**:
+    - **Nguyên nhân phát hiện**:
+      - Tại `ExpenseOverview.tsx`, prop `subtitle` của `AppPageHeader` được truyền vào dưới dạng một React Fragment `<> ... </>` chứa các phần tử con rời rạc: text `"Trip:"`, component `<Box component="strong">`, text `"• Destination:"`, và `<strong>`.
+      - Trong `AppPageHeader.tsx`, khối chứa bên trái là một Flexbox dạng cột (`display: 'flex', flexDirection: 'column', gap: 0.5`).
+      - Khi `subtitle` là một React Fragment (`<> ... </>`), React không sinh thẻ bọc DOM nào. Toàn bộ các phần tử con bên trong Fragment bị coi là các flex items độc lập của Flexbox cột, khiến mỗi cụm từ bị rớt xuống một dòng riêng biệt (4 dòng thay vì nằm ngang trên cùng 1 dòng).
+    - **Giải pháp xử lý triệt để 2 phía**:
+      - Phía Component (`ExpenseOverview.tsx`): Bọc toàn bộ thông tin phụ đề trong `<Stack direction="row" spacing={0.75} sx={{ alignItems: 'center', flexWrap: 'wrap', fontSize: '14px', color: 'text.secondary' }}>`, các phần tử con sử dụng `<Typography component="span">` hoặc `<span>`, giúp toàn bộ thông tin `Trip: [Tên chuyến đi] · Destination: [Điểm đến]` luôn hiển thị thẳng hàng, sang trọng và tự động xuống dòng mượt mà trên màn hình nhỏ.
+      - Phía Primitives (`AppPageHeader.tsx`): Bổ sung thẻ bọc an toàn `<Box sx={{ minWidth: 0 }}>{subtitle}</Box>` khi `subtitle` không phải kiểu chuỗi `string`, ngăn ngừa hiện tượng các phần tử con trong Fragment phá vỡ cấu trúc flex của Header trang.
+    - **Kiểm thử chất lượng**:
+      - `export PATH="/home/hanbiro/.nvm/versions/node/v20.20.2/bin:$PATH" && npx tsc --noEmit && npm run lint` -> 0 errors, 0 warnings.
+
+33. **Chuẩn Hóa Đa Ngôn Ngữ Định Dạng Tiền Tệ Thu Gọn (Compact Currency Formatting: 'tr', 'tỷ', 'k' Cho Tiếng Việt & 'M', 'B', 'K' Cho Tiếng Anh)**:
+    - **Yêu cầu & Mục tiêu**:
+      - Khi hiển thị đơn vị tiền tệ dạng thu gọn (compact currency), hệ thống trước đây gán cứng các hậu tố tiếng Việt (`tr`, `tỷ`, `k`) cho đồng tiền VND bất kể ngôn ngữ hiện tại của ứng dụng.
+      - Khi người dùng chuyển giao diện sang Tiếng Anh (`en`), các đơn vị phải tương ứng chuẩn quốc tế: `M` (Million - Triệu), `K` (Thousand - Nghìn), `B` (Billion - Tỷ).
+    - **Giải pháp triển khai (`src/base/utils/currency.ts`)**:
+      - Xây dựng hàm `resolveLocale(locale?: string)` thông minh: ưu tiên locale được truyền vào trực tiếp, nếu không có sẽ tự động phát hiện qua `document.documentElement.lang` hoặc cookie `trip-budget-locale`, fallback về `'vi'`.
+      - Nâng cấp `formatCompactCurrency`:
+        - Với Tiếng Việt (`vi`): Giữ nguyên văn phong trực quan quen thuộc: `>= 1 tỷ` -> `${val} tỷ`, `>= 1 triệu` -> `${val} tr`, `>= 1 nghìn` -> `${val}k`.
+        - Với Tiếng Anh (`en`): Tự động chuyển đổi sang chuẩn quốc tế: `>= 1 tỷ` -> `${val}B`, `>= 1 triệu` -> `${val}M`, `>= 1 nghìn` -> `${val}K`.
+        - Với các ngoại tệ khác (`USD`, `EUR`...): Tự động áp dụng `Intl.NumberFormat` compact chuẩn theo locale mục tiêu (`$15M` khi tiếng Anh, `15,0 Tr US$` khi tiếng Việt).
+      - Nâng cấp `formatCurrency`: Tự động áp dụng định dạng phân cách hàng nghìn và ký hiệu tiền tệ chuẩn hóa (`15.000.000 ₫` cho Tiếng Việt, `₫15,000,000` cho Tiếng Anh).
+      - Đồng bộ truyền `useLocale()` từ `next-intl` tại các component gọi định dạng thu gọn: `SidebarTripCard.tsx`, `BudgetMetricsCards.tsx`, `CategorySpendingList.tsx`.
+    - **Kiểm thử chất lượng**:
+      - `export PATH="/home/hanbiro/.nvm/versions/node/v20.20.2/bin:$PATH" && npx tsc --noEmit && npm run lint` -> 0 errors, 0 warnings.
+
+34. **Đồng Bộ Vị Trí Ký Hiệu Tiền Tệ '₫' Cho Đồng VND Cả Khi Dùng Tiếng Anh Và Tiếng Việt (Khắc Phục Lỗi '13đ' vs 'đ13')**:
+    - **Nguyên nhân phát hiện**:
+      - Khi chuyển sang Tiếng Anh (`en`), thư viện `Intl.NumberFormat('en-US', { style: 'currency', currency: 'VND' })` mặc định theo chuẩn tiếng Anh đặt ký hiệu tiền tệ lên đầu chuỗi (`₫13` hoặc `₫15,000,000`), trong khi ở Tiếng Việt là `13 ₫` hoặc `15.000.000 ₫`.
+      - Điều này khiến giao diện bị lệch pha: một số chỗ hiển thị `13đ` (hậu tố) và một số chỗ hiển thị `đ13` (tiền tố), hoặc khi đổi ngôn ngữ vị trí ký hiệu bị đảo lộn không thuận mắt người dùng.
+    - **Giải pháp xử lý (`src/base/utils/currency.ts`)**:
+      - Với đồng VND, chuẩn hóa quy tắc bất biến: ký hiệu `₫` luôn luôn đặt phía sau số tiền (`${formatted} ₫`) trên toàn bộ các ngôn ngữ (cả Tiếng Anh và Tiếng Việt), bảo đảm tính tự nhiên và đồng nhất 100% trong toàn bộ ứng dụng (`13 ₫`, `15,000,000 ₫` trên bản ENG; `13 ₫`, `15.000.000 ₫` trên bản VNI).
+      - Ngoại tệ khác (`USD`, `EUR`...) tiếp tục tuân thủ vị trí tự nhiên của đồng tiền đó (`$15` trên ENG, `15 US$` trên VNI).
+    - **Kiểm thử chất lượng**:
+      - `export PATH="/home/hanbiro/.nvm/versions/node/v20.20.2/bin:$PATH" && npx tsc --noEmit && npm run lint` -> 0 errors, 0 warnings.
+
 ### Immediate likely next tasks:
 
 1. **Kết nối Dữ liệu Thực tế cho Trang Tổng quan (`/overview`)**: Thay thế dữ liệu mock trong `RecentExpenseList` và `CategoryList` bằng dữ liệu thực tế từ API chi tiêu của chuyến đi đang diễn ra.

@@ -1,29 +1,21 @@
+function resolveLocale(locale?: string): string {
+  if (locale && locale.trim()) return locale;
+  if (typeof document !== 'undefined') {
+    if (document.documentElement.lang) {
+      return document.documentElement.lang;
+    }
+    const match = document.cookie.match(/trip-budget-locale=([^;]+)/);
+    if (match && match[1]) {
+      return match[1];
+    }
+  }
+  return 'vi';
+}
+
 export function formatCurrency(
   amount: number | string | null | undefined,
   currency = 'VND',
-  locale = 'vi-VN',
-): string {
-  if (amount === null || amount === undefined || isNaN(Number(amount))) {
-    return `0 ${currency}`;
-  }
-
-  const numericAmount = Number(amount);
-
-  try {
-    return new Intl.NumberFormat(locale, {
-      style: 'currency',
-      currency: currency.toUpperCase(),
-      maximumFractionDigits: currency.toUpperCase() === 'VND' ? 0 : 2,
-    }).format(numericAmount);
-  } catch {
-    return `${numericAmount.toLocaleString(locale)} ${currency}`;
-  }
-}
-
-export function formatCompactCurrency(
-  amount: number | string | null | undefined,
-  currency = 'VND',
-  locale = 'vi-VN',
+  locale?: string,
 ): string {
   if (amount === null || amount === undefined || isNaN(Number(amount))) {
     return `0 ${currency}`;
@@ -31,34 +23,71 @@ export function formatCompactCurrency(
 
   const numericAmount = Number(amount);
   const curr = currency.toUpperCase();
+  const resolved = resolveLocale(locale);
+  const isEnglish = resolved.toLowerCase().startsWith('en');
+  const targetLocale = isEnglish ? 'en-US' : 'vi-VN';
+
+  if (curr === 'VND') {
+    const formatted = numericAmount.toLocaleString(targetLocale, {
+      maximumFractionDigits: 0,
+    });
+    return `${formatted} ₫`;
+  }
+
+  try {
+    return new Intl.NumberFormat(targetLocale, {
+      style: 'currency',
+      currency: curr,
+      maximumFractionDigits: 2,
+    }).format(numericAmount);
+  } catch {
+    return `${numericAmount.toLocaleString(targetLocale)} ${currency}`;
+  }
+}
+
+export function formatCompactCurrency(
+  amount: number | string | null | undefined,
+  currency = 'VND',
+  locale?: string,
+): string {
+  if (amount === null || amount === undefined || isNaN(Number(amount))) {
+    return `0 ${currency}`;
+  }
+
+  const numericAmount = Number(amount);
+  const curr = currency.toUpperCase();
+  const resolved = resolveLocale(locale);
+  const isEnglish = resolved.toLowerCase().startsWith('en');
+  const targetLocale = isEnglish ? 'en-US' : 'vi-VN';
 
   if (curr === 'VND') {
     const abs = Math.abs(numericAmount);
     const sign = numericAmount < 0 ? '-' : '';
+
     if (abs >= 1_000_000_000) {
       const val = (abs / 1_000_000_000).toFixed(1).replace(/\.0$/, '');
-      return `${sign}${val} tỷ`;
+      return isEnglish ? `${sign}${val}B` : `${sign}${val} tỷ`;
     }
     if (abs >= 1_000_000) {
       const val = (abs / 1_000_000).toFixed(1).replace(/\.0$/, '');
-      return `${sign}${val} tr`;
+      return isEnglish ? `${sign}${val}M` : `${sign}${val} tr`;
     }
     if (abs >= 1_000) {
-      const val = (abs / 1_000).toFixed(0);
-      return `${sign}${val}k`;
+      const val = (abs / 1_000).toFixed(1).replace(/\.0$/, '');
+      return isEnglish ? `${sign}${val}K` : `${sign}${val}k`;
     }
-    return `${numericAmount.toLocaleString(locale)} ₫`;
+    return `${numericAmount.toLocaleString(targetLocale)} ₫`;
   }
 
   try {
-    return new Intl.NumberFormat(locale, {
+    return new Intl.NumberFormat(targetLocale, {
       style: 'currency',
       currency: curr,
       notation: 'compact',
       maximumFractionDigits: 1,
     }).format(numericAmount);
   } catch {
-    return formatCurrency(numericAmount, currency, locale);
+    return formatCurrency(numericAmount, currency, targetLocale);
   }
 }
 

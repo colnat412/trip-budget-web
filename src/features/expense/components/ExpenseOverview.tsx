@@ -267,14 +267,40 @@ const ExpenseOverview = () => {
         title={t('pageTitle')}
         badge={activeTrip.baseCurrency}
         subtitle={
-          <>
-            {t('trip')}:{' '}
-            <Box component="strong" sx={{ color: 'primary.main' }}>
+          <Stack
+            direction="row"
+            spacing={0.75}
+            sx={{
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              fontSize: '14px',
+              color: 'text.secondary',
+            }}
+          >
+            <span>{t('trip')}:</span>
+            <Typography
+              component="span"
+              sx={{
+                fontSize: '14px',
+                fontWeight: 700,
+                color: 'primary.main',
+              }}
+            >
               {activeTrip.name}
-            </Box>{' '}
-            • {t('destination')}:{' '}
-            <strong>{activeTrip.destination || t('notUpdated')}</strong>
-          </>
+            </Typography>
+            <span>·</span>
+            <span>{t('destination')}:</span>
+            <Typography
+              component="span"
+              sx={{
+                fontSize: '14px',
+                fontWeight: 600,
+                color: 'text.primary',
+              }}
+            >
+              {activeTrip.destination || t('notUpdated')}
+            </Typography>
+          </Stack>
         }
         actions={
           <>
