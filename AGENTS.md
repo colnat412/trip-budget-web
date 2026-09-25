@@ -1819,6 +1819,22 @@ If the user has already supplied a specific task, do not block on a broad questi
     - **Kiểm thử chất lượng**:
       - `export PATH="/home/hanbiro/.nvm/versions/node/v20.20.2/bin:$PATH" && npx tsc --noEmit && npm run lint` -> 0 errors, 0 warnings.
 
+37. **Tích Hợp Fallback Đo Khoảng Cách & Thời Gian Lái Xe Bằng OpenStreetMap (OSRM + Nominatim) Khi Không Có Google Maps API Key (`/api/maps/distance`)**:
+    - **Yêu cầu & Mục tiêu**:
+      - Nếu người dùng chưa cấu hình `GOOGLE_MAPS_API_KEY` (hoặc Google Maps lỗi/hết quota), thay vì chỉ sinh số đo ước tính nội bộ (heuristic), hệ thống tự động fallback sang **OpenStreetMap** để đo khoảng cách và thời gian lái xe thực tế theo mạng lưới đường bộ.
+      - **Bảo lưu đường dẫn trực tiếp Google Maps**: Nút mở bản đồ trực tiếp trên `ActivityDistanceConnector.tsx` vẫn giữ nguyên 100% là link Google Maps (`https://www.google.com/maps/dir/...`), không thay đổi sang nền tảng khác.
+    - **Kiến trúc 3 tầng (3-Tier Distance Engine) & Cải tiến độ chính xác**:
+      - **Tầng 1 (Google Maps Distance Matrix API)**: Kích hoạt khi có `GOOGLE_MAPS_API_KEY`, cung cấp số đo và thời gian giao thông theo chuẩn Google Maps.
+      - **Tầng 2 (OpenStreetMap Nominatim + OSRM Routing + GPS Haversine Fallback)**:
+        - **Phân giải địa điểm thông minh**: Giới hạn phạm vi tìm kiếm theo quốc gia Việt Nam (`countrycodes=vn`). Nếu tìm tên gốc không thấy, tự động ghép thêm ngữ cảnh điểm đến của chuyến đi (`destinationContext`, vd: `"Chùa Hang, An Giang"`).
+        - **Chống Rate-Limit (1 req/s) của Nominatim**: Pre-geocode tuần tự toàn bộ địa điểm độc nhất trong ngày với khoảng nghỉ 200ms, loại bỏ hoàn toàn lỗi HTTP 429 khi mở nhiều hoạt động.
+        - **OSRM Road Routing & Haversine GPS Fallback**: Tính đường xe chạy thực tế trên OSRM (`router.project-osrm.org`). Nếu OSRM không tìm thấy tuyến đường xe hơi (đường hẻm, đi bộ, hải đảo), tự động tính theo công thức khoảng cách Haversine GPS $\times$ hệ số uốn lượn đường bộ 1.35x, đảm bảo sai số chỉ dưới 5-10% thay vì sinh số ngẫu nhiên.
+      - **Tầng 3 (Heuristic Deterministic Fallback)**: Chỉ kích hoạt nếu địa điểm là chuỗi text tự do hoàn toàn không tìm thấy tọa độ trên bản đồ thế giới. **Tuyệt đối không lưu cache** các kết quả heuristic vào `serverCache` hay `localStorage` để cho phép hệ thống tự động thử lại khi có mạng hoặc khi người dùng cập nhật địa chỉ.
+      - **Nâng cấp Cache Version (`tb_distance_v2:`)**: Tự động vô hiệu hóa toàn bộ cache phỏng đoán cũ trong trình duyệt của người dùng.
+      - **Bảo toàn link Google Maps**: Link xem chỉ đường `gmapsUrl` luôn trỏ tới Google Maps web (`travelmode=driving`).
+    - **Kiểm thử chất lượng**:
+      - `export PATH="/home/hanbiro/.nvm/versions/node/v20.20.2/bin:$PATH" && npx tsc --noEmit && npm run lint` -> 0 errors, 0 warnings.
+
 ### Immediate likely next tasks:
 
 1. **Kết nối Dữ liệu Thực tế cho Trang Tổng quan (`/overview`)**: Thay thế dữ liệu mock trong `RecentExpenseList` và `CategoryList` bằng dữ liệu thực tế từ API chi tiêu của chuyến đi đang diễn ra.

@@ -368,6 +368,7 @@ const PlanOverview = () => {
         <DayTimelineList
           activities={selectedDay?.activities ?? []}
           currency={overview?.baseCurrency ?? activeTrip?.baseCurrency ?? 'VND'}
+          destinationContext={activeTrip?.destination}
           onAddActivity={() => setAddActivityOpen(true)}
           onEditActivity={(activity) => setEditingActivity(activity)}
           onDeleteActivity={(activity) => setDeletingActivity(activity)}
@@ -427,6 +428,7 @@ const PlanOverview = () => {
         onClose={() => setOptimizeDialogOpen(false)}
         dayNumber={selectedDay?.dayNumber ?? 1}
         activities={selectedDay?.activities ?? []}
+        destinationContext={activeTrip?.destination}
         onApplyRoute={handleApplyOptimizedRoute}
       />
 

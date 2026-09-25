@@ -559,7 +559,8 @@
       "optimizeBtn": "Optimize Route",
       "openInGoogleMaps": "Get directions on Google Maps",
       "estimatedLabel": "Estimated",
-      "estimatedTooltip": "Estimated distance. Configure NEXT_PUBLIC_GOOGLE_MAPS_API_KEY for real-time Google Maps measurements."
+      "estimatedTooltip": "Estimated distance. Location could not be mapped to exact roads.",
+      "osmTooltip": "Measured via OpenStreetMap road network (Free)"
     },
     "optimize": {
       "title": "Optimize Travel Route (Day {day})",

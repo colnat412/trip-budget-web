@@ -13,6 +13,7 @@ import { getConsecutiveDistances } from '../services/googleMapsService';
 export interface DayTimelineListProps {
   activities: PlanActivity[];
   currency: string;
+  destinationContext?: string;
   onAddActivity: () => void;
   onEditActivity: (activity: PlanActivity) => void;
   onDeleteActivity: (activity: PlanActivity) => void;
@@ -24,6 +25,7 @@ export interface DayTimelineListProps {
 const DayTimelineList = ({
   activities,
   currency,
+  destinationContext,
   onAddActivity,
   onEditActivity,
   onDeleteActivity,
@@ -42,7 +44,11 @@ const DayTimelineList = ({
   useEffect(() => {
     let isMounted = true;
 
-    getConsecutiveDistances(activities, locale === 'en' ? 'en' : 'vi')
+    getConsecutiveDistances(
+      activities,
+      locale === 'en' ? 'en' : 'vi',
+      destinationContext,
+    )
       .then((data) => {
         if (isMounted) {
           setDistanceData(data);
@@ -55,7 +61,7 @@ const DayTimelineList = ({
     return () => {
       isMounted = false;
     };
-  }, [activities, locale]);
+  }, [activities, locale, destinationContext]);
 
   if (activities.length === 0) {
     return <PlanEmptyState onAddActivity={onAddActivity} />;
@@ -190,6 +196,7 @@ const DayTimelineList = ({
                   distance={segment?.distance}
                   duration={segment?.duration}
                   isEstimated={segment?.isEstimated}
+                  source={segment?.source}
                 />
               )}
             </React.Fragment>

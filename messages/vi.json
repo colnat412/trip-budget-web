@@ -559,7 +559,8 @@
       "optimizeBtn": "Tối ưu lộ trình",
       "openInGoogleMaps": "Xem chỉ đường trên Google Maps",
       "estimatedLabel": "Ước tính",
-      "estimatedTooltip": "Khoảng cách ước tính. Cấu hình NEXT_PUBLIC_GOOGLE_MAPS_API_KEY để đo trực tiếp từ Google Maps."
+      "estimatedTooltip": "Khoảng cách ước tính. Không tìm thấy tọa độ đường đi trên bản đồ.",
+      "osmTooltip": "Đo chính xác theo mạng lưới đường bộ OpenStreetMap (Miễn phí)"
     },
     "optimize": {
       "title": "Tối ưu lộ trình di chuyển (Ngày {day})",

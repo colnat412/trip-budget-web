@@ -38,6 +38,7 @@ export interface OptimizeRouteDialogProps {
   onClose: () => void;
   dayNumber: number;
   activities: PlanActivity[];
+  destinationContext?: string;
   onApplyRoute: (optimizedActivities: PlanActivity[]) => Promise<void>;
 }
 
@@ -46,6 +47,7 @@ const OptimizeRouteDialog = ({
   onClose,
   dayNumber,
   activities,
+  destinationContext,
   onApplyRoute,
 }: OptimizeRouteDialogProps) => {
   const theme = useTheme();
@@ -79,6 +81,7 @@ const OptimizeRouteDialog = ({
     solveOptimalRoute(activities, {
       startIndex,
       lang: locale === 'en' ? 'en' : 'vi',
+      destinationContext,
     })
       .then((res) => {
         if (isMounted) {
@@ -97,7 +100,14 @@ const OptimizeRouteDialog = ({
       isMounted = false;
       clearTimeout(timer);
     };
-  }, [open, activities, startIndex, locale, locActivities.length]);
+  }, [
+    open,
+    activities,
+    startIndex,
+    locale,
+    locActivities.length,
+    destinationContext,
+  ]);
 
   const handleApply = () => {
     if (!result) return;

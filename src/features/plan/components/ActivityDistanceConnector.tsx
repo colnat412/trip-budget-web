@@ -17,6 +17,7 @@ export interface ActivityDistanceConnectorProps {
   distance?: DistanceInfo;
   duration?: DurationInfo;
   isEstimated?: boolean;
+  source?: 'google' | 'osm' | 'heuristic';
 }
 
 const ActivityDistanceConnector = ({
@@ -25,6 +26,7 @@ const ActivityDistanceConnector = ({
   distance,
   duration,
   isEstimated,
+  source,
 }: ActivityDistanceConnectorProps) => {
   const theme = useTheme();
   const t = useTranslations('plan.distance');
@@ -144,7 +146,31 @@ const ActivityDistanceConnector = ({
                 {duration.text}
               </Typography>
 
-              {isEstimated && (
+              {source === 'osm' && (
+                <Tooltip title={t('osmTooltip')} arrow placement="top">
+                  <Box
+                    component="span"
+                    sx={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      px: 0.6,
+                      py: 0.1,
+                      borderRadius: '4px',
+                      bgcolor: alpha(theme.palette.info.main, 0.12),
+                      color: 'info.main',
+                      fontSize: '9px',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      lineHeight: 1.2,
+                    }}
+                  >
+                    OSM
+                  </Box>
+                </Tooltip>
+              )}
+
+              {isEstimated && source === 'heuristic' && (
                 <Tooltip title={t('estimatedTooltip')} arrow placement="top">
                   <Box
                     component="span"

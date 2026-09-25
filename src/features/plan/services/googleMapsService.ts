@@ -6,7 +6,7 @@ import type {
   RouteSegment,
 } from '../types';
 
-const CACHE_PREFIX = 'tb_distance_v1:';
+const CACHE_PREFIX = 'tb_distance_v2:';
 
 const getCacheKey = (origin: string, dest: string, lang: string) => {
   return `${CACHE_PREFIX}${origin.trim().toLowerCase()}:::${dest.trim().toLowerCase()}:::${lang}`;
@@ -19,9 +19,18 @@ const getFromLocalCache = (
 ): DistanceResult | null => {
   if (typeof window === 'undefined') return null;
   try {
-    const raw = localStorage.getItem(getCacheKey(origin, dest, lang));
+    const key = getCacheKey(origin, dest, lang);
+    const raw = localStorage.getItem(key);
     if (!raw) return null;
-    return JSON.parse(raw) as DistanceResult;
+    const parsed = JSON.parse(raw) as DistanceResult;
+    if (
+      parsed.source === 'heuristic' ||
+      (parsed.isEstimated && !parsed.source)
+    ) {
+      localStorage.removeItem(key);
+      return null;
+    }
+    return parsed;
   } catch {
     return null;
   }
@@ -34,6 +43,9 @@ const saveToLocalCache = (
   result: DistanceResult,
 ) => {
   if (typeof window === 'undefined') return;
+  if (result.source === 'heuristic' || (result.isEstimated && !result.source)) {
+    return;
+  }
   try {
     localStorage.setItem(
       getCacheKey(origin, dest, lang),
@@ -71,6 +83,7 @@ export async function fetchDistanceMatrix(
   origins: string[],
   destinations: string[],
   lang = 'vi',
+  destinationContext?: string,
 ): Promise<Map<string, DistanceResult>> {
   const resultMap = new Map<string, DistanceResult>();
   const missingOrigins: string[] = [];
@@ -94,6 +107,7 @@ export async function fetchDistanceMatrix(
         origins: missingOrigins,
         destinations: missingDestinations,
         language: lang,
+        destinationContext,
       });
 
       const data = response.data;
@@ -125,6 +139,7 @@ export async function fetchDistanceMatrix(
 export async function getConsecutiveDistances(
   activities: PlanActivity[],
   lang = 'vi',
+  destinationContext?: string,
 ): Promise<{
   segments: RouteSegment[];
   totalDistanceMeters: number;
@@ -156,7 +171,12 @@ export async function getConsecutiveDistances(
     if (!destinations.includes(toLoc)) destinations.push(toLoc);
   }
 
-  const matrix = await fetchDistanceMatrix(origins, destinations, lang);
+  const matrix = await fetchDistanceMatrix(
+    origins,
+    destinations,
+    lang,
+    destinationContext,
+  );
 
   const segments: RouteSegment[] = [];
   let totalDistanceMeters = 0;
@@ -185,6 +205,7 @@ export async function getConsecutiveDistances(
       distance: info.distance,
       duration: info.duration,
       isEstimated: info.isEstimated,
+      source: info.source,
     });
   }
 
@@ -202,10 +223,12 @@ export async function solveOptimalRoute(
   options?: {
     startIndex?: number;
     lang?: string;
+    destinationContext?: string;
   },
 ): Promise<OptimizationResult> {
   const lang = options?.lang || 'vi';
   const startIndex = options?.startIndex ?? 0;
+  const destinationContext = options?.destinationContext;
 
   const locActivities = activities.filter(
     (a) => a.location && a.location.trim().length > 0,
@@ -235,7 +258,11 @@ export async function solveOptimalRoute(
   };
 
   if (locActivities.length < 3) {
-    const consecutive = await getConsecutiveDistances(activities, lang);
+    const consecutive = await getConsecutiveDistances(
+      activities,
+      lang,
+      destinationContext,
+    );
     return {
       ...defaultResult,
       originalDistanceMeters: consecutive.totalDistanceMeters,
@@ -260,6 +287,7 @@ export async function solveOptimalRoute(
     uniqueLocations,
     uniqueLocations,
     lang,
+    destinationContext,
   );
 
   const getDistance = (fromLoc: string, toLoc: string): number => {
@@ -372,6 +400,7 @@ export async function solveOptimalRoute(
       distance: { text: formatDistance(dist), value: dist },
       duration: { text: formatDuration(dur, lang), value: dur },
       isEstimated: entry?.isEstimated,
+      source: entry?.source,
     });
   }
 

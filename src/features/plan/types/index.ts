@@ -139,6 +139,7 @@ export interface DistanceResult {
   distance: DistanceInfo;
   duration: DurationInfo;
   isEstimated?: boolean;
+  source?: 'google' | 'osm' | 'heuristic';
 }
 
 export interface RouteSegment {
@@ -149,6 +150,7 @@ export interface RouteSegment {
   distance: DistanceInfo;
   duration: DurationInfo;
   isEstimated?: boolean;
+  source?: 'google' | 'osm' | 'heuristic';
 }
 
 export interface OptimizationResult {
