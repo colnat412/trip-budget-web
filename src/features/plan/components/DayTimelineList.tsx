@@ -14,12 +14,13 @@ export interface DayTimelineListProps {
   activities: PlanActivity[];
   currency: string;
   destinationContext?: string;
-  onAddActivity: () => void;
-  onEditActivity: (activity: PlanActivity) => void;
-  onDeleteActivity: (activity: PlanActivity) => void;
-  onToggleStatus: (activity: PlanActivity, nextStatus: ActivityStatus) => void;
+  onAddActivity?: () => void;
+  onEditActivity?: (activity: PlanActivity) => void;
+  onDeleteActivity?: (activity: PlanActivity) => void;
+  onToggleStatus?: (activity: PlanActivity, nextStatus: ActivityStatus) => void;
   onConvertToExpense?: (activity: PlanActivity) => void;
   onOpenOptimizeRoute?: () => void;
+  readOnly?: boolean;
 }
 
 const DayTimelineList = ({
@@ -31,6 +32,7 @@ const DayTimelineList = ({
   onDeleteActivity,
   onToggleStatus,
   onConvertToExpense,
+  readOnly = false,
 }: DayTimelineListProps) => {
   const locale = useLocale();
 
@@ -64,7 +66,9 @@ const DayTimelineList = ({
   }, [activities, locale, destinationContext]);
 
   if (activities.length === 0) {
-    return <PlanEmptyState onAddActivity={onAddActivity} />;
+    return (
+      <PlanEmptyState onAddActivity={onAddActivity} readOnly={readOnly} />
+    );
   }
 
   // const locActivities = activities.filter(
@@ -187,6 +191,7 @@ const DayTimelineList = ({
                 onDelete={onDeleteActivity}
                 onToggleStatus={onToggleStatus}
                 onConvertToExpense={onConvertToExpense}
+                readOnly={readOnly}
               />
 
               {nextActivity && hasLocationCurrent && hasLocationNext && (

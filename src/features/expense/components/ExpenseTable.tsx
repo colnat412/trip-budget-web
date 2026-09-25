@@ -36,6 +36,7 @@ export interface ExpenseTableProps {
   filters?: Record<string, ColumnFilterValue>;
   onFilterChange?: (filters: Record<string, ColumnFilterValue>) => void;
   tableMaxHeight?: number | string;
+  readOnly?: boolean;
 }
 
 const ExpenseTable = ({
@@ -53,6 +54,7 @@ const ExpenseTable = ({
   filters,
   onFilterChange,
   tableMaxHeight,
+  readOnly = false,
 }: ExpenseTableProps) => {
   const t = useTranslations('expense');
   const tTable = useTranslations('expense.table');
@@ -247,43 +249,47 @@ const ExpenseTable = ({
           </Typography>
         ),
       },
-      {
-        id: 'actions',
-        label: tTable('colActions'),
-        align: 'center',
-        width: 48,
-        renderCell: (expense) => {
-          const menuItems = [
-            ...(onViewDetail
-              ? [
+      ...(!readOnly
+        ? [
+            {
+              id: 'actions',
+              label: tTable('colActions'),
+              align: 'center' as const,
+              width: 48,
+              renderCell: (expense: Expense) => {
+                const menuItems = [
+                  ...(onViewDetail
+                    ? [
+                        {
+                          id: 'view',
+                          label: t('dialog.detailTitle'),
+                          icon: <VisibilityRoundedIcon fontSize="small" />,
+                          onClick: () => onViewDetail(expense),
+                        },
+                      ]
+                    : []),
                   {
-                    id: 'view',
-                    label: t('dialog.detailTitle'),
-                    icon: <VisibilityRoundedIcon fontSize="small" />,
-                    onClick: () => onViewDetail(expense),
+                    id: 'edit',
+                    label: t('row.edit'),
+                    icon: <EditRoundedIcon fontSize="small" />,
+                    onClick: () => onEdit(expense),
                   },
-                ]
-              : []),
-            {
-              id: 'edit',
-              label: t('row.edit'),
-              icon: <EditRoundedIcon fontSize="small" />,
-              onClick: () => onEdit(expense),
-            },
-            {
-              id: 'delete',
-              label: t('row.delete'),
-              icon: <DeleteOutlineRoundedIcon fontSize="small" />,
-              danger: true,
-              onClick: () => onDelete(expense),
-            },
-          ];
+                  {
+                    id: 'delete',
+                    label: t('row.delete'),
+                    icon: <DeleteOutlineRoundedIcon fontSize="small" />,
+                    danger: true,
+                    onClick: () => onDelete(expense),
+                  },
+                ];
 
-          return <AppActionMenu items={menuItems} />;
-        },
-      },
+                return <AppActionMenu items={menuItems} />;
+              },
+            },
+          ]
+        : []),
     ],
-    [t, tTable, onViewDetail, onEdit, onDelete],
+    [t, tTable, onViewDetail, onEdit, onDelete, readOnly],
   );
 
   return (

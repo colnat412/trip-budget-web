@@ -18,9 +18,43 @@ export interface Trip {
   endDate: string;
   baseCurrency: string;
   status: TripStatus;
+  visibility?: TripVisibility;
+  publicRole?: TripPublicRole;
+  shareToken?: string;
   version: number;
   createdAt: string;
   updatedAt: string;
+}
+
+export type TripVisibility = 'PRIVATE' | 'PUBLIC';
+export type TripPublicRole = 'VIEWER' | 'EDITOR';
+
+export interface TripShareSettings {
+  tripId: string;
+  visibility: TripVisibility;
+  publicRole: TripPublicRole;
+  shareToken: string;
+}
+
+export interface UpdateShareSettingsPayload {
+  visibility: TripVisibility;
+  publicRole: TripPublicRole;
+}
+
+import type { TripMemberStatus } from './member.types';
+
+export interface PublicTripData {
+  shareToken: string;
+  name: string;
+  destination: string;
+  description: string | null;
+  startDate: string;
+  endDate: string;
+  baseCurrency: string;
+  status: TripStatus;
+  visibility: TripVisibility;
+  publicRole: TripPublicRole;
+  currentUserStatus?: TripMemberStatus;
 }
 
 export interface Pagination {

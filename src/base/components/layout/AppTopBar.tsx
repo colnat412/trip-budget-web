@@ -6,15 +6,20 @@ import DocumentScannerRoundedIcon from '@mui/icons-material/DocumentScannerRound
 import FlightTakeoffRoundedIcon from '@mui/icons-material/FlightTakeoffRounded';
 import HandshakeRoundedIcon from '@mui/icons-material/HandshakeRounded';
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
-import PersonAddAltRoundedIcon from '@mui/icons-material/PersonAddAltRounded';
+import GroupRoundedIcon from '@mui/icons-material/GroupRounded';
 import SavingsRoundedIcon from '@mui/icons-material/SavingsRounded';
 import SmartToyRoundedIcon from '@mui/icons-material/SmartToyRounded';
-import { Box, Stack, Typography } from '@mui/material';
+import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
+import { Box, IconButton, Stack, Typography } from '@mui/material';
 import { useTranslations } from 'next-intl';
 import { usePathname } from 'next/navigation';
 
 import { AppButton } from '@/base/components/ui';
 import { useTripContext } from '@/features/trip/context/TripContext';
+
+export interface AppTopBarProps {
+  onToggleMobileMenu?: () => void;
+}
 
 const PAGE_MESSAGE_KEYS = {
   '/': 'overview',
@@ -55,7 +60,7 @@ const PAGE_ICONS: Record<string, React.ReactNode> = {
   ai: <SmartToyRoundedIcon sx={{ color: 'primary.main', fontSize: '20px' }} />,
 };
 
-const AppTopBar = () => {
+const AppTopBar = ({ onToggleMobileMenu }: AppTopBarProps) => {
   const pathname = usePathname();
   const t = useTranslations('topBar');
   const tPageTitle = useTranslations('sidebar');
@@ -91,6 +96,20 @@ const AppTopBar = () => {
         spacing={1}
         sx={{ alignItems: 'center', minWidth: 0 }}
       >
+        <IconButton
+          color="inherit"
+          aria-label="open navigation menu"
+          edge="start"
+          onClick={onToggleMobileMenu}
+          sx={{
+            display: { xs: 'flex', md: 'none' },
+            p: 0.75,
+            color: 'text.secondary',
+            '&:hover': { color: 'text.primary', bgcolor: 'action.hover' },
+          }}
+        >
+          <MenuRoundedIcon sx={{ fontSize: '22px' }} />
+        </IconButton>
         {pageIcon}
         <Typography
           component="h1"
@@ -123,7 +142,7 @@ const AppTopBar = () => {
         <AppButton
           size="small"
           intent="secondary"
-          startIcon={<PersonAddAltRoundedIcon />}
+          startIcon={<GroupRoundedIcon />}
           onClick={() => openMembers(true)}
           disabled={!activeTrip}
         >

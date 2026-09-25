@@ -1,8 +1,8 @@
 'use client';
 
-import { Box } from '@mui/material';
+import { Box, Drawer } from '@mui/material';
 import { usePathname } from 'next/navigation';
-import type { ReactNode } from 'react';
+import React, { useState, type ReactNode } from 'react';
 
 import AppSidebar from './AppSidebar';
 import AppTopBar from './AppTopBar';
@@ -20,6 +20,15 @@ export interface AppShellProps {
 const AppShell = ({ children, sidebarDisabledPaths = [] }: AppShellProps) => {
   const pathname = usePathname();
   const showSidebar = !sidebarDisabledPaths.includes(pathname);
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const handleDrawerToggle = () => {
+    setMobileOpen((prev) => !prev);
+  };
+
+  const handleDrawerClose = () => {
+    setMobileOpen(false);
+  };
 
   if (!showSidebar) {
     return <>{children}</>;
@@ -36,7 +45,38 @@ const AppShell = ({ children, sidebarDisabledPaths = [] }: AppShellProps) => {
             overflow: 'hidden',
           }}
         >
-          <AppSidebar />
+          <Box
+            sx={{
+              display: { xs: 'none', md: 'flex' },
+              flexShrink: 0,
+            }}
+          >
+            <AppSidebar />
+          </Box>
+
+          <Drawer
+            variant="temporary"
+            open={mobileOpen}
+            onClose={handleDrawerClose}
+            ModalProps={{
+              keepMounted: true,
+            }}
+            sx={{
+              display: { xs: 'block', md: 'none' },
+              '& .MuiDrawer-paper': {
+                boxSizing: 'border-box',
+                width: 250,
+                borderRight: 1,
+                borderColor: 'divider',
+              },
+            }}
+          >
+            <AppSidebar
+              onClose={handleDrawerClose}
+              sx={{ width: '100%', borderRight: 0 }}
+            />
+          </Drawer>
+
           <Box
             sx={{
               minWidth: 0,
@@ -47,7 +87,7 @@ const AppShell = ({ children, sidebarDisabledPaths = [] }: AppShellProps) => {
               overflow: 'hidden',
             }}
           >
-            <AppTopBar />
+            <AppTopBar onToggleMobileMenu={handleDrawerToggle} />
             <Box
               component="main"
               sx={{

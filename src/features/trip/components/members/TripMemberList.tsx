@@ -4,27 +4,31 @@ import { Box, Skeleton, Stack, Typography } from '@mui/material';
 import { useTranslations } from 'next-intl';
 import PeopleOutlineRoundedIcon from '@mui/icons-material/PeopleOutlineRounded';
 
-import type { TripMember } from '../../types/member.types';
+import type { TripMember, TripMemberRole } from '../../types/member.types';
 import TripMemberRow from './TripMemberRow';
 
 interface TripMemberListProps {
   members: TripMember[];
   isLoading: boolean;
   isCurrentUserOwner: boolean;
+  currentUserRole?: TripMemberRole;
   currentUserId?: string | number;
   onEditRole: (member: TripMember) => void;
   onRemove: (member: TripMember) => void;
   onLeave: (member: TripMember) => void;
+  onAccept?: (member: TripMember) => void;
 }
 
 const TripMemberList = ({
   members,
   isLoading,
   isCurrentUserOwner,
+  currentUserRole,
   currentUserId,
   onEditRole,
   onRemove,
   onLeave,
+  onAccept,
 }: TripMemberListProps) => {
   const t = useTranslations('members');
 
@@ -100,10 +104,12 @@ const TripMemberList = ({
           key={member.id}
           member={member}
           isCurrentUserOwner={isCurrentUserOwner}
+          currentUserRole={currentUserRole}
           currentUserId={currentUserId}
           onEditRole={onEditRole}
           onRemove={onRemove}
           onLeave={onLeave}
+          onAccept={onAccept}
         />
       ))}
     </Stack>

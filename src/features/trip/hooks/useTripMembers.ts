@@ -134,3 +134,30 @@ export function useLeaveTrip({ tripId, options }: UseLeaveTripParams) {
     leaveTripAsync: mutation.mutateAsync,
   };
 }
+
+export interface UseAcceptMemberParams {
+  tripId: number | string;
+  memberId: number | string;
+  options?: MutationCallbacks<ApiResponse<TripMember>, Record<string, never>>;
+}
+
+export function useAcceptMember({
+  tripId,
+  memberId,
+  options,
+}: UseAcceptMemberParams) {
+  const mutation = useMutationPut<
+    ApiResponse<TripMember>,
+    Record<string, never>
+  >({
+    mutationKey: ['trip-members', 'accept', tripId, memberId],
+    endPoint: `/trip/${tripId}/members/${memberId}/accept`,
+    options,
+  });
+
+  return {
+    ...mutation,
+    acceptMember: mutation.mutate,
+    acceptMemberAsync: mutation.mutateAsync,
+  };
+}

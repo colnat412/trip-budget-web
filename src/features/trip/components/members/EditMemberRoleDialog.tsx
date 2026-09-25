@@ -4,8 +4,8 @@ import { useState } from 'react';
 import { Stack, Typography, type SelectChangeEvent } from '@mui/material';
 import { useTranslations } from 'next-intl';
 import GroupRoundedIcon from '@mui/icons-material/GroupRounded';
-import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import VisibilityRoundedIcon from '@mui/icons-material/VisibilityRounded';
+import SecurityRoundedIcon from '@mui/icons-material/SecurityRounded';
 
 import AppDialog from '@/base/components/ui/AppDialog';
 import AppSelect, {
@@ -18,6 +18,7 @@ interface EditMemberRoleDialogProps {
   open: boolean;
   onClose: () => void;
   member: TripMember | null;
+  currentUserRole?: TripMemberRole;
   onSubmit: (role: TripMemberRole) => void;
   isSubmitting: boolean;
 }
@@ -26,22 +27,33 @@ const EditMemberRoleDialog = ({
   open,
   onClose,
   member,
+  currentUserRole = 'OWNER',
   onSubmit,
   isSubmitting,
 }: EditMemberRoleDialogProps) => {
   const t = useTranslations('members');
   const [selectedRole, setSelectedRole] = useState<TripMemberRole>(
-    member?.role === 'OWNER' ? 'EDITOR' : (member?.role ?? 'MEMBER'),
+    member?.role === 'OWNER' ? 'VICE' : (member?.role ?? 'MEMBER'),
   );
 
   if (!member) return null;
 
+  const isOwner = currentUserRole === 'OWNER';
+
   const roleOptions: AppSelectOption[] = [
-    {
-      value: 'EDITOR',
-      label: t('roles.EDITOR'),
-      icon: <EditRoundedIcon sx={{ fontSize: '18px', color: 'info.main' }} />,
-    },
+    ...(isOwner
+      ? [
+          {
+            value: 'VICE',
+            label: t('roles.VICE'),
+            icon: (
+              <SecurityRoundedIcon
+                sx={{ fontSize: '18px', color: 'secondary.main' }}
+              />
+            ),
+          },
+        ]
+      : []),
     {
       value: 'MEMBER',
       label: t('roles.MEMBER'),

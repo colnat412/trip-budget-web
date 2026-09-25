@@ -20,6 +20,7 @@ import {
   type TableSortState,
 } from '@/base/components/ui';
 import { formatDateRange } from '@/base/utils';
+import { useUserContext } from '@/features/user/context/UserContext';
 import TripStatusChip from './TripStatusChip';
 import type { Trip } from '../../types';
 
@@ -56,6 +57,7 @@ const TripTable = ({
 }: TripTableProps) => {
   const t = useTranslations('myTrips');
   const tTrip = useTranslations('trip');
+  const { user } = useUserContext();
 
   const columns: AppTableColumn<Trip>[] = useMemo(
     () => [
@@ -199,6 +201,9 @@ const TripTable = ({
         align: 'right',
         renderCell: (trip) => {
           const isSelected = String(trip.id) === String(activeTripId);
+          const isOwner =
+            user?.id != null && String(trip.ownerId) === String(user.id);
+
           const actionMenuItems = [
             {
               id: 'select',
@@ -206,19 +211,27 @@ const TripTable = ({
               icon: <CheckCircleOutlineRoundedIcon fontSize="small" />,
               onClick: () => onSelectTrip(trip),
             },
-            {
-              id: 'edit',
-              label: t('edit'),
-              icon: <EditRoundedIcon fontSize="small" />,
-              onClick: () => onEditTrip?.(trip),
-            },
-            {
-              id: 'delete',
-              label: t('delete'),
-              icon: <DeleteOutlineRoundedIcon fontSize="small" />,
-              danger: true,
-              onClick: () => onDeleteTrip?.(trip),
-            },
+            ...(isOwner && onEditTrip
+              ? [
+                  {
+                    id: 'edit',
+                    label: t('edit'),
+                    icon: <EditRoundedIcon fontSize="small" />,
+                    onClick: () => onEditTrip(trip),
+                  },
+                ]
+              : []),
+            ...(isOwner && onDeleteTrip
+              ? [
+                  {
+                    id: 'delete',
+                    label: t('delete'),
+                    icon: <DeleteOutlineRoundedIcon fontSize="small" />,
+                    danger: true,
+                    onClick: () => onDeleteTrip(trip),
+                  },
+                ]
+              : []),
           ];
 
           return (
@@ -255,7 +268,7 @@ const TripTable = ({
         },
       },
     ],
-    [activeTripId, onSelectTrip, onEditTrip, onDeleteTrip, t, tTrip],
+    [activeTripId, onSelectTrip, onEditTrip, onDeleteTrip, t, tTrip, user],
   );
 
   return (

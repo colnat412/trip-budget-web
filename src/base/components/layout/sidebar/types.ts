@@ -39,10 +39,14 @@ export interface SidebarUser {
   avatarUrl?: string | null;
 }
 
+import type { SxProps, Theme } from '@mui/material';
+
 export interface AppSidebarProps {
   activeMenuId?: string;
   menuItems?: SidebarMenuItem[];
   trip?: SidebarTrip;
   currentUser?: Partial<SidebarUser>;
   onMenuChange?: (menuId: string) => void;
+  onClose?: () => void;
+  sx?: SxProps<Theme>;
 }

@@ -11,6 +11,7 @@ import { useTranslations } from 'next-intl';
 
 import { AppActionMenu, AppButton } from '@/base/components/ui';
 import { formatDateRange } from '@/base/utils';
+import { useUserContext } from '@/features/user/context/UserContext';
 import TripStatusChip from './TripStatusChip';
 import type { Trip } from '../../types';
 
@@ -30,7 +31,9 @@ const TripTableRow = ({
   onDeleteTrip,
 }: TripTableRowProps) => {
   const t = useTranslations('myTrips');
+  const { user } = useUserContext();
   const dateRangeStr = formatDateRange(trip.startDate, trip.endDate);
+  const isOwner = user?.id != null && String(trip.ownerId) === String(user.id);
 
   const actionMenuItems = [
     {
@@ -39,19 +42,27 @@ const TripTableRow = ({
       icon: <CheckCircleOutlineRoundedIcon fontSize="small" />,
       onClick: () => onSelectTrip(trip),
     },
-    {
-      id: 'edit',
-      label: t('edit'),
-      icon: <EditRoundedIcon fontSize="small" />,
-      onClick: () => onEditTrip?.(trip),
-    },
-    {
-      id: 'delete',
-      label: t('delete'),
-      icon: <DeleteOutlineRoundedIcon fontSize="small" />,
-      danger: true,
-      onClick: () => onDeleteTrip?.(trip),
-    },
+    ...(isOwner && onEditTrip
+      ? [
+          {
+            id: 'edit',
+            label: t('edit'),
+            icon: <EditRoundedIcon fontSize="small" />,
+            onClick: () => onEditTrip(trip),
+          },
+        ]
+      : []),
+    ...(isOwner && onDeleteTrip
+      ? [
+          {
+            id: 'delete',
+            label: t('delete'),
+            icon: <DeleteOutlineRoundedIcon fontSize="small" />,
+            danger: true,
+            onClick: () => onDeleteTrip(trip),
+          },
+        ]
+      : []),
   ];
 
   return (

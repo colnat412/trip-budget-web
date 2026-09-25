@@ -9,10 +9,14 @@ import { useTranslations } from 'next-intl';
 import { AppButton } from '@/base/components/ui';
 
 export interface PlanEmptyStateProps {
-  onAddActivity: () => void;
+  onAddActivity?: () => void;
+  readOnly?: boolean;
 }
 
-const PlanEmptyState = ({ onAddActivity }: PlanEmptyStateProps) => {
+const PlanEmptyState = ({
+  onAddActivity,
+  readOnly = false,
+}: PlanEmptyStateProps) => {
   const t = useTranslations('plan');
 
   return (
@@ -68,14 +72,16 @@ const PlanEmptyState = ({ onAddActivity }: PlanEmptyStateProps) => {
         </Typography>
       </Box>
 
-      <AppButton
-        intent="primary"
-        size="medium"
-        startIcon={<AddRoundedIcon />}
-        onClick={onAddActivity}
-      >
-        {t('addFirstActivity')}
-      </AppButton>
+      {!readOnly && onAddActivity && (
+        <AppButton
+          intent="primary"
+          size="medium"
+          startIcon={<AddRoundedIcon />}
+          onClick={onAddActivity}
+        >
+          {t('addFirstActivity')}
+        </AppButton>
+      )}
     </Box>
   );
 };

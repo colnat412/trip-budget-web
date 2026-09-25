@@ -8,7 +8,7 @@
   },
   "topBar": {
     "addExpense": "Thêm khoản chi",
-    "inviteMember": "Mời thành viên"
+    "inviteMember": "Thành viên"
   },
   "tripFeature": {
     "description": "Trang đã được kết nối route và đang chờ phát triển giao diện nghiệp vụ.",
@@ -121,7 +121,48 @@
     "archived": "Lưu trữ",
     "cancelled": "Đã hủy",
     "statusLabel": "Trạng thái",
-    "changeStatus": "Đổi trạng thái"
+    "changeStatus": "Đổi trạng thái",
+    "share": {
+      "dialogTitle": "Chia sẻ chuyến đi",
+      "dialogSubtitle": "Quản lý quyền truy cập và liên kết chia sẻ cho \"{name}\"",
+      "accessLevelLabel": "Quyền truy cập liên kết",
+      "privateTitle": "Riêng tư (Chỉ thành viên)",
+      "privateDesc": "Chỉ những thành viên trong chuyến đi mới có thể xem qua liên kết.",
+      "publicTitle": "Công khai (Bất kỳ ai có liên kết)",
+      "publicDesc": "Bất kỳ ai có liên kết đều có thể truy cập mà không cần được mời trước.",
+      "publicRoleLabel": "Vai trò của người có liên kết",
+      "viewerDesc": "Chỉ xem lịch trình và danh sách hoạt động (Chỉ đọc).",
+      "editorDesc": "Có thể chỉnh sửa và thêm hoạt động vào lịch trình.",
+      "roleViewer": "Người xem",
+      "roleEditor": "Người chỉnh sửa",
+      "shareLinkTitle": "Liên kết chia sẻ",
+      "copyBtn": "Sao chép",
+      "copiedBtn": "Đã chép",
+      "regenerateBtn": "Tạo lại",
+      "copyTooltip": "Sao chép liên kết",
+      "copiedTooltip": "Đã sao chép!",
+      "regenerateTooltip": "Tạo liên kết mới (vô hiệu hóa liên kết cũ)",
+      "confirmRegenerate": "Bạn có chắc chắn muốn tạo liên kết mới? Những người đang giữ liên kết cũ sẽ không thể truy cập được nữa.",
+      "privateLinkNotice": "Liên kết này yêu cầu người xem phải đăng nhập bằng tài khoản thành viên trong chuyến đi.",
+      "publicLinkNotice": "Bất kỳ ai có liên kết này đều có thể mở xem trực tiếp mà không cần tài khoản.",
+      "cancel": "Hủy",
+      "saveChanges": "Lưu thay đổi",
+      "publicBanner": "Chuyến đi công khai: {name}",
+      "joinTripBtn": "Tham gia chuyến đi",
+      "enterTripBtn": "Vào chuyến đi",
+      "joinPendingBtn": "Đang chờ chủ phòng duyệt",
+      "joinPendingNotice": "Yêu cầu tham gia chuyến đi của bạn đang chờ chủ phòng duyệt.",
+      "joinRequestedSuccess": "Đã gửi yêu cầu tham gia! Vui lòng chờ chủ phòng phê duyệt để vào chuyến đi.",
+      "joinError": "Không thể gửi yêu cầu tham gia. Vui lòng thử lại.",
+      "estimatedBudget": "Dự tính",
+      "privateErrorTitle": "Chuyến đi này ở chế độ Riêng tư",
+      "privateErrorDesc": "Chỉ những thành viên được mời trong chuyến đi mới có thể xem. Vui lòng đăng nhập bằng tài khoản thành viên.",
+      "notFoundErrorTitle": "Không tìm thấy chuyến đi",
+      "notFoundErrorDesc": "Liên kết chia sẻ không tồn tại hoặc đã được tạo mới bởi chủ chuyến đi.",
+      "loginBtn": "Đăng nhập",
+      "homeBtn": "Về trang chủ",
+      "noActivitiesNotice": "Chuyến đi này chưa có hoạt động nào trong lịch trình."
+    }
   },
   "myTrips": {
     "title": "Chuyến đi của tôi",
@@ -350,23 +391,28 @@
     "cancel": "Hủy",
     "roles": {
       "OWNER": "Chủ chuyến đi",
+      "VICE": "Phó trip",
       "EDITOR": "Người chỉnh sửa",
       "MEMBER": "Thành viên",
       "VIEWER": "Người xem"
     },
     "roleDescriptions": {
       "OWNER": "Toàn quyền quản lý chuyến đi, mời và phân quyền thành viên.",
+      "VICE": "Quản trị viên phụ: duyệt thành viên, thiết lập ngân sách và lịch trình.",
       "EDITOR": "Được thêm, sửa, xóa các khoản chi tiêu và hạn mức.",
-      "MEMBER": "Được xem chi tiêu và tham gia vào các khoản chia tiền.",
-      "VIEWER": "Chỉ có quyền xem thông tin chuyến đi và chi phí."
+      "MEMBER": "Được tạo khoản chi, đóng góp vào lịch trình và tham gia chia tiền.",
+      "VIEWER": "Chỉ có quyền xem thông tin chuyến đi và chi phí (Chỉ đọc)."
     },
     "statuses": {
       "ACTIVE": "Đang tham gia",
-      "INVITED": "Đã gửi lời mời",
+      "INVITED": "Chờ chủ phòng duyệt",
       "LEFT": "Đã rời nhóm",
       "REMOVED": "Đã bị xóa"
     },
     "actions": {
+      "acceptBtn": "Duyệt",
+      "acceptMember": "Duyệt tham gia",
+      "rejectMember": "Từ chối",
       "changeRole": "Đổi vai trò",
       "removeMember": "Xóa khỏi nhóm",
       "leaveTrip": "Rời chuyến đi",
@@ -385,7 +431,9 @@
       "removeSuccess": "Đã xóa thành viên khỏi chuyến đi.",
       "removeError": "Không thể xóa thành viên. Vui lòng thử lại.",
       "leaveSuccess": "Bạn đã rời chuyến đi thành công.",
-      "leaveError": "Không thể rời chuyến đi. Vui lòng thử lại."
+      "leaveError": "Không thể rời chuyến đi. Vui lòng thử lại.",
+      "acceptSuccess": "Đã phê duyệt thành viên vào chuyến đi thành công!",
+      "acceptError": "Không thể phê duyệt thành viên. Vui lòng thử lại."
     },
     "empty": {
       "title": "Chưa có thành viên nào",
@@ -483,6 +531,15 @@
     "noActiveTrip": "Vui lòng chọn một chuyến đi để xem và lập kế hoạch.",
     "addActivity": "Thêm hoạt động",
     "checklistBtn": "Chuẩn bị hành lý",
+    "shareBtn": "Chia sẻ",
+    "activityLogBtn": "Lịch sử thay đổi",
+    "activityLog": {
+      "title": "Lịch sử thay đổi lịch trình",
+      "subtitle": "Nhật ký ghi lại các thao tác tạo, chỉnh sửa hoặc xóa hoạt động của các thành viên",
+      "close": "Đóng",
+      "emptyTitle": "Chưa có thay đổi nào",
+      "emptyDesc": "Mọi thao tác tạo, chỉnh sửa hoặc xóa hoạt động sẽ được ghi lại tại đây."
+    },
     "totalDays": "Số ngày",
     "totalActivities": "Hoạt động",
     "completedActivities": "Đã hoàn thành",

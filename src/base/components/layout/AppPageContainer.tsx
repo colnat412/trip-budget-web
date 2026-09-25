@@ -20,10 +20,10 @@ const AppPageContainer = ({
         width: '100%',
         minHeight: '100%',
         bgcolor: 'action.hover',
-        p: { xs: 2, md: 3 },
+        p: { xs: 1.5, sm: 2, md: 3 },
         display: 'flex',
         flexDirection: 'column',
-        gap: spacing,
+        gap: { xs: 2, sm: spacing },
         ...sx,
       }}
     >

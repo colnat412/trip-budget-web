@@ -30,7 +30,7 @@ const AddActivityDialog = ({
       open={open}
       onClose={onClose}
       title={t('addTitle')}
-      icon={<AddCircleOutlineRoundedIcon color="primary" />}
+      icon={<AddCircleOutlineRoundedIcon />}
       maxWidth="sm"
     >
       <AddActivityForm

@@ -23,10 +23,11 @@ import type { ActivityStatus, PlanActivity } from '../types';
 export interface ActivityTimelineCardProps {
   activity: PlanActivity;
   currency: string;
-  onEdit: (activity: PlanActivity) => void;
-  onDelete: (activity: PlanActivity) => void;
-  onToggleStatus: (activity: PlanActivity, nextStatus: ActivityStatus) => void;
+  onEdit?: (activity: PlanActivity) => void;
+  onDelete?: (activity: PlanActivity) => void;
+  onToggleStatus?: (activity: PlanActivity, nextStatus: ActivityStatus) => void;
   onConvertToExpense?: (activity: PlanActivity) => void;
+  readOnly?: boolean;
 }
 
 const ActivityTimelineCard = ({
@@ -36,6 +37,7 @@ const ActivityTimelineCard = ({
   onDelete,
   onToggleStatus,
   onConvertToExpense,
+  readOnly = false,
 }: ActivityTimelineCardProps) => {
   const t = useTranslations('plan');
   const tStatus = useTranslations('plan.statuses');
@@ -50,42 +52,61 @@ const ActivityTimelineCard = ({
         ? activity.startTime.slice(0, 5)
         : null;
 
-  const menuItems: AppActionMenuItem[] = [
-    {
-      id: 'toggle',
-      label: isCompleted ? tDialog('markPlanned') : tDialog('markCompleted'),
-      icon: isCompleted ? (
-        <RadioButtonUncheckedRoundedIcon fontSize="small" />
-      ) : (
-        <CheckCircleRoundedIcon fontSize="small" />
-      ),
-      onClick: () =>
-        onToggleStatus(activity, isCompleted ? 'PLANNED' : 'COMPLETED'),
-    },
-    ...(onConvertToExpense && !activity.expenseId
-      ? [
-          {
-            id: 'convert',
-            label: tDialog('convertToExpense'),
-            icon: <ReceiptLongRoundedIcon fontSize="small" />,
-            onClick: () => onConvertToExpense(activity),
-          },
-        ]
-      : []),
-    {
-      id: 'edit',
-      label: tDialog('editTitle'),
-      icon: <EditRoundedIcon fontSize="small" />,
-      onClick: () => onEdit(activity),
-    },
-    {
-      id: 'delete',
-      label: tDialog('confirmDelete'),
-      icon: <DeleteOutlineRoundedIcon fontSize="small" />,
-      danger: true,
-      onClick: () => onDelete(activity),
-    },
-  ];
+  const menuItems: AppActionMenuItem[] = readOnly
+    ? []
+    : [
+        ...(onToggleStatus
+          ? [
+              {
+                id: 'toggle',
+                label: isCompleted
+                  ? tDialog('markPlanned')
+                  : tDialog('markCompleted'),
+                icon: isCompleted ? (
+                  <RadioButtonUncheckedRoundedIcon fontSize="small" />
+                ) : (
+                  <CheckCircleRoundedIcon fontSize="small" />
+                ),
+                onClick: () =>
+                  onToggleStatus(
+                    activity,
+                    isCompleted ? 'PLANNED' : 'COMPLETED',
+                  ),
+              },
+            ]
+          : []),
+        ...(onConvertToExpense && !activity.expenseId
+          ? [
+              {
+                id: 'convert',
+                label: tDialog('convertToExpense'),
+                icon: <ReceiptLongRoundedIcon fontSize="small" />,
+                onClick: () => onConvertToExpense(activity),
+              },
+            ]
+          : []),
+        ...(onEdit
+          ? [
+              {
+                id: 'edit',
+                label: tDialog('editTitle'),
+                icon: <EditRoundedIcon fontSize="small" />,
+                onClick: () => onEdit(activity),
+              },
+            ]
+          : []),
+        ...(onDelete
+          ? [
+              {
+                id: 'delete',
+                label: tDialog('confirmDelete'),
+                icon: <DeleteOutlineRoundedIcon fontSize="small" />,
+                danger: true,
+                onClick: () => onDelete(activity),
+              },
+            ]
+          : []),
+      ];
 
   return (
     <Box
@@ -97,7 +118,7 @@ const ActivityTimelineCard = ({
     >
       <Box
         sx={{
-          width: { xs: '95px', sm: '110px' },
+          width: { xs: '72px', sm: '95px', md: '110px' },
           flexShrink: 0,
           display: 'flex',
           flexDirection: 'column',
@@ -109,13 +130,44 @@ const ActivityTimelineCard = ({
           <Typography
             sx={{
               fontFamily: 'var(--font-mono)',
-              fontSize: { xs: '12px', sm: '13px' },
+              fontSize: { xs: '11px', sm: '13px' },
               fontWeight: 700,
               color: isCompleted ? 'text.secondary' : 'primary.main',
-              whiteSpace: 'nowrap',
+              textAlign: 'right',
+              lineHeight: 1.25,
             }}
           >
-            {timeDisplay}
+            {activity.startTime && activity.endTime ? (
+              <>
+                <Box
+                  component="span"
+                  sx={{ display: { xs: 'block', sm: 'inline' } }}
+                >
+                  {activity.startTime.slice(0, 5)}
+                </Box>
+                <Box
+                  component="span"
+                  sx={{
+                    display: { xs: 'none', sm: 'inline' },
+                    mx: 0.5,
+                  }}
+                >
+                  –
+                </Box>
+                <Box
+                  component="span"
+                  sx={{
+                    display: { xs: 'block', sm: 'inline' },
+                    color: 'text.secondary',
+                    fontSize: { xs: '10px', sm: 'inherit' },
+                  }}
+                >
+                  {activity.endTime.slice(0, 5)}
+                </Box>
+              </>
+            ) : (
+              timeDisplay
+            )}
           </Typography>
         ) : (
           <AccessTimeRoundedIcon
@@ -166,7 +218,7 @@ const ActivityTimelineCard = ({
         sx={{
           flexGrow: 1,
           minWidth: 0,
-          p: { xs: 2, md: 3 },
+          p: { xs: 1.5, sm: 2, md: 3 },
           borderRadius: '16px',
           bgcolor: 'background.paper',
           border: 1,
@@ -331,7 +383,9 @@ const ActivityTimelineCard = ({
             )}
           </Box>
 
-          <AppActionMenu items={menuItems} size="small" />
+          {!readOnly && menuItems.length > 0 && (
+            <AppActionMenu items={menuItems} size="small" />
+          )}
         </Box>
       </Box>
     </Box>

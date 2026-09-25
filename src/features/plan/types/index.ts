@@ -172,3 +172,23 @@ export interface OptimizationResult {
   isImprovement: boolean;
   segments: RouteSegment[];
 }
+
+export type ActivityLogAction =
+  | 'CREATED'
+  | 'UPDATED'
+  | 'STATUS_CHANGED'
+  | 'DELETED'
+  | 'REORDERED';
+
+export interface PlanActivityLog {
+  id: string;
+  activityId: string | null;
+  activityTitle: string;
+  action: ActivityLogAction;
+  description: string;
+  userId: string;
+  userName: string;
+  userAvatar: string | null;
+  userEmail: string | null;
+  createdAt: string;
+}

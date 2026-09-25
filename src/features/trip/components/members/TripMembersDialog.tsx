@@ -10,6 +10,7 @@ import AppDialog from '@/base/components/ui/AppDialog';
 import AppButton from '@/base/components/ui/AppButton';
 import AppConfirmDialog from '@/base/components/ui/AppConfirmDialog';
 import AppToast, { type AppToastSeverity } from '@/base/components/ui/AppToast';
+import { axiosClient } from '@/base/api';
 import { useUserContext } from '@/features/user/context/UserContext';
 import useCurrentUser from '@/features/user/hooks/useCurrentUser';
 import type { UserProfile } from '@/features/auth/types';
@@ -95,9 +96,14 @@ const TripMembersDialog = ({
     (!currentMember && members.length === 1 && members[0]?.role === 'OWNER') ||
     (!currentMember && !isLoading);
 
+  const currentUserRole: TripMemberRole = isCurrentUserOwner
+    ? 'OWNER'
+    : (currentMember?.role ?? 'MEMBER');
+
   const canManageMembers =
     isCurrentUserOwner ||
-    currentMember?.role === 'EDITOR' ||
+    currentUserRole === 'VICE' ||
+    currentUserRole === 'EDITOR' ||
     (!currentMember && !isLoading);
 
   const { inviteMember, isPending: isInviting } = useInviteMember({
@@ -194,6 +200,25 @@ const TripMembersDialog = ({
     inviteMember(payload);
   };
 
+  const handleAcceptMember = async (member: TripMember) => {
+    try {
+      await axiosClient.put(`/trip/${tripId}/members/${member.id}/accept`);
+      setToast({
+        open: true,
+        message: t('toasts.acceptSuccess'),
+        severity: 'success',
+      });
+      refetch();
+    } catch (err: unknown) {
+      const apiErr = err as { response?: { data?: { message?: string } } };
+      setToast({
+        open: true,
+        message: apiErr.response?.data?.message || t('toasts.acceptError'),
+        severity: 'error',
+      });
+    }
+  };
+
   const handleUpdateRoleSubmit = (role: TripMemberRole) => {
     updateRole({ role });
   };
@@ -253,6 +278,7 @@ const TripMembersDialog = ({
               onSubmit={handleInviteSubmit}
               onCancel={() => setShowInviteForm(false)}
               isSubmitting={isInviting}
+              canAssignVice={isCurrentUserOwner}
             />
           )}
 
@@ -260,10 +286,12 @@ const TripMembersDialog = ({
             members={members}
             isLoading={isLoading}
             isCurrentUserOwner={isCurrentUserOwner}
+            currentUserRole={currentUserRole}
             currentUserId={currentUserId}
             onEditRole={(m) => setEditingMember(m)}
             onRemove={(m) => setRemovingMember(m)}
             onLeave={() => setIsLeaving(true)}
+            onAccept={handleAcceptMember}
           />
         </Stack>
       </AppDialog>
@@ -273,6 +301,7 @@ const TripMembersDialog = ({
         open={Boolean(editingMember)}
         onClose={() => setEditingMember(null)}
         member={editingMember}
+        currentUserRole={currentUserRole}
         onSubmit={handleUpdateRoleSubmit}
         isSubmitting={isUpdatingRole}
       />

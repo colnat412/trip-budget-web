@@ -19,7 +19,7 @@ const MyTripsHeader = ({ totalTrips, onCreateTrip }: MyTripsHeaderProps) => {
     <AppPageHeader
       icon={<FlightTakeoffRoundedIcon />}
       title={t('title')}
-      badge={totalTrips}
+      badge={totalTrips > 0 ? totalTrips : undefined}
       subtitle={t('description')}
       actions={
         <AppButton

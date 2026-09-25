@@ -18,6 +18,7 @@ export interface ExpenseDetailDialogProps {
   expense: Expense | null;
   onClose: () => void;
   onEdit?: (expense: Expense) => void;
+  readOnly?: boolean;
 }
 
 const ExpenseDetailDialog = ({
@@ -25,6 +26,7 @@ const ExpenseDetailDialog = ({
   expense,
   onClose,
   onEdit,
+  readOnly = false,
 }: ExpenseDetailDialogProps) => {
   const t = useTranslations('expense');
 
@@ -53,7 +55,7 @@ const ExpenseDetailDialog = ({
           <AppButton intent="secondary" onClick={onClose}>
             {t('dialog.close')}
           </AppButton>
-          {onEdit && (
+          {onEdit && !readOnly && (
             <AppButton
               intent="primary"
               startIcon={<EditRoundedIcon fontSize="small" />}

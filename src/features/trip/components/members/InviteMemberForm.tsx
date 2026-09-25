@@ -5,8 +5,8 @@ import { Box, Stack, Typography, type SelectChangeEvent } from '@mui/material';
 import { useTranslations } from 'next-intl';
 import PersonAddRoundedIcon from '@mui/icons-material/PersonAddRounded';
 import GroupRoundedIcon from '@mui/icons-material/GroupRounded';
-import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import VisibilityRoundedIcon from '@mui/icons-material/VisibilityRounded';
+import SecurityRoundedIcon from '@mui/icons-material/SecurityRounded';
 
 import AppTextField from '@/base/components/ui/AppTextField';
 import AppSelect, {
@@ -22,12 +22,14 @@ interface InviteMemberFormProps {
   onSubmit: (payload: InviteMemberPayload) => void;
   onCancel: () => void;
   isSubmitting: boolean;
+  canAssignVice?: boolean;
 }
 
 const InviteMemberForm = ({
   onSubmit,
   onCancel,
   isSubmitting,
+  canAssignVice = false,
 }: InviteMemberFormProps) => {
   const t = useTranslations('members');
 
@@ -36,17 +38,25 @@ const InviteMemberForm = ({
   const [error, setError] = useState('');
 
   const roleOptions: AppSelectOption[] = [
+    ...(canAssignVice
+      ? [
+          {
+            value: 'VICE',
+            label: t('roles.VICE'),
+            icon: (
+              <SecurityRoundedIcon
+                sx={{ fontSize: '18px', color: 'secondary.main' }}
+              />
+            ),
+          },
+        ]
+      : []),
     {
       value: 'MEMBER',
       label: t('roles.MEMBER'),
       icon: (
         <GroupRoundedIcon sx={{ fontSize: '18px', color: 'success.main' }} />
       ),
-    },
-    {
-      value: 'EDITOR',
-      label: t('roles.EDITOR'),
-      icon: <EditRoundedIcon sx={{ fontSize: '18px', color: 'info.main' }} />,
     },
     {
       value: 'VIEWER',

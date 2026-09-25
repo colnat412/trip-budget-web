@@ -48,7 +48,7 @@ const ActivityDistanceConnector = ({
     >
       <Box
         sx={{
-          width: { xs: '95px', sm: '110px' },
+          width: { xs: '72px', sm: '95px', md: '110px' },
           flexShrink: 0,
           display: 'flex',
           flexDirection: 'column',
@@ -61,7 +61,7 @@ const ActivityDistanceConnector = ({
             display: 'inline-flex',
             flexDirection: 'column',
             alignItems: 'flex-end',
-            px: 1,
+            px: { xs: 0.5, sm: 1 },
             py: 0.5,
             borderRadius: '10px',
             bgcolor:

@@ -27,6 +27,8 @@ const AppSidebar = ({
   menuItems = DEFAULT_SIDEBAR_MENU,
   currentUser: customUser,
   onMenuChange,
+  onClose,
+  sx,
 }: AppSidebarProps) => {
   const t = useTranslations('sidebar');
   const pathname = usePathname();
@@ -45,17 +47,24 @@ const AppSidebar = ({
   );
   const selectedMenuId = activeMenuId ?? routeMenuItem?.id ?? '';
 
+  const handleMenuChange = (id: string) => {
+    onMenuChange?.(id);
+    onClose?.();
+  };
+
   return (
     <Box
       component="aside"
       sx={{
         width: 240,
+        height: '100%',
         display: 'flex',
         flexDirection: 'column',
         bgcolor: 'background.paper',
         borderRight: 1,
         borderColor: 'divider',
         overflow: 'hidden',
+        ...sx,
       }}
     >
       <Box sx={{ p: 2 }}>
@@ -78,7 +87,7 @@ const AppSidebar = ({
         <SidebarMenu
           items={menuItems}
           selectedId={selectedMenuId}
-          onChange={onMenuChange}
+          onChange={handleMenuChange}
         />
       </Box>
 

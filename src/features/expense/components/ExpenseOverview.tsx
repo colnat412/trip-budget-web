@@ -18,6 +18,8 @@ import {
   type TableSortState,
 } from '@/base/components/ui';
 import { useTripContext } from '@/features/trip/context/TripContext';
+import { useUserContext } from '@/features/user/context/UserContext';
+import { useTripMembers } from '@/features/trip/hooks/useTripMembers';
 import useTripBudgetSummary from '../hooks/useTripBudgetSummary';
 import useTripExpenses from '../hooks/useTripExpenses';
 import {
@@ -46,6 +48,27 @@ const ExpenseOverview = () => {
   const t = useTranslations('expense');
   const { activeTrip } = useTripContext();
   const tripId = activeTrip?.id;
+
+  const { user } = useUserContext();
+  const { members } = useTripMembers({ tripId });
+
+  const currentUserId = user?.id !== undefined ? String(user.id) : undefined;
+  const currentUserEmail = user?.email?.toLowerCase().trim();
+
+  const currentMember = members.find((m) => {
+    if (currentUserId && String(m.userId) === currentUserId) return true;
+    if (currentUserEmail && m.email?.toLowerCase().trim() === currentUserEmail)
+      return true;
+    return false;
+  });
+
+  const isOwner =
+    currentMember?.role === 'OWNER' ||
+    (activeTrip?.ownerId !== undefined &&
+      currentUserId !== undefined &&
+      String(activeTrip.ownerId) === currentUserId);
+
+  const isViewer = !isOwner && currentMember?.role === 'VIEWER';
 
   const [page, setPage] = useState(0);
   const [sort, setSort] = useState<TableSortState | null>(null);
@@ -303,24 +326,26 @@ const ExpenseOverview = () => {
           </Stack>
         }
         actions={
-          <>
-            <AppButton
-              intent="secondary"
-              size="medium"
-              startIcon={<TuneRoundedIcon fontSize="small" />}
-              onClick={() => setSetBudgetOpen(true)}
-            >
-              {t('setBudget')}
-            </AppButton>
-            <AppButton
-              intent="primary"
-              size="medium"
-              startIcon={<AddRoundedIcon fontSize="small" />}
-              onClick={() => setAddOpen(true)}
-            >
-              {t('addExpense')}
-            </AppButton>
-          </>
+          !isViewer ? (
+            <>
+              <AppButton
+                intent="secondary"
+                size="medium"
+                startIcon={<TuneRoundedIcon fontSize="small" />}
+                onClick={() => setSetBudgetOpen(true)}
+              >
+                {t('setBudget')}
+              </AppButton>
+              <AppButton
+                intent="primary"
+                size="medium"
+                startIcon={<AddRoundedIcon fontSize="small" />}
+                onClick={() => setAddOpen(true)}
+              >
+                {t('addExpense')}
+              </AppButton>
+            </>
+          ) : null
         }
       />
 
@@ -338,7 +363,7 @@ const ExpenseOverview = () => {
         <BudgetMetricsCards
           summary={summary}
           currency={activeTrip.baseCurrency}
-          onOpenSetBudget={() => setSetBudgetOpen(true)}
+          onOpenSetBudget={!isViewer ? () => setSetBudgetOpen(true) : undefined}
         />
       </Box>
 
@@ -346,7 +371,7 @@ const ExpenseOverview = () => {
         <CategorySpendingList
           breakdown={summary.categoryBreakdown}
           currency={activeTrip.baseCurrency}
-          onOpenSetBudget={() => setSetBudgetOpen(true)}
+          onOpenSetBudget={!isViewer ? () => setSetBudgetOpen(true) : undefined}
         />
       )}
 
@@ -365,6 +390,7 @@ const ExpenseOverview = () => {
         onSortChange={handleSortChange}
         filters={filters}
         onFilterChange={handleFilterChange}
+        readOnly={isViewer}
       />
 
       <ExpenseDetailDialog
@@ -372,6 +398,7 @@ const ExpenseOverview = () => {
         expense={detailExpense}
         onClose={() => setDetailExpense(null)}
         onEdit={(expense) => setEditingExpense(expense)}
+        readOnly={isViewer}
       />
 
       <AddExpenseDialog

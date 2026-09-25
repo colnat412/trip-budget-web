@@ -4,6 +4,8 @@ import React from 'react';
 import { Box, Stack, Typography } from '@mui/material';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import ChecklistRoundedIcon from '@mui/icons-material/ChecklistRounded';
+import IosShareRoundedIcon from '@mui/icons-material/IosShareRounded';
+import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded';
 import { useTranslations } from 'next-intl';
 
 import { AppButton } from '@/base/components/ui';
@@ -17,8 +19,11 @@ export interface PlanHeaderProps {
   completedActivities: number;
   totalEstimatedCost: number;
   currency: string;
-  onAddActivity: () => void;
+  onAddActivity?: () => void;
   onOpenChecklist: () => void;
+  onOpenShare?: () => void;
+  onOpenActivityLogs?: () => void;
+  readOnly?: boolean;
 }
 
 const PlanHeader = ({
@@ -31,6 +36,9 @@ const PlanHeader = ({
   currency,
   onAddActivity,
   onOpenChecklist,
+  onOpenShare,
+  onOpenActivityLogs,
+  readOnly = false,
 }: PlanHeaderProps) => {
   const t = useTranslations('plan');
 
@@ -45,12 +53,14 @@ const PlanHeader = ({
         gap: 2,
       }}
     >
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+      <Box
+        sx={{ display: 'flex', flexDirection: 'column', gap: 0.5, minWidth: 0 }}
+      >
         <Typography
           component="h1"
           sx={{
             fontFamily: 'var(--font-display)',
-            fontSize: '28px',
+            fontSize: { xs: '22px', sm: '28px' },
             fontWeight: 800,
             color: 'text.primary',
             letterSpacing: '-0.5px',
@@ -66,7 +76,7 @@ const PlanHeader = ({
         >
           <Typography
             sx={{
-              fontSize: '14px',
+              fontSize: { xs: '13px', sm: '14px' },
               fontWeight: 600,
               color: 'primary.main',
             }}
@@ -74,11 +84,21 @@ const PlanHeader = ({
             {tripName}
           </Typography>
           {destination && (
-            <Typography sx={{ fontSize: '13px', color: 'text.secondary' }}>
+            <Typography
+              sx={{
+                fontSize: { xs: '12px', sm: '13px' },
+                color: 'text.secondary',
+              }}
+            >
               · {destination}
             </Typography>
           )}
-          <Typography sx={{ fontSize: '13px', color: 'text.secondary' }}>
+          <Typography
+            sx={{
+              fontSize: { xs: '12px', sm: '13px' },
+              color: 'text.secondary',
+            }}
+          >
             · {totalDays} {t('totalDays').toLowerCase()} · {totalActivities}{' '}
             {t('totalActivities').toLowerCase()} ({completedActivities}{' '}
             {t('completedActivities').toLowerCase()})
@@ -86,7 +106,7 @@ const PlanHeader = ({
           {totalEstimatedCost > 0 && (
             <Typography
               sx={{
-                fontSize: '13px',
+                fontSize: { xs: '12px', sm: '13px' },
                 fontWeight: 700,
                 color: 'success.main',
               }}
@@ -100,26 +120,58 @@ const PlanHeader = ({
 
       <Stack
         direction="row"
-        spacing={1.5}
-        sx={{ alignSelf: { xs: 'stretch', sm: 'auto' } }}
+        spacing={1}
+        sx={{
+          alignSelf: { xs: 'stretch', sm: 'auto' },
+          flexWrap: 'wrap',
+          gap: 1,
+        }}
       >
+        {onOpenActivityLogs && (
+          <AppButton
+            intent="secondary"
+            size="medium"
+            startIcon={<HistoryRoundedIcon />}
+            onClick={onOpenActivityLogs}
+            sx={{ flex: { xs: '1 1 auto', sm: 'none' } }}
+          >
+            {t('activityLogBtn')}
+          </AppButton>
+        )}
+
+        {!readOnly && onOpenShare && (
+          <AppButton
+            intent="secondary"
+            size="medium"
+            startIcon={<IosShareRoundedIcon />}
+            onClick={onOpenShare}
+            sx={{ flex: { xs: '1 1 auto', sm: 'none' } }}
+          >
+            {t('shareBtn')}
+          </AppButton>
+        )}
+
         <AppButton
           intent="secondary"
           size="medium"
           startIcon={<ChecklistRoundedIcon />}
           onClick={onOpenChecklist}
+          sx={{ flex: { xs: '1 1 auto', sm: 'none' } }}
         >
           {t('checklistBtn')}
         </AppButton>
 
-        <AppButton
-          intent="primary"
-          size="medium"
-          startIcon={<AddRoundedIcon />}
-          onClick={onAddActivity}
-        >
-          {t('addActivity')}
-        </AppButton>
+        {!readOnly && onAddActivity && (
+          <AppButton
+            intent="primary"
+            size="medium"
+            startIcon={<AddRoundedIcon />}
+            onClick={onAddActivity}
+            sx={{ flex: { xs: '1 1 100%', sm: 'none' } }}
+          >
+            {t('addActivity')}
+          </AppButton>
+        )}
       </Stack>
     </Box>
   );

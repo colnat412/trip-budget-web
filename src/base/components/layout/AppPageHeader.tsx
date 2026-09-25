@@ -8,6 +8,7 @@ import {
   type SxProps,
   type Theme,
 } from '@mui/material';
+import { alpha } from '@mui/material/styles';
 
 export interface AppPageHeaderProps {
   title: React.ReactNode;
@@ -81,19 +82,25 @@ const AppPageHeader = ({
             title
           )}
 
-          {badge &&
+          {badge !== undefined &&
+            badge !== null &&
+            badge !== '' &&
             (typeof badge === 'string' || typeof badge === 'number' ? (
               <Box
                 sx={{
                   px: 1,
-                  py: 0.25,
+                  py: 0.2,
                   borderRadius: '999px',
-                  bgcolor: 'background.paper',
+                  bgcolor: (theme) => alpha(theme.palette.primary.main, 0.08),
                   border: 1,
-                  borderColor: 'divider',
+                  borderColor: (theme) =>
+                    alpha(theme.palette.primary.main, 0.2),
                   fontSize: '12px',
                   fontWeight: 700,
                   color: 'primary.main',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  lineHeight: 1.2,
                 }}
               >
                 {badge}
@@ -120,6 +127,8 @@ const AppPageHeader = ({
           sx={{
             alignItems: 'center',
             flexShrink: 0,
+            flexWrap: 'wrap',
+            gap: 1,
             alignSelf: { xs: 'stretch', sm: 'auto' },
           }}
         >

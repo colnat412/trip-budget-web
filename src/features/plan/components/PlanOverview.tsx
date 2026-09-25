@@ -12,8 +12,11 @@ import {
   type AppToastSeverity,
 } from '@/base/components/ui';
 import { useTripContext } from '@/features/trip/context/TripContext';
+import { useUserContext } from '@/features/user/context/UserContext';
+import { useTripMembers } from '@/features/trip/hooks/useTripMembers';
 import AddExpenseDialog from '@/features/expense/components/AddExpenseDialog';
 import type { CreateExpensePayload } from '@/features/expense/types';
+import ShareTripDialog from '@/features/trip/components/ShareTripDialog';
 import useTripPlan from '../hooks/useTripPlan';
 import {
   useCreateActivity,
@@ -37,6 +40,7 @@ import EditActivityDialog from './EditActivityDialog';
 import OptimizeRouteDialog from './OptimizeRouteDialog';
 import PlanDayTabs from './PlanDayTabs';
 import PlanHeader from './PlanHeader';
+import ActivityLogDialog from './ActivityLogDialog';
 
 const PlanOverview = () => {
   const t = useTranslations('plan');
@@ -44,11 +48,33 @@ const PlanOverview = () => {
   const tripId = activeTrip?.id;
 
   const { plan: overview, isLoading, refetch } = useTripPlan({ tripId });
+  const { user } = useUserContext();
+  const { members } = useTripMembers({ tripId });
+
+  const currentUserId = user?.id !== undefined ? String(user.id) : undefined;
+  const currentUserEmail = user?.email?.toLowerCase().trim();
+
+  const currentMember = members.find((m) => {
+    if (currentUserId && String(m.userId) === currentUserId) return true;
+    if (currentUserEmail && m.email?.toLowerCase().trim() === currentUserEmail)
+      return true;
+    return false;
+  });
+
+  const isOwner =
+    currentMember?.role === 'OWNER' ||
+    (activeTrip?.ownerId !== undefined &&
+      currentUserId !== undefined &&
+      String(activeTrip.ownerId) === currentUserId);
+
+  const isViewer = !isOwner && currentMember?.role === 'VIEWER';
 
   const [selectedDayId, setSelectedDayId] = useState<string>('');
   const [addActivityOpen, setAddActivityOpen] = useState(false);
   const [checklistOpen, setChecklistOpen] = useState(false);
   const [optimizeDialogOpen, setOptimizeDialogOpen] = useState(false);
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
+  const [activityLogOpen, setActivityLogOpen] = useState(false);
   const [editingActivity, setEditingActivity] = useState<PlanActivity | null>(
     null,
   );
@@ -329,6 +355,9 @@ const PlanOverview = () => {
           currency={overview?.baseCurrency ?? activeTrip?.baseCurrency ?? 'VND'}
           onAddActivity={() => setAddActivityOpen(true)}
           onOpenChecklist={() => setChecklistOpen(true)}
+          onOpenShare={() => setShareDialogOpen(true)}
+          onOpenActivityLogs={() => setActivityLogOpen(true)}
+          readOnly={isViewer}
         />
       )}
 
@@ -375,6 +404,7 @@ const PlanOverview = () => {
           onToggleStatus={handleToggleActivityStatus}
           onConvertToExpense={handleConvertToExpense}
           onOpenOptimizeRoute={() => setOptimizeDialogOpen(true)}
+          readOnly={isViewer}
         />
       )}
 
@@ -421,6 +451,7 @@ const PlanOverview = () => {
         onToggle={handleToggleChecklist}
         onDelete={handleDeleteChecklist}
         isLoading={isCreatingChecklist}
+        readOnly={isViewer}
       />
 
       <OptimizeRouteDialog
@@ -454,6 +485,21 @@ const PlanOverview = () => {
           }}
         />
       )}
+
+      {tripId && (
+        <ShareTripDialog
+          open={shareDialogOpen}
+          onClose={() => setShareDialogOpen(false)}
+          tripId={tripId}
+          tripName={overview?.tripName ?? activeTrip?.name ?? ''}
+        />
+      )}
+
+      <ActivityLogDialog
+        open={activityLogOpen}
+        onClose={() => setActivityLogOpen(false)}
+        tripId={tripId ?? null}
+      />
 
       <AppToast
         open={toast.open}

@@ -21,6 +21,10 @@ const RoleBadge = ({ role }: RoleBadgeProps) => {
       color: 'warning' as const,
       icon: <SecurityRoundedIcon sx={{ fontSize: '14px' }} />,
     },
+    VICE: {
+      color: 'secondary' as const,
+      icon: <SecurityRoundedIcon sx={{ fontSize: '14px' }} />,
+    },
     EDITOR: {
       color: 'info' as const,
       icon: <EditRoundedIcon sx={{ fontSize: '14px' }} />,
@@ -44,7 +48,7 @@ const RoleBadge = ({ role }: RoleBadgeProps) => {
       icon={config.icon}
       label={t(role)}
       color={config.color}
-      variant={role === 'OWNER' ? 'filled' : 'outlined'}
+      variant={role === 'OWNER' || role === 'VICE' ? 'filled' : 'outlined'}
       sx={{
         fontWeight: 700,
         fontSize: '12px',

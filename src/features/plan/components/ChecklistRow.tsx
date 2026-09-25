@@ -14,6 +14,7 @@ export interface ChecklistRowProps {
   onToggle: (item: PlanChecklist) => void;
   onDelete: (item: PlanChecklist) => void;
   disabled?: boolean;
+  readOnly?: boolean;
 }
 
 const ChecklistRow = ({
@@ -21,6 +22,7 @@ const ChecklistRow = ({
   onToggle,
   onDelete,
   disabled = false,
+  readOnly = false,
 }: ChecklistRowProps) => {
   const tCat = useTranslations('plan.checklistCategories');
 
@@ -54,7 +56,7 @@ const ChecklistRow = ({
         <Checkbox
           checked={item.isCompleted}
           onChange={() => onToggle(item)}
-          disabled={disabled}
+          disabled={disabled || readOnly}
           icon={<RadioButtonUncheckedRoundedIcon fontSize="small" />}
           checkedIcon={
             <CheckCircleRoundedIcon fontSize="small" color="success" />
@@ -108,18 +110,20 @@ const ChecklistRow = ({
         )}
       </Box>
 
-      <IconButton
-        size="small"
-        onClick={() => onDelete(item)}
-        disabled={disabled}
-        sx={{
-          color: 'text.disabled',
-          p: 0.5,
-          '&:hover': { color: 'error.main' },
-        }}
-      >
-        <DeleteOutlineRoundedIcon fontSize="small" />
-      </IconButton>
+      {!readOnly && (
+        <IconButton
+          size="small"
+          onClick={() => onDelete(item)}
+          disabled={disabled}
+          sx={{
+            color: 'text.disabled',
+            p: 0.5,
+            '&:hover': { color: 'error.main' },
+          }}
+        >
+          <DeleteOutlineRoundedIcon fontSize="small" />
+        </IconButton>
+      )}
     </Box>
   );
 };

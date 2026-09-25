@@ -18,6 +18,7 @@ export interface ChecklistDialogProps {
   onToggle: (item: PlanChecklist) => void;
   onDelete: (item: PlanChecklist) => void;
   isLoading?: boolean;
+  readOnly?: boolean;
 }
 
 const ChecklistDialog = ({
@@ -28,6 +29,7 @@ const ChecklistDialog = ({
   onToggle,
   onDelete,
   isLoading = false,
+  readOnly = false,
 }: ChecklistDialogProps) => {
   const t = useTranslations('plan');
 
@@ -40,7 +42,7 @@ const ChecklistDialog = ({
       open={open}
       onClose={onClose}
       title={t('checklist.title')}
-      icon={<ChecklistRoundedIcon color="primary" />}
+      icon={<ChecklistRoundedIcon />}
       maxWidth="md"
     >
       <Stack spacing={2.5}>
@@ -79,7 +81,9 @@ const ChecklistDialog = ({
           <AppLinearProgress value={progressPercent} />
         </Box>
 
-        <AddChecklistForm onSubmit={onAdd} isLoading={isLoading} />
+        {!readOnly && (
+          <AddChecklistForm onSubmit={onAdd} isLoading={isLoading} />
+        )}
 
         <Box
           sx={{
@@ -115,6 +119,7 @@ const ChecklistDialog = ({
                   onToggle={onToggle}
                   onDelete={onDelete}
                   disabled={isLoading}
+                  readOnly={readOnly}
                 />
               ))}
             </Stack>
