@@ -1,8 +1,8 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import axios from 'axios';
 
-const CORE_SERVICE_URL =
-  process.env.CORE_SERVICE_URL || 'http://localhost:8081';
+const NEXT_PUBLIC_CORE_SERVICE_URL =
+  process.env.NEXT_PUBLIC_CORE_SERVICE_URL || 'http://localhost:8081';
 
 interface RouteContext {
   params: Promise<{ id: string }>;
@@ -26,7 +26,7 @@ export async function GET(request: NextRequest, context: RouteContext) {
     const { id } = await context.params;
 
     const response = await axios.get(
-      `${CORE_SERVICE_URL}/api/trip/${id}/expenses/summary`,
+      `${NEXT_PUBLIC_CORE_SERVICE_URL}/api/trip/${id}/expenses/summary`,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,

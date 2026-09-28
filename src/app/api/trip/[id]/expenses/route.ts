@@ -1,8 +1,8 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import axios from 'axios';
 
-const CORE_SERVICE_URL =
-  process.env.CORE_SERVICE_URL || 'http://localhost:8081';
+const NEXT_PUBLIC_CORE_SERVICE_URL =
+  process.env.NEXT_PUBLIC_CORE_SERVICE_URL || 'http://localhost:8081';
 
 interface RouteContext {
   params: Promise<{ id: string }>;
@@ -28,7 +28,7 @@ export async function GET(request: NextRequest, context: RouteContext) {
     const query = Object.fromEntries(searchParams.entries());
 
     const response = await axios.get(
-      `${CORE_SERVICE_URL}/api/trip/${id}/expenses`,
+      `${NEXT_PUBLIC_CORE_SERVICE_URL}/api/trip/${id}/expenses`,
       {
         params: query,
         headers: {
@@ -82,7 +82,7 @@ export async function POST(request: NextRequest, context: RouteContext) {
     const body = await request.json().catch(() => ({}));
 
     const response = await axios.post(
-      `${CORE_SERVICE_URL}/api/trip/${id}/expenses`,
+      `${NEXT_PUBLIC_CORE_SERVICE_URL}/api/trip/${id}/expenses`,
       body,
       {
         headers: {

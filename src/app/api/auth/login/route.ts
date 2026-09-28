@@ -7,8 +7,12 @@ interface LoginRequestBody {
   rememberMe?: boolean;
 }
 
-const IDENTITY_SERVICE_URL =
-  process.env.IDENTITY_SERVICE_URL || 'http://localhost:8888';
+const NEXT_PUBLIC_IDENTITY_SERVICE_URL =
+  process.env.NEXT_PUBLIC_IDENTITY_SERVICE_URL || 'http://localhost:8888';
+console.log(
+  'NEXT_PUBLIC_IDENTITY_SERVICE_URL',
+  NEXT_PUBLIC_IDENTITY_SERVICE_URL,
+);
 
 // auto call when post /api/auth/login
 export async function POST(request: NextRequest) {
@@ -32,7 +36,7 @@ export async function POST(request: NextRequest) {
     let identityResponse;
     try {
       identityResponse = await axios.post(
-        `${IDENTITY_SERVICE_URL}/api/auth/login`,
+        `${NEXT_PUBLIC_IDENTITY_SERVICE_URL}/api/auth/login`,
         {
           email: normalizedEmail,
           password,

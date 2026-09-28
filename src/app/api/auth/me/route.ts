@@ -1,8 +1,8 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import axios from 'axios';
 
-const IDENTITY_SERVICE_URL =
-  process.env.IDENTITY_SERVICE_URL || 'http://localhost:8888';
+const NEXT_PUBLIC_IDENTITY_SERVICE_URL =
+  process.env.NEXT_PUBLIC_IDENTITY_SERVICE_URL || 'http://localhost:8888';
 
 export async function GET(request: NextRequest) {
   try {
@@ -19,12 +19,15 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const response = await axios.get(`${IDENTITY_SERVICE_URL}/api/auth/me`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        Accept: 'application/json',
+    const response = await axios.get(
+      `${NEXT_PUBLIC_IDENTITY_SERVICE_URL}/api/auth/me`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          Accept: 'application/json',
+        },
       },
-    });
+    );
 
     const userPayload = response.data?.data ?? response.data;
 

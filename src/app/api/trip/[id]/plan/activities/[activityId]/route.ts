@@ -1,8 +1,8 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import axios from 'axios';
 
-const CORE_SERVICE_URL =
-  process.env.CORE_SERVICE_URL || 'http://localhost:8081';
+const NEXT_PUBLIC_CORE_SERVICE_URL =
+  process.env.NEXT_PUBLIC_CORE_SERVICE_URL || 'http://localhost:8081';
 
 interface RouteContext {
   params: Promise<{ id: string; activityId: string }>;
@@ -27,7 +27,7 @@ export async function PUT(request: NextRequest, context: RouteContext) {
     const body = await request.json().catch(() => ({}));
 
     const response = await axios.put(
-      `${CORE_SERVICE_URL}/api/trip/${id}/plan/activities/${activityId}`,
+      `${NEXT_PUBLIC_CORE_SERVICE_URL}/api/trip/${id}/plan/activities/${activityId}`,
       body,
       {
         headers: {
@@ -84,7 +84,7 @@ export async function DELETE(request: NextRequest, context: RouteContext) {
     const { id, activityId } = await context.params;
 
     const response = await axios.delete(
-      `${CORE_SERVICE_URL}/api/trip/${id}/plan/activities/${activityId}`,
+      `${NEXT_PUBLIC_CORE_SERVICE_URL}/api/trip/${id}/plan/activities/${activityId}`,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,

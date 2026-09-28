@@ -1,8 +1,8 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import axios from 'axios';
 
-const IDENTITY_SERVICE_URL =
-  process.env.IDENTITY_SERVICE_URL || 'http://localhost:8888';
+const NEXT_PUBLIC_IDENTITY_SERVICE_URL =
+  process.env.NEXT_PUBLIC_IDENTITY_SERVICE_URL || 'http://localhost:8888';
 
 export async function POST(request: NextRequest) {
   try {
@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
     if (accessToken) {
       try {
         await axios.post(
-          `${IDENTITY_SERVICE_URL}/api/auth/logout`,
+          `${NEXT_PUBLIC_IDENTITY_SERVICE_URL}/api/auth/logout`,
           {},
           {
             headers: {
