@@ -149,7 +149,12 @@ const ActivityLogDialog = ({
         ) : (
           <Stack
             spacing={1.5}
-            sx={{ maxHeight: '60vh', overflowY: 'auto', pr: 0.5 }}
+            sx={{
+              maxHeight: '60vh',
+              overflowY: 'auto',
+              pr: 0.5,
+              minHeight: 0,
+            }}
           >
             {logs.map((log: PlanActivityLog) => {
               const actionCfg = getActionConfig(log.action);
@@ -161,6 +166,8 @@ const ActivityLogDialog = ({
                     p: 2,
                     borderRadius: '14px',
                     bgcolor: alpha(theme.palette.background.paper, 0.6),
+                    flexShrink: 0,
+                    minHeight: 'fit-content',
                     transition: 'all 0.2s',
                     '&:hover': {
                       bgcolor: 'action.hover',
