@@ -30,6 +30,7 @@ export interface PlanActivity {
   orderIndex: number;
   note?: string | null;
   expenseId?: string | null;
+  actualSpent?: number | null;
   createdAt: string;
   updatedAt: string;
 }

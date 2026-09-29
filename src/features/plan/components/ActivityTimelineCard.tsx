@@ -315,27 +315,29 @@ const ActivityTimelineCard = ({
                 }}
               />
 
-              {activity.expenseId && (
-                <Chip
-                  icon={
-                    <ReceiptLongRoundedIcon
-                      sx={{ fontSize: '14px !important' }}
-                    />
-                  }
-                  label={t('spentChip')}
-                  size="small"
-                  sx={{
-                    height: 22,
-                    fontSize: '11px',
-                    fontWeight: 600,
-                    borderRadius: '6px',
-                    bgcolor: (theme) => {
-                      return alpha(theme.palette.success.main, 0.12);
-                    },
-                    color: 'success.main',
-                  }}
-                />
-              )}
+              {activity.expenseId &&
+                activity.actualSpent != null &&
+                activity.actualSpent >= activity.estimatedCost && (
+                  <Chip
+                    icon={
+                      <ReceiptLongRoundedIcon
+                        sx={{ fontSize: '14px !important' }}
+                      />
+                    }
+                    label={t('spentChip')}
+                    size="small"
+                    sx={{
+                      height: 22,
+                      fontSize: '11px',
+                      fontWeight: 600,
+                      borderRadius: '6px',
+                      bgcolor: (theme) => {
+                        return alpha(theme.palette.success.main, 0.12);
+                      },
+                      color: 'success.main',
+                    }}
+                  />
+                )}
             </Stack>
 
             {activity.location && (
@@ -366,21 +368,35 @@ const ActivityTimelineCard = ({
               </Typography>
             )}
 
-            {activity.estimatedCost > 0 && (
-              <Typography
-                sx={{
-                  fontSize: '12px',
-                  fontWeight: 700,
-                  fontFamily: 'var(--font-mono)',
-                  color: 'success.main',
-                  pt: 0.25,
-                }}
-              >
-                {t('estimatedCost', {
-                  cost: formatCurrency(activity.estimatedCost, currency),
-                })}
-              </Typography>
-            )}
+            <Stack spacing={0.25} sx={{ pt: 0.25 }}>
+              {activity.estimatedCost > 0 && (
+                <Typography
+                  sx={{
+                    fontSize: '12px',
+                    fontWeight: 700,
+                    fontFamily: 'var(--font-mono)',
+                    color: 'success.main',
+                  }}
+                >
+                  {t('estimatedCost', {
+                    cost: formatCurrency(activity.estimatedCost, currency),
+                  })}
+                </Typography>
+              )}
+              {activity.actualSpent != null && activity.actualSpent > 0 && (
+                <Typography
+                  sx={{
+                    fontSize: '12px',
+                    fontWeight: 700,
+                    fontFamily: 'var(--font-mono)',
+                    color: 'primary.main',
+                  }}
+                >
+                  {t('spentChip')}:{' '}
+                  {formatCurrency(activity.actualSpent, currency)}
+                </Typography>
+              )}
+            </Stack>
           </Box>
 
           {!readOnly && menuItems.length > 0 && (
