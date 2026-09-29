@@ -9,6 +9,7 @@ import { axiosClient } from '@/base/api';
 import {
   AppPageContainer,
   AppToast,
+  AppConfirmDialog,
   type AppToastSeverity,
 } from '@/base/components/ui';
 import { useTripContext } from '@/features/trip/context/TripContext';
@@ -23,6 +24,7 @@ import {
   useCreateChecklist,
   useDeleteActivity,
   useUpdateActivity,
+  useResetDayActivities,
 } from '../hooks/usePlanMutation';
 import type {
   ActivityStatus,
@@ -41,6 +43,7 @@ import OptimizeRouteDialog from './OptimizeRouteDialog';
 import PlanDayTabs from './PlanDayTabs';
 import PlanHeader from './PlanHeader';
 import ActivityLogDialog from './ActivityLogDialog';
+import AiPlannerDialog from './AiPlannerDialog';
 
 const PlanOverview = () => {
   const t = useTranslations('plan');
@@ -71,7 +74,9 @@ const PlanOverview = () => {
 
   const [selectedDayId, setSelectedDayId] = useState<string>('');
   const [addActivityOpen, setAddActivityOpen] = useState(false);
+  const [aiPlannerOpen, setAiPlannerOpen] = useState(false);
   const [checklistOpen, setChecklistOpen] = useState(false);
+  const [resetDayConfirmOpen, setResetDayConfirmOpen] = useState(false);
   const [optimizeDialogOpen, setOptimizeDialogOpen] = useState(false);
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [activityLogOpen, setActivityLogOpen] = useState(false);
@@ -152,6 +157,22 @@ const PlanOverview = () => {
         onSuccess: () => {
           showToast(t('toasts.deleteActivitySuccess'));
           setDeletingActivity(null);
+          refetch();
+        },
+        onError: () => {
+          showToast(t('toasts.error'), 'error');
+        },
+      },
+    });
+
+  const { resetDayActivitiesAsync, isPending: isResettingDay } =
+    useResetDayActivities({
+      tripId: tripId ?? '',
+      dayId: selectedDay?.id ?? '',
+      options: {
+        onSuccess: () => {
+          showToast(t('toasts.resetDaySuccess'));
+          setResetDayConfirmOpen(false);
           refetch();
         },
         onError: () => {
@@ -355,6 +376,7 @@ const PlanOverview = () => {
           currency={overview?.baseCurrency ?? activeTrip?.baseCurrency ?? 'VND'}
           onAddActivity={() => setAddActivityOpen(true)}
           onOpenChecklist={() => setChecklistOpen(true)}
+          onOpenAiPlanner={() => setAiPlannerOpen(true)}
           onOpenShare={() => setShareDialogOpen(true)}
           onOpenActivityLogs={() => setActivityLogOpen(true)}
           readOnly={isViewer}
@@ -404,6 +426,7 @@ const PlanOverview = () => {
           onToggleStatus={handleToggleActivityStatus}
           onConvertToExpense={handleConvertToExpense}
           onOpenOptimizeRoute={() => setOptimizeDialogOpen(true)}
+          onResetDayActivities={() => setResetDayConfirmOpen(true)}
           readOnly={isViewer}
         />
       )}
@@ -499,6 +522,52 @@ const PlanOverview = () => {
         open={activityLogOpen}
         onClose={() => setActivityLogOpen(false)}
         tripId={tripId ?? null}
+      />
+
+      {tripId && (
+        <AiPlannerDialog
+          open={aiPlannerOpen}
+          onClose={() => setAiPlannerOpen(false)}
+          tripId={tripId}
+          initialDestination={
+            overview?.destination ?? activeTrip?.destination ?? ''
+          }
+          initialDays={
+            activeTrip?.startDate && activeTrip?.endDate
+              ? Math.max(
+                  1,
+                  Math.ceil(
+                    (new Date(activeTrip.endDate).getTime() -
+                      new Date(activeTrip.startDate).getTime()) /
+                      (1000 * 3600 * 24),
+                  ) + 1,
+                )
+              : overview?.totalDays || overview?.days?.length || 3
+          }
+          initialPeople={members?.length || 2}
+          currency={overview?.baseCurrency ?? activeTrip?.baseCurrency ?? 'VND'}
+          onSuccess={() => {
+            showToast(t('toasts.aiGenerateSuccess'));
+            refetch();
+          }}
+          onError={(msg) => showToast(msg, 'error')}
+        />
+      )}
+
+      <AppConfirmDialog
+        open={resetDayConfirmOpen}
+        onClose={() => setResetDayConfirmOpen(false)}
+        onConfirm={async () => {
+          await resetDayActivitiesAsync({});
+        }}
+        title={t('dialog.resetDayTitle', { day: selectedDay?.dayNumber ?? '' })}
+        description={t('dialog.resetDayDesc', {
+          day: selectedDay?.dayNumber ?? '',
+        })}
+        confirmText={t('dialog.confirmResetDay')}
+        cancelText={t('dialog.cancelBtn')}
+        intent="danger"
+        loading={isResettingDay}
       />
 
       <AppToast

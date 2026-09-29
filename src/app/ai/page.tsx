@@ -1,7 +1,7 @@
-import TripFeaturePlaceholder from '@/features/trip/components/TripFeaturePlaceholder';
+import AiPlannerView from '@/features/ai/components/AiPlannerView';
 
 const AiPage = () => {
-  return <TripFeaturePlaceholder feature="ai" />;
+  return <AiPlannerView />;
 };
 
 export default AiPage;

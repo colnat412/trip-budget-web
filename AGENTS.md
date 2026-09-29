@@ -1835,6 +1835,49 @@ If the user has already supplied a specific task, do not block on a broad questi
     - **Kiểm thử chất lượng**:
       - `export PATH="/home/hanbiro/.nvm/versions/node/v20.20.2/bin:$PATH" && npx tsc --noEmit && npm run lint` -> 0 errors, 0 warnings.
 
+38. **Tích hợp Kiến trúc AI Lên Lịch Trình Tự Động (AI Trip Planner) Bằng Python FastAPI, Spring Boot Core & Next.js Hub (`/ai` & `/plan`)**:
+    - **Yêu cầu & Mục tiêu**:
+      - Giải quyết bài toán "trang giấy trắng" (empty state) cho người dùng khi tạo chuyến đi mới bằng cách ứng dụng AI tự động đề xuất toàn bộ lịch trình chuyến đi (ngày, giờ, địa điểm, chi phí ước tính, phân loại danh mục).
+      - Xây dựng trải nghiệm AI hoàn chỉnh trên cả 2 trang:
+        - **Trang AI Hub (`/ai`)**: Trung tâm điều khiển AI toàn diện với việc tự động nhận diện chuyến đi đang chọn, cho phép tùy biến điểm đến, số ngày, số người, ngân sách, gợi ý phong cách bằng chip tags, hiển thị khả năng nổi bật của AI và tự động chuyển trang sang `/plan` sau khi tạo.
+        - **Trang Kế hoạch (`/plan`)**: Tích hợp nút `AI Lên lịch trình` trực tiếp trên `PlanHeader.tsx` mở modal `AiPlannerDialog.tsx` mượt mà, hỗ trợ tự động điền sẵn thông tin chuyến đi và cập nhật lại timeline ngay lập tức không cần tải lại trang.
+      - **Đảm bảo 100% đa ngôn ngữ (vi/en)**: Toàn bộ nhãn, thông báo, nút bấm, hướng dẫn và lỗi đều được khai báo trong `messages/vi.json` và `messages/en.json`.
+      - **Tuân thủ React 19 & React Compiler**: Loại bỏ hoàn toàn cascading renders (`react-hooks/set-state-in-effect`) và lỗi memoization, đạt chuẩn chất lượng nghiêm ngặt của dự án.
+    - **Kiến trúc triển khai & Giải pháp kỹ thuật**:
+      - **Tầng 1: AI Microservice (Python FastAPI)**:
+        - Cấu trúc module chuẩn Enterprise: `app/routers/ai_router.py`, `app/services/ai_service.py`, `app/schemas/ai_schema.py`.
+        - Cơ chế **Auto-Fallback Model Routing 2026**: Tự động ưu tiên các model Free Tier (`gemini-flash-lite-latest`, `gemini-3.5-flash-lite`), tự động bỏ qua lỗi 402/404 và tự động retry khi gặp lỗi 503 quá tải.
+        - File `requirements.txt` tối giản không khóa cứng phiên bản cũ để tương thích với Python 3.14 trên Render.com, loại bỏ lỗi biên dịch Rust (`maturin`).
+      - **Tầng 2: Core Backend (Spring Boot)**:
+        - `AiPlanController.java`: Mapped tại `/trip/{tripId}/plan/ai/generate`, giải mã hashids, xác thực `@CurrentUser CurrentUserDto user` và trả về `ApiResponse<TripPlanOverviewResponse>`.
+        - `AiPlanService.java`: Kiểm tra quyền thành viên hoạt động (`getActiveMemberTrip`, `assertCanEditPlan`), gọi dịch vụ AI qua `${AI_SERVICE_URL}`, tái sử dụng ngày đã có (`PlanDayEntity`) tránh lỗi trùng lặp khóa chính, và lưu danh sách hoạt động `PlanActivityEntity` theo thứ tự `orderIndex`.
+      - **Tầng 3: Next.js BFF & Frontend UI**:
+        - Route Handler `POST /api/trip/[id]/plan/ai/generate`: Chuyển tiếp request có gắn cookie `access_token` từ trình duyệt sang Spring Boot core.
+        - Hook React Query `useGenerateAiPlan` trong `src/features/plan/hooks/usePlanMutation.ts`: Sử dụng `useMutationPost` chuẩn mực.
+        - Component `AiPlannerDialog.tsx`: Modal gọn gàng, tích hợp `AppNumberInput` nhập tiền tệ, gợi ý chip sở thích nhanh.
+        - Component `AiPlannerView.tsx`: Trang `/ai` trực quan, giải thích năng lực AI, banner trạng thái chuyến đi đang kích hoạt và điều hướng tức thì.
+39. **Hoàn thiện Trải nghiệm Lên Lịch Trình AI & Tính Năng Đặt Lại Lịch Trình Từng Ngày (`Reset Day Activities`)**:
+    - **Yêu cầu & Mục tiêu**:
+      - Tích hợp ô nhập điểm đến thông minh `DestinationAutocomplete` vào cả form AI modal (`AiPlannerDialog.tsx`) và trang AI Hub (`AiPlannerView.tsx`).
+      - Khóa ô nhập thời lượng chuyến đi (`duration / days`) ở trạng thái `disabled`, giá trị tính toán hoàn toàn tự động và tuyệt đối tuân theo `startDate` và `endDate` của chuyến đi để tránh lệch dữ liệu giữa chuyến đi và kế hoạch.
+      - Thêm tính năng **Xóa / Đặt lại toàn bộ lịch trình trong ngày cụ thể (Reset Day Activities)** để người dùng có thể xóa sạch mọi hoạt động của ngày đó về trạng thái trống (empty state) khi muốn lên kế hoạch lại từ đầu hoặc khi tạo lịch mới mà không phải xóa thủ công từng hoạt động.
+    - **Kiến trúc triển khai & Giải pháp kỹ thuật**:
+      - **Tầng Backend Core (Spring Boot)**:
+        - `PlanService.java`: Thêm method `resetDayActivities(Long currentUserId, Long tripId, Long dayId)`: Xác thực quyền chỉnh sửa kế hoạch của người dùng, tìm danh sách hoạt động chưa xóa (`isDeleted = false`) thuộc ngày được chỉ định và đánh dấu xóa (`act.markDeleted()`).
+        - `PlanController.java`: Endpoint `@DeleteMapping("/days/{dayId}/activities")` nhận `dayId` mã hóa Hashids, giải mã an toàn và trả về `ApiResponse.success(null, "Day activities reset successfully")`.
+      - **Tầng BFF (Next.js App Router)**:
+        - Route Handler `DELETE /api/trip/[id]/plan/days/[dayId]/activities/route.ts`: Chuyển tiếp yêu cầu HTTP DELETE tới Spring Boot Core kèm cookie `access_token` hợp lệ.
+      - **Tầng Frontend Client**:
+        - Hook React Query: Khai báo `useResetDayActivities` trong `usePlanMutation.ts` sử dụng `useMutationDelete`.
+        - Component `DayTimelineList.tsx`: Thêm thanh tiêu đề ngày với tổng số hoạt động, chi phí ước tính trong ngày và nút bấm `Đặt lại ngày này` (`RestartAltRoundedIcon`). Nút chỉ hiển thị khi ngày đó đang có ít nhất 1 hoạt động.
+        - Component `PlanOverview.tsx`: Kết nối `AppConfirmDialog` với modal cảnh báo xác nhận trước khi thực hiện reset để tránh thao tác nhầm lẫn; tự động làm mới (`refetch()`) timeline và hiển thị toast thông báo thành công.
+        - Tích hợp `DestinationAutocomplete`: Cung cấp gợi ý địa điểm mượt mà, hỗ trợ tìm kiếm theo tỉnh/thành phố và quốc gia, bảo toàn text nhập tự do.
+        - Khóa ô `days`: Set `disabled` kèm `helperText` diễn giải rõ lý do ngày được cố định theo ngày bắt đầu và kết thúc của chuyến đi.
+      - **Đa ngôn ngữ & Tiêu chuẩn chất lượng**:
+        - Khai báo 100% bản dịch trong `messages/vi.json` và `messages/en.json` (`resetDayBtn`, `dialog.resetDayTitle`, `dialog.resetDayDesc`, `dialog.confirmResetDay`, `dialog.aiDaysDisabledHelper`, `toasts.resetDaySuccess`, `aiPlanner.daysDisabledHelper`).
+    - **Kiểm thử chất lượng**:
+      - `export PATH="/home/hanbiro/.nvm/versions/node/v20.20.2/bin:$PATH" && npx tsc --noEmit && npm run lint` -> 0 errors, 0 warnings.
+
 ### Immediate likely next tasks:
 
 1. **Kết nối Dữ liệu Thực tế cho Trang Tổng quan (`/overview`)**: Thay thế dữ liệu mock trong `RecentExpenseList` và `CategoryList` bằng dữ liệu thực tế từ API chi tiêu của chuyến đi đang diễn ra.

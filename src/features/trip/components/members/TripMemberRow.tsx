@@ -5,8 +5,6 @@ import { useTranslations } from 'next-intl';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
-import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded';
-import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 
 import { AppButton } from '@/base/components/ui';
 import AppActionMenu, {

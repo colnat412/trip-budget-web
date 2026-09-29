@@ -15,6 +15,8 @@ import type {
   PlanActivity,
   PlanChecklist,
   PlanDay,
+  TripPlanOverview,
+  GenerateAiPlanPayload,
   UpdateActivityPayload,
   UpdateChecklistPayload,
   UpdatePlanDayPayload,
@@ -307,6 +309,58 @@ export function useDeleteChecklist({
   };
 }
 
+export interface UseGenerateAiPlanParams {
+  tripId: string | number;
+  options?: MutationCallbacks<
+    ApiResponse<TripPlanOverview>,
+    GenerateAiPlanPayload
+  >;
+}
+
+export function useGenerateAiPlan({
+  tripId,
+  options,
+}: UseGenerateAiPlanParams) {
+  const mutation = useMutationPost<
+    ApiResponse<TripPlanOverview>,
+    GenerateAiPlanPayload
+  >({
+    mutationKey: ['plan', 'ai', 'generate', tripId],
+    endPoint: `/trip/${tripId}/plan/ai/generate`,
+    options,
+  });
+
+  return {
+    ...mutation,
+    generateAiPlan: mutation.mutate,
+    generateAiPlanAsync: mutation.mutateAsync,
+  };
+}
+
+export interface UseResetDayActivitiesParams {
+  tripId: string | number;
+  dayId: string | number;
+  options?: MutationCallbacks<ApiResponse<null>, Record<string, never>>;
+}
+
+export function useResetDayActivities({
+  tripId,
+  dayId,
+  options,
+}: UseResetDayActivitiesParams) {
+  const mutation = useMutationDelete<ApiResponse<null>, Record<string, never>>({
+    mutationKey: ['plan', 'day', 'reset-activities', tripId, dayId],
+    endPoint: `/trip/${tripId}/plan/days/${dayId}/activities`,
+    options,
+  });
+
+  return {
+    ...mutation,
+    resetDayActivities: mutation.mutate,
+    resetDayActivitiesAsync: mutation.mutateAsync,
+  };
+}
+
 const usePlanMutation = () => {
   return {
     useCreateActivity,
@@ -320,6 +374,8 @@ const usePlanMutation = () => {
     useUpdateChecklist,
     useToggleChecklist,
     useDeleteChecklist,
+    useGenerateAiPlan,
+    useResetDayActivities,
   };
 };
 

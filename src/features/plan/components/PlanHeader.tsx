@@ -3,8 +3,8 @@
 import React from 'react';
 import { Box, Stack, Typography } from '@mui/material';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
+import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
 import ChecklistRoundedIcon from '@mui/icons-material/ChecklistRounded';
-import IosShareRoundedIcon from '@mui/icons-material/IosShareRounded';
 import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded';
 import { useTranslations } from 'next-intl';
 
@@ -22,6 +22,7 @@ export interface PlanHeaderProps {
   currency: string;
   onAddActivity?: () => void;
   onOpenChecklist: () => void;
+  onOpenAiPlanner?: () => void;
   onOpenShare?: () => void;
   onOpenActivityLogs?: () => void;
   readOnly?: boolean;
@@ -37,6 +38,7 @@ const PlanHeader = ({
   currency,
   onAddActivity,
   onOpenChecklist,
+  onOpenAiPlanner,
   onOpenShare,
   onOpenActivityLogs,
   readOnly = false,
@@ -161,6 +163,27 @@ const PlanHeader = ({
         >
           {t('checklistBtn')}
         </AppButton>
+
+        {!readOnly && onOpenAiPlanner && (
+          <AppButton
+            intent="secondary"
+            size="medium"
+            startIcon={<AutoAwesomeRoundedIcon sx={{ color: 'primary.main' }} />}
+            onClick={onOpenAiPlanner}
+            sx={{
+              flex: { xs: '1 1 auto', sm: 'none' },
+              borderColor: 'primary.light',
+              color: 'primary.main',
+              fontWeight: 700,
+              '&:hover': {
+                borderColor: 'primary.main',
+                bgcolor: 'primary.50',
+              },
+            }}
+          >
+            {t('aiPlannerBtn')}
+          </AppButton>
+        )}
 
         {!readOnly && onAddActivity && (
           <AppButton

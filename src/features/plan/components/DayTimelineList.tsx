@@ -1,9 +1,12 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Box, Stack } from '@mui/material';
-import { useLocale } from 'next-intl';
+import { Box, Stack, Typography } from '@mui/material';
+import RestartAltRoundedIcon from '@mui/icons-material/RestartAltRounded';
+import { useLocale, useTranslations } from 'next-intl';
 
+import { AppButton } from '@/base/components/ui';
+import { formatCurrency } from '@/base/utils';
 import type { ActivityStatus, PlanActivity, RouteSegment } from '../types';
 import ActivityTimelineCard from './ActivityTimelineCard';
 import ActivityDistanceConnector from './ActivityDistanceConnector';
@@ -20,6 +23,7 @@ export interface DayTimelineListProps {
   onToggleStatus?: (activity: PlanActivity, nextStatus: ActivityStatus) => void;
   onConvertToExpense?: (activity: PlanActivity) => void;
   onOpenOptimizeRoute?: () => void;
+  onResetDayActivities?: () => void;
   readOnly?: boolean;
 }
 
@@ -32,9 +36,11 @@ const DayTimelineList = ({
   onDeleteActivity,
   onToggleStatus,
   onConvertToExpense,
+  onResetDayActivities,
   readOnly = false,
 }: DayTimelineListProps) => {
   const locale = useLocale();
+  const t = useTranslations('plan');
 
   const [distanceData, setDistanceData] = useState<{
     segments: RouteSegment[];
@@ -66,9 +72,7 @@ const DayTimelineList = ({
   }, [activities, locale, destinationContext]);
 
   if (activities.length === 0) {
-    return (
-      <PlanEmptyState onAddActivity={onAddActivity} readOnly={readOnly} />
-    );
+    return <PlanEmptyState onAddActivity={onAddActivity} readOnly={readOnly} />;
   }
 
   // const locActivities = activities.filter(
@@ -167,6 +171,74 @@ const DayTimelineList = ({
           )}
         </Card>
       )} */}
+
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          mb: 2,
+          px: 0.5,
+          flexWrap: 'wrap',
+          gap: 1.5,
+        }}
+      >
+        <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+          <Typography
+            sx={{
+              fontSize: '13px',
+              fontWeight: 700,
+              color: 'text.secondary',
+            }}
+          >
+            {activities.length} {t('totalActivities').toLowerCase()}
+          </Typography>
+          {activities.reduce(
+            (sum, act) =>
+              sum + (act.estimatedCost ? Number(act.estimatedCost) : 0),
+            0,
+          ) > 0 && (
+            <Typography
+              sx={{
+                fontSize: '13px',
+                fontWeight: 600,
+                color: 'success.main',
+              }}
+            >
+              · {t('dayTotalCostLabel')}:{' '}
+              {formatCurrency(
+                activities.reduce(
+                  (sum, act) =>
+                    sum + (act.estimatedCost ? Number(act.estimatedCost) : 0),
+                  0,
+                ),
+                currency,
+              )}
+            </Typography>
+          )}
+        </Stack>
+
+        {!readOnly && onResetDayActivities && (
+          <AppButton
+            intent="secondary"
+            size="small"
+            startIcon={<RestartAltRoundedIcon sx={{ fontSize: 16 }} />}
+            onClick={onResetDayActivities}
+            sx={{
+              fontSize: '12px',
+              fontWeight: 600,
+              color: 'error.main',
+              borderColor: 'error.light',
+              '&:hover': {
+                borderColor: 'error.main',
+                bgcolor: 'error.50',
+              },
+            }}
+          >
+            {t('resetDayBtn')}
+          </AppButton>
+        )}
+      </Box>
 
       <Stack spacing={1}>
         {activities.map((activity, idx) => {

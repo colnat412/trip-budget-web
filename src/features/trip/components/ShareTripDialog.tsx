@@ -18,7 +18,6 @@ import {
   Typography,
 } from '@mui/material';
 import { alpha, useTheme } from '@mui/material/styles';
-import IosShareRoundedIcon from '@mui/icons-material/IosShareRounded';
 import ContentCopyRoundedIcon from '@mui/icons-material/ContentCopyRounded';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import RefreshRoundedIcon from '@mui/icons-material/RefreshRounded';

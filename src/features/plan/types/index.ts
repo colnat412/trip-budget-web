@@ -126,6 +126,14 @@ export interface UpdateChecklistPayload {
   assigneeId?: string;
 }
 
+export interface GenerateAiPlanPayload {
+  destination?: string;
+  days: number;
+  budget: number;
+  people: number;
+  preferences?: string;
+}
+
 export interface DistanceInfo {
   text: string;
   value: number; // meters
