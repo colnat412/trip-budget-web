@@ -153,7 +153,7 @@ const ActiveTripBanner = ({ trip }: ActiveTripBannerProps) => {
                 },
               }}
             >
-              <GroupRoundedIcon sx={{ fontSize: '15px' }} />
+              <GroupRoundedIcon sx={{ fontSize: '12px' }} />
               {tMembers('dialogTitle')}
             </Box>
           </Stack>

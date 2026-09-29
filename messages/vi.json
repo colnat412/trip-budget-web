@@ -376,12 +376,12 @@
     }
   },
   "members": {
-    "dialogTitle": "Thành Viên Chuyến Đi",
+    "dialogTitle": "Thành Viên",
     "dialogSubtitle": "Quản lý danh sách người tham gia, phân quyền và mời bạn bè cùng chia sẻ chi phí.",
     "memberCount": "{count} thành viên",
     "inviteBtn": "Mời thành viên",
     "inviteTitle": "Mời Thành Viên Mới",
-    "inviteSubtitle": "Nhập địa chỉ email người dùng đã đăng ký TripBudget để thêm vào nhóm.",
+    "inviteSubtitle": "Nhập địa chỉ email người dùng.",
     "emailLabel": "Email thành viên *",
     "emailPlaceholder": "nhap.email@example.com",
     "emailRequired": "Vui lòng nhập địa chỉ email thành viên",
@@ -398,7 +398,7 @@
     },
     "roleDescriptions": {
       "OWNER": "Toàn quyền quản lý chuyến đi, mời và phân quyền thành viên.",
-      "VICE": "Quản trị viên phụ: duyệt thành viên, thiết lập ngân sách và lịch trình.",
+      "VICE": "Duyệt thành viên, thiết lập ngân sách và lịch trình.",
       "EDITOR": "Được thêm, sửa, xóa các khoản chi tiêu và hạn mức.",
       "MEMBER": "Được tạo khoản chi, đóng góp vào lịch trình và tham gia chia tiền.",
       "VIEWER": "Chỉ có quyền xem thông tin chuyến đi và chi phí (Chỉ đọc)."

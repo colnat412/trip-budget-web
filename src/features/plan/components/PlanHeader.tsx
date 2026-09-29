@@ -118,13 +118,13 @@ const PlanHeader = ({
         </Stack>
       </Box>
 
-      <Stack
-        direction="row"
-        spacing={1}
+      <Box
         sx={{
+          display: 'flex',
+          flexDirection: 'row',
           alignSelf: { xs: 'stretch', sm: 'auto' },
           flexWrap: 'wrap',
-          gap: 1,
+          gap: 1.5,
         }}
       >
         {onOpenActivityLogs && (
@@ -172,7 +172,7 @@ const PlanHeader = ({
             {t('addActivity')}
           </AppButton>
         )}
-      </Stack>
+      </Box>
     </Box>
   );
 };

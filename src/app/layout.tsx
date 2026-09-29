@@ -26,6 +26,13 @@ export const metadata: Metadata = {
   title: 'Trip Budget',
 };
 
+export const viewport: import('next').Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
+
 // add path name to hide sidebar here
 const sidebarDisabledPaths: readonly string[] = ['/login'];
 

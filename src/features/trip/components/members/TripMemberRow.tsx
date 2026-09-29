@@ -68,12 +68,7 @@ const TripMemberRow = ({
   const menuItems: AppActionMenuItem[] = [];
 
   if (canAccept && onAccept) {
-    menuItems.push({
-      id: 'accept-member',
-      label: t('actions.acceptMember'),
-      icon: <CheckCircleOutlineRoundedIcon fontSize="small" />,
-      onClick: () => onAccept(member),
-    });
+    // Buttons will be displayed inline, so we don't add accept to menu
   }
 
   if (canEditRole) {
@@ -85,7 +80,7 @@ const TripMemberRow = ({
     });
   }
 
-  if (canRemove) {
+  if (canRemove && !(canAccept && onAccept)) {
     menuItems.push({
       id: 'remove-member',
       label:
@@ -115,6 +110,7 @@ const TripMemberRow = ({
       sx={{
         alignItems: 'center',
         justifyContent: 'space-between',
+        flexWrap: { xs: 'wrap', sm: 'nowrap' },
         p: 2,
         borderRadius: '16px',
         bgcolor: 'background.paper',
@@ -130,7 +126,7 @@ const TripMemberRow = ({
       <Stack
         direction="row"
         spacing={1.5}
-        sx={{ alignItems: 'center', minWidth: 0 }}
+        sx={{ alignItems: 'center', minWidth: 0, flex: 1 }}
       >
         <Avatar
           src={member.avatarUrl || undefined}
@@ -144,19 +140,25 @@ const TripMemberRow = ({
             fontSize: '14px',
             border: 2,
             borderColor: 'background.paper',
+            flexShrink: 0,
           }}
         >
           {getUserInitials(member.name || member.email)}
         </Avatar>
 
-        <Stack spacing={0.25} sx={{ minWidth: 0 }}>
-          <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+        <Stack spacing={0.25} sx={{ minWidth: 0, flex: 1 }}>
+          <Stack
+            direction="row"
+            spacing={1}
+            sx={{ alignItems: 'center', minWidth: 0 }}
+          >
             <Typography
               noWrap
               sx={{
                 fontWeight: 700,
                 fontSize: '14px',
                 color: 'text.primary',
+                flexShrink: 1,
               }}
             >
               {member.name}
@@ -171,6 +173,7 @@ const TripMemberRow = ({
                   fontSize: '10px',
                   fontWeight: 600,
                   borderRadius: '6px',
+                  flexShrink: 0,
                 }}
               />
             )}
@@ -193,15 +196,40 @@ const TripMemberRow = ({
         sx={{ alignItems: 'center', flexShrink: 0 }}
       >
         {canAccept && onAccept && (
-          <AppButton
-            intent="primary"
-            size="small"
-            startIcon={<CheckRoundedIcon sx={{ fontSize: '15px' }} />}
-            onClick={() => onAccept(member)}
-            sx={{ height: 28, fontSize: '11px', px: 1.25 }}
-          >
-            {t('actions.acceptBtn')}
-          </AppButton>
+          <>
+            <AppButton
+              intent="primary"
+              size="small"
+              onClick={() => onAccept(member)}
+              sx={{
+                minWidth: 0,
+                minHeight: 0,
+                height: 24,
+                // padding: '0 8px',
+                fontSize: '12px',
+                fontWeight: 700,
+                borderRadius: '8px',
+              }}
+            >
+              {t('actions.acceptBtn')}
+            </AppButton>
+            <AppButton
+              intent="danger"
+              size="small"
+              onClick={() => onRemove(member)}
+              sx={{
+                minWidth: 0,
+                minHeight: 0,
+                height: 24,
+                padding: '0 8px',
+                fontSize: '12px',
+                fontWeight: 700,
+                borderRadius: '8px',
+              }}
+            >
+              {t('actions.rejectMember')}
+            </AppButton>
+          </>
         )}
         <RoleBadge role={member.role} />
         {menuItems.length > 0 && <AppActionMenu items={menuItems} />}

@@ -376,12 +376,12 @@
     }
   },
   "members": {
-    "dialogTitle": "Trip Members",
+    "dialogTitle": "Members",
     "dialogSubtitle": "Manage participants, assign permissions, and invite friends to share expenses.",
     "memberCount": "{count} members",
     "inviteBtn": "Invite member",
     "inviteTitle": "Invite New Member",
-    "inviteSubtitle": "Enter the email of a registered TripBudget user to add them to this trip.",
+    "inviteSubtitle": "Enter the email of a registered user.",
     "emailLabel": "Member email *",
     "emailPlaceholder": "enter.email@example.com",
     "emailRequired": "Please enter member email address",
@@ -398,7 +398,7 @@
     },
     "roleDescriptions": {
       "OWNER": "Full control over the trip, member management and settings.",
-      "VICE": "Co-admin: can approve members, manage budget limits and itinerary.",
+      "VICE": "Can approve members, manage budget limits and itinerary.",
       "EDITOR": "Can add, edit, delete expenses and budgets.",
       "MEMBER": "Can contribute to itinerary, create expenses and split bills.",
       "VIEWER": "Can only view trip details and expenses."

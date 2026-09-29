@@ -240,7 +240,7 @@ const TripMembersDialog = ({
         onClose={onClose}
         title={t('dialogTitle')}
         description={t('dialogSubtitle')}
-        icon={<GroupRoundedIcon color="primary" />}
+        icon={<GroupRoundedIcon />}
         maxWidth="sm"
         fullWidth
       >
