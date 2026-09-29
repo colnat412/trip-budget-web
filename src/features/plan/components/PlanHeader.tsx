@@ -10,6 +10,7 @@ import { useTranslations } from 'next-intl';
 
 import { AppButton } from '@/base/components/ui';
 import { formatCurrency } from '@/base/utils';
+import { Share } from '@mui/icons-material';
 
 export interface PlanHeaderProps {
   tripName: string;
@@ -143,7 +144,7 @@ const PlanHeader = ({
           <AppButton
             intent="secondary"
             size="medium"
-            startIcon={<IosShareRoundedIcon />}
+            startIcon={<Share />}
             onClick={onOpenShare}
             sx={{ flex: { xs: '1 1 auto', sm: 'none' } }}
           >

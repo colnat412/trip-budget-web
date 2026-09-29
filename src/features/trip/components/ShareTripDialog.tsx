@@ -35,6 +35,7 @@ import {
   useRegenerateShareToken,
 } from '../hooks/useTripShare';
 import type { TripPublicRole, TripVisibility } from '../types';
+import { Share } from '@mui/icons-material';
 
 export interface ShareTripDialogProps {
   open: boolean;
@@ -127,7 +128,7 @@ const ShareTripDialog = ({
       onClose={handleClose}
       title={t('dialogTitle')}
       description={t('dialogSubtitle', { name: tripName })}
-      icon={<IosShareRoundedIcon />}
+      icon={<Share />}
       maxWidth="sm"
       actions={
         <Stack
