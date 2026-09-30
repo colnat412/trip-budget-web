@@ -110,6 +110,7 @@ const AppConfirmDialog = ({
           flexDirection: 'column',
           alignItems: 'center',
           pt: 1.5,
+          gap: 1.5,
         }}
       >
         <Box
@@ -120,7 +121,6 @@ const AppConfirmDialog = ({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            mb: 2,
             ...getIconContainerStyles(),
           }}
         >
@@ -130,17 +130,17 @@ const AppConfirmDialog = ({
         <DialogTitle
           sx={{
             p: 0,
-            mb: 1,
             fontSize: '18px',
             fontWeight: 800,
             color: 'text.primary',
             fontFamily: 'var(--font-display)',
+            textAlign: 'center',
           }}
         >
           {title}
         </DialogTitle>
 
-        <DialogContent sx={{ p: 0, mb: 3 }}>
+        <DialogContent sx={{ p: 0, textAlign: 'center' }}>
           {typeof description === 'string' ? (
             <Typography
               sx={{
@@ -156,7 +156,7 @@ const AppConfirmDialog = ({
           )}
         </DialogContent>
 
-        <DialogActions sx={{ p: 0, width: '100%', gap: 1.5 }}>
+        <DialogActions sx={{ p: 0, width: '100%', gap: 1.5, pt: 1 }}>
           <Stack direction="row" spacing={1.5} sx={{ width: '100%' }}>
             <AppButton
               intent="secondary"

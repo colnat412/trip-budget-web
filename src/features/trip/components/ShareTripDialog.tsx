@@ -149,14 +149,20 @@ const ShareTripDialog = ({
         </Box>
       ) : (
         <Stack spacing={2.5}>
-          <FormControl component="fieldset">
+          <FormControl
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 1,
+              width: '100%',
+            }}
+          >
             <FormLabel
-              component="legend"
               sx={{
                 fontSize: '13px',
                 fontWeight: 700,
                 color: 'text.primary',
-                mb: 1,
+                '&.Mui-focused': { color: 'text.primary' },
               }}
             >
               {t('accessLevelLabel')}
@@ -166,10 +172,10 @@ const ShareTripDialog = ({
               onChange={(e) =>
                 setUserVisibility(e.target.value as TripVisibility)
               }
+              sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}
             >
               <Box
                 sx={{
-                  mb: 1.5,
                   p: 1.5,
                   borderRadius: '14px',
                   border: '1px solid',
@@ -195,7 +201,14 @@ const ShareTripDialog = ({
                   value="PRIVATE"
                   control={<Radio size="small" />}
                   label={
-                    <Box sx={{ ml: 0.5 }}>
+                    <Box
+                      sx={{
+                        pl: 0.5,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 0.25,
+                      }}
+                    >
                       <Box
                         sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
                       >
@@ -217,7 +230,6 @@ const ShareTripDialog = ({
                         sx={{
                           color: 'text.secondary',
                           fontSize: '12px',
-                          mt: 0.25,
                         }}
                       >
                         {t('privateDesc')}
@@ -244,6 +256,9 @@ const ShareTripDialog = ({
                   boxShadow: 'none',
                   cursor: 'pointer',
                   transition: 'all 0.2s ease',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 1.5,
                   '&:hover': {
                     borderColor: 'primary.main',
                     boxShadow: 'none',
@@ -255,7 +270,14 @@ const ShareTripDialog = ({
                   value="PUBLIC"
                   control={<Radio size="small" />}
                   label={
-                    <Box sx={{ ml: 0.5 }}>
+                    <Box
+                      sx={{
+                        pl: 0.5,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 0.25,
+                      }}
+                    >
                       <Box
                         sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
                       >
@@ -277,7 +299,6 @@ const ShareTripDialog = ({
                         sx={{
                           color: 'text.secondary',
                           fontSize: '12px',
-                          mt: 0.25,
                         }}
                       >
                         {t('publicDesc')}
@@ -290,7 +311,6 @@ const ShareTripDialog = ({
                 {visibility === 'PUBLIC' && (
                   <Box
                     sx={{
-                      mt: 1.5,
                       pt: 1.5,
                       borderTop: 1,
                       borderColor: alpha(theme.palette.divider, 0.6),
@@ -405,13 +425,12 @@ const ShareTripDialog = ({
 
           <Divider />
 
-          <Box>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
             <Box
               sx={{
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                mb: 1,
               }}
             >
               <Typography
@@ -423,7 +442,7 @@ const ShareTripDialog = ({
               >
                 {t('shareLinkTitle')}
               </Typography>
-              {/* <Tooltip title={t('regenerateTooltip')} arrow placement="top">
+              <Tooltip title={t('regenerateTooltip')} arrow placement="top">
                 <Box
                   component="button"
                   type="button"
@@ -463,7 +482,7 @@ const ShareTripDialog = ({
                   />
                   <span>{t('regenerateBtn')}</span>
                 </Box>
-              </Tooltip> */}
+              </Tooltip>
             </Box>
 
             <Box
@@ -538,9 +557,7 @@ const ShareTripDialog = ({
               </AppButton>
             </Box>
 
-            <Typography
-              sx={{ fontSize: '11px', color: 'text.secondary', mt: 0.75 }}
-            >
+            <Typography sx={{ fontSize: '11px', color: 'text.secondary' }}>
               {visibility === 'PUBLIC'
                 ? t('publicLinkNotice')
                 : t('privateLinkNotice')}

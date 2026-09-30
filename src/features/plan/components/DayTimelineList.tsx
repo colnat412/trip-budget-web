@@ -91,93 +91,14 @@ const DayTimelineList = ({
         width: '100%',
         display: 'flex',
         flexDirection: 'column',
+        gap: 2,
       }}
     >
-      {/* tạm ẩn */}
-      {/* {canOptimize && distanceData && distanceData.totalDistanceMeters > 0 && (
-        <Card
-          sx={{
-            mb: 2.5,
-            p: { xs: 1.5, sm: 2 },
-            borderRadius: '16px',
-            border: 1,
-            borderColor: alpha(theme.palette.primary.main, 0.2),
-            bgcolor:
-              theme.palette.mode === 'dark'
-                ? alpha(theme.palette.primary.main, 0.08)
-                : alpha(theme.palette.primary.main, 0.03),
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            flexWrap: 'wrap',
-            gap: 1.5,
-          }}
-        >
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-            <Box
-              sx={{
-                width: 36,
-                height: 36,
-                borderRadius: '10px',
-                bgcolor: alpha(theme.palette.primary.main, 0.15),
-                color: 'primary.main',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <DirectionsCarFilledRoundedIcon sx={{ fontSize: '20px' }} />
-            </Box>
-            <Box>
-              <Typography
-                sx={{
-                  fontSize: '13px',
-                  fontWeight: 700,
-                  color: 'text.primary',
-                }}
-              >
-                {t('dayTotalTitle', {
-                  dist: distanceData.formattedTotalDistance,
-                  time: distanceData.formattedTotalDuration,
-                })}
-              </Typography>
-              <Typography sx={{ fontSize: '12px', color: 'text.secondary' }}>
-                {t('dayTotalSub', { count: distanceData.segments.length })}
-              </Typography>
-            </Box>
-          </Box>
-
-          {onOpenOptimizeRoute && (
-            <Button
-              variant="outlined"
-              size="small"
-              onClick={onOpenOptimizeRoute}
-              startIcon={<AutoAwesomeRoundedIcon sx={{ fontSize: '16px' }} />}
-              sx={{
-                textTransform: 'none',
-                fontWeight: 700,
-                fontSize: '12px',
-                borderRadius: '10px',
-                borderColor: alpha(theme.palette.primary.main, 0.4),
-                bgcolor: 'background.paper',
-                '&:hover': {
-                  borderColor: 'primary.main',
-                  bgcolor: alpha(theme.palette.primary.main, 0.08),
-                },
-              }}
-            >
-              {t('optimizeBtn')}
-            </Button>
-          )}
-        </Card>
-      )} */}
-
       <Box
         sx={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          mb: 2,
           px: 0.5,
           flexWrap: 'wrap',
           gap: 1.5,

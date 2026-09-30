@@ -78,6 +78,9 @@ const ExpenseDetailDialog = ({
             bgcolor: 'action.hover',
             border: 1,
             borderColor: 'divider',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 1.5,
           }}
         >
           <Stack
@@ -86,7 +89,6 @@ const ExpenseDetailDialog = ({
               justifyContent: 'space-between',
               alignItems: 'flex-start',
               gap: 1.5,
-              mb: 1.5,
             }}
           >
             <Stack spacing={0.5}>
@@ -145,7 +147,7 @@ const ExpenseDetailDialog = ({
               fontSize: '12px',
               fontWeight: 700,
               textTransform: 'uppercase',
-              letterSpacing: '0.05em',
+              letterSpacing: '0.5px',
               color: 'text.secondary',
             }}
           >
@@ -227,7 +229,7 @@ const ExpenseDetailDialog = ({
                 fontSize: '12px',
                 fontWeight: 700,
                 textTransform: 'uppercase',
-                letterSpacing: '0.05em',
+                letterSpacing: '0.5px',
                 color: 'text.secondary',
               }}
             >
@@ -406,7 +408,7 @@ const ExpenseDetailDialog = ({
                   fontSize: '12px',
                   fontWeight: 700,
                   textTransform: 'uppercase',
-                  letterSpacing: '0.05em',
+                  letterSpacing: '0.5px',
                   color: 'text.secondary',
                 }}
               >
@@ -442,7 +444,7 @@ const ExpenseDetailDialog = ({
                 fontSize: '12px',
                 fontWeight: 700,
                 textTransform: 'uppercase',
-                letterSpacing: '0.05em',
+                letterSpacing: '0.5px',
                 color: 'text.secondary',
               }}
             >

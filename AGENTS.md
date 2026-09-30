@@ -1973,6 +1973,22 @@ If the user has already supplied a specific task, do not block on a broad questi
     - **Kiểm thử chất lượng**:
       - `export PATH="/home/hanbiro/.nvm/versions/node/v20.20.2/bin:$PATH" && npx tsc --noEmit && npm run lint` -> 0 errors, 0 warnings.
 
+45. **Rà Soát Toàn Diện Frontend & Chuẩn Hóa 100% Theo Quy Chuẩn `AGENTS.md`**:
+    - **Yêu cầu & Mục tiêu**:
+      - Rà soát toàn bộ codebase Frontend (`trip-budget-web/src`), đối chiếu nghiêm ngặt với các tiêu chuẩn trong `AGENTS.md` (Quy tắc Container owns spacing, cấm child margins `m`, `mt`, `mb`; quy tắc đơn vị CSS pixels thay vì `em`/`rem`; chuẩn Flat UI cho Modal Dialogs không bóng đổ; loại bỏ cảnh báo lint và type check).
+    - **Kiến trúc triển khai & Giải pháp kỹ thuật**:
+      - **Chuẩn hóa Container Owns Spacing (Loại bỏ triệt để Child Margins)**:
+        - `AppConfirmDialog.tsx`: Loại bỏ `mb: 2` trên icon, `mb: 1` trên title và `mb: 3` trên content; chuyển sang container `<Box sx={{ gap: 1.5 }}>` điều phối toàn bộ khoảng cách giữa các phần tử con.
+        - `ShareTripDialog.tsx`: Loại bỏ `component="fieldset"` và `component="legend"` trên `FormControl` và `FormLabel` (do đặc tả HTML browser không cho phép `<legend>` tham gia Flex formatting context của `<fieldset>`, gây mất hiệu lực thuộc tính `gap`), chuyển về `<div>` flexbox chuẩn với `gap: 1.25`, loại bỏ hoàn toàn `mb: 1.5`, `mb: 1`, `mt: 0.25`, `mt: 0.75`.
+        - `DayTimelineList.tsx`: Thêm `gap: 2` trên container chính, loại bỏ `mb: 2` trên thanh tiêu đề ngày.
+        - `ExpenseDetailDialog.tsx`: Thêm `display: 'flex', flexDirection: 'column', gap: 1.5` trên khối tóm tắt, loại bỏ `mb: 1.5`.
+      - **Chuẩn hóa đơn vị đo lường (Pixels over EM/REM)**:
+        - `ExpenseDetailDialog.tsx`: Chuyển đổi toàn bộ `letterSpacing: '0.05em'` sang đơn vị pixel chuẩn `letterSpacing: '0.5px'`.
+      - **Đồng bộ hóa Modal Flat UI & Khử bóng đổ**:
+        - Đảm bảo toàn bộ các dialog trong hệ thống (`AppDialog`, `AppConfirmDialog`, `ShareTripDialog`, `ActivityLogDialog`) đều phẳng, không bị bóng đen thô ráp của theme `MuiCard` làm ô nhiễm nền.
+    - **Kiểm thử chất lượng**:
+      - `export PATH="/home/hanbiro/.nvm/versions/node/v20.20.2/bin:$PATH" && npx tsc --noEmit && npm run lint` -> 0 errors, 0 warnings.
+
 ### Immediate likely next tasks:
 
 1. **Module Quét Hóa Đơn Bằng AI / Camera (`/scan`)**: OCR hóa đơn chi tiêu tự động trích xuất số tiền, ngày, danh mục, gán vào chuyến đi.
