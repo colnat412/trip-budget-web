@@ -6,11 +6,11 @@ import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
 import ChecklistRoundedIcon from '@mui/icons-material/ChecklistRounded';
 import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded';
+import { Share } from '@mui/icons-material';
 import { useTranslations } from 'next-intl';
 
 import { AppButton } from '@/base/components/ui';
 import { formatCurrency } from '@/base/utils';
-import { Share } from '@mui/icons-material';
 
 export interface PlanHeaderProps {
   tripName: string;
@@ -45,6 +45,42 @@ const PlanHeader = ({
 }: PlanHeaderProps) => {
   const t = useTranslations('plan');
 
+  const secondaryBtnSx = {
+    flex: { xs: '1 1 calc(50% - 4px)', sm: 'initial' },
+    minHeight: { xs: '36px', sm: '40px' },
+    px: { xs: 1.25, sm: 2 },
+    fontSize: { xs: '12px', sm: '13px' },
+    fontWeight: 700,
+    borderRadius: { xs: '10px', sm: '12px' },
+    whiteSpace: 'nowrap',
+    '& .MuiSvgIcon-root': {
+      fontSize: { xs: '16px', sm: '18px' },
+    },
+  };
+
+  const aiBtnSx = {
+    ...secondaryBtnSx,
+    borderColor: 'primary.light',
+    color: 'primary.main',
+    '&:hover': {
+      borderColor: 'primary.main',
+      bgcolor: 'primary.50',
+    },
+  };
+
+  const primaryBtnSx = {
+    flex: { xs: '1 1 100%', sm: 'initial' },
+    minHeight: { xs: '38px', sm: '40px' },
+    px: { xs: 2, sm: 2.5 },
+    fontSize: { xs: '13px', sm: '14px' },
+    fontWeight: 700,
+    borderRadius: { xs: '10px', sm: '12px' },
+    whiteSpace: 'nowrap',
+    '& .MuiSvgIcon-root': {
+      fontSize: { xs: '18px', sm: '20px' },
+    },
+  };
+
   return (
     <Box
       sx={{
@@ -53,17 +89,22 @@ const PlanHeader = ({
         flexDirection: { xs: 'column', md: 'row' },
         justifyContent: 'space-between',
         alignItems: { xs: 'flex-start', md: 'center' },
-        gap: 2,
+        gap: { xs: 1.5, sm: 2 },
       }}
     >
       <Box
-        sx={{ display: 'flex', flexDirection: 'column', gap: 0.5, minWidth: 0 }}
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 0.5,
+          minWidth: 0,
+        }}
       >
         <Typography
           component="h1"
           sx={{
             fontFamily: 'var(--font-display)',
-            fontSize: { xs: '22px', sm: '28px' },
+            fontSize: { xs: '20px', sm: '26px', md: '28px' },
             fontWeight: 800,
             color: 'text.primary',
             letterSpacing: '-0.5px',
@@ -74,13 +115,17 @@ const PlanHeader = ({
 
         <Stack
           direction="row"
-          spacing={1}
-          sx={{ alignItems: 'center', flexWrap: 'wrap' }}
+          spacing={0.75}
+          sx={{
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            rowGap: 0.25,
+          }}
         >
           <Typography
             sx={{
-              fontSize: { xs: '13px', sm: '14px' },
-              fontWeight: 600,
+              fontSize: { xs: '12.5px', sm: '13.5px' },
+              fontWeight: 700,
               color: 'primary.main',
             }}
           >
@@ -89,7 +134,7 @@ const PlanHeader = ({
           {destination && (
             <Typography
               sx={{
-                fontSize: { xs: '12px', sm: '13px' },
+                fontSize: { xs: '11.5px', sm: '12.5px' },
                 color: 'text.secondary',
               }}
             >
@@ -98,7 +143,7 @@ const PlanHeader = ({
           )}
           <Typography
             sx={{
-              fontSize: { xs: '12px', sm: '13px' },
+              fontSize: { xs: '11.5px', sm: '12.5px' },
               color: 'text.secondary',
             }}
           >
@@ -109,7 +154,7 @@ const PlanHeader = ({
           {totalEstimatedCost > 0 && (
             <Typography
               sx={{
-                fontSize: { xs: '12px', sm: '13px' },
+                fontSize: { xs: '11.5px', sm: '12.5px' },
                 fontWeight: 700,
                 color: 'success.main',
               }}
@@ -127,16 +172,16 @@ const PlanHeader = ({
           flexDirection: 'row',
           alignSelf: { xs: 'stretch', sm: 'auto' },
           flexWrap: 'wrap',
-          gap: 1.5,
+          gap: { xs: 1, sm: 1.25 },
         }}
       >
         {onOpenActivityLogs && (
           <AppButton
             intent="secondary"
-            size="medium"
+            size="small"
             startIcon={<HistoryRoundedIcon />}
             onClick={onOpenActivityLogs}
-            sx={{ flex: { xs: '1 1 auto', sm: 'none' } }}
+            sx={secondaryBtnSx}
           >
             {t('activityLogBtn')}
           </AppButton>
@@ -145,10 +190,10 @@ const PlanHeader = ({
         {!readOnly && onOpenShare && (
           <AppButton
             intent="secondary"
-            size="medium"
+            size="small"
             startIcon={<Share />}
             onClick={onOpenShare}
-            sx={{ flex: { xs: '1 1 auto', sm: 'none' } }}
+            sx={secondaryBtnSx}
           >
             {t('shareBtn')}
           </AppButton>
@@ -156,10 +201,10 @@ const PlanHeader = ({
 
         <AppButton
           intent="secondary"
-          size="medium"
+          size="small"
           startIcon={<ChecklistRoundedIcon />}
           onClick={onOpenChecklist}
-          sx={{ flex: { xs: '1 1 auto', sm: 'none' } }}
+          sx={secondaryBtnSx}
         >
           {t('checklistBtn')}
         </AppButton>
@@ -167,19 +212,12 @@ const PlanHeader = ({
         {!readOnly && onOpenAiPlanner && (
           <AppButton
             intent="secondary"
-            size="medium"
-            startIcon={<AutoAwesomeRoundedIcon sx={{ color: 'primary.main' }} />}
+            size="small"
+            startIcon={
+              <AutoAwesomeRoundedIcon sx={{ color: 'primary.main' }} />
+            }
             onClick={onOpenAiPlanner}
-            sx={{
-              flex: { xs: '1 1 auto', sm: 'none' },
-              borderColor: 'primary.light',
-              color: 'primary.main',
-              fontWeight: 700,
-              '&:hover': {
-                borderColor: 'primary.main',
-                bgcolor: 'primary.50',
-              },
-            }}
+            sx={aiBtnSx}
           >
             {t('aiPlannerBtn')}
           </AppButton>
@@ -188,10 +226,10 @@ const PlanHeader = ({
         {!readOnly && onAddActivity && (
           <AppButton
             intent="primary"
-            size="medium"
+            size="small"
             startIcon={<AddRoundedIcon />}
             onClick={onAddActivity}
-            sx={{ flex: { xs: '1 1 100%', sm: 'none' } }}
+            sx={primaryBtnSx}
           >
             {t('addActivity')}
           </AppButton>

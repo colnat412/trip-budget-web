@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import {
   Box,
-  Card,
   CircularProgress,
   Divider,
   FormControl,
@@ -168,12 +167,12 @@ const ShareTripDialog = ({
                 setUserVisibility(e.target.value as TripVisibility)
               }
             >
-              <Card
-                variant="outlined"
+              <Box
                 sx={{
                   mb: 1.5,
                   p: 1.5,
-                  borderRadius: '12px',
+                  borderRadius: '14px',
+                  border: '1px solid',
                   borderColor:
                     visibility === 'PRIVATE'
                       ? 'primary.main'
@@ -182,8 +181,13 @@ const ShareTripDialog = ({
                     visibility === 'PRIVATE'
                       ? alpha(theme.palette.primary.main, 0.04)
                       : 'background.paper',
+                  boxShadow: 'none',
                   cursor: 'pointer',
                   transition: 'all 0.2s ease',
+                  '&:hover': {
+                    borderColor: 'primary.main',
+                    boxShadow: 'none',
+                  },
                 }}
                 onClick={() => setUserVisibility('PRIVATE')}
               >
@@ -222,13 +226,13 @@ const ShareTripDialog = ({
                   }
                   sx={{ m: 0, width: '100%', alignItems: 'flex-start' }}
                 />
-              </Card>
+              </Box>
 
-              <Card
-                variant="outlined"
+              <Box
                 sx={{
                   p: 1.5,
-                  borderRadius: '12px',
+                  borderRadius: '14px',
+                  border: '1px solid',
                   borderColor:
                     visibility === 'PUBLIC'
                       ? 'primary.main'
@@ -237,8 +241,13 @@ const ShareTripDialog = ({
                     visibility === 'PUBLIC'
                       ? alpha(theme.palette.primary.main, 0.04)
                       : 'background.paper',
+                  boxShadow: 'none',
                   cursor: 'pointer',
                   transition: 'all 0.2s ease',
+                  '&:hover': {
+                    borderColor: 'primary.main',
+                    boxShadow: 'none',
+                  },
                 }}
                 onClick={() => setUserVisibility('PUBLIC')}
               >
@@ -390,7 +399,7 @@ const ShareTripDialog = ({
                     </Select>
                   </Box>
                 )}
-              </Card>
+              </Box>
             </RadioGroup>
           </FormControl>
 
@@ -414,7 +423,7 @@ const ShareTripDialog = ({
               >
                 {t('shareLinkTitle')}
               </Typography>
-              <Tooltip title={t('regenerateTooltip')} arrow placement="top">
+              {/* <Tooltip title={t('regenerateTooltip')} arrow placement="top">
                 <Box
                   component="button"
                   type="button"
@@ -454,7 +463,7 @@ const ShareTripDialog = ({
                   />
                   <span>{t('regenerateBtn')}</span>
                 </Box>
-              </Tooltip>
+              </Tooltip> */}
             </Box>
 
             <Box
@@ -469,12 +478,14 @@ const ShareTripDialog = ({
                 border: 1,
                 borderColor: (theme) => alpha(theme.palette.divider, 0.8),
                 borderRadius: '12px',
+                boxShadow: 'none',
                 p: 0.6,
                 pl: 1.5,
                 gap: 1.5,
                 transition: 'all 0.2s ease',
                 '&:hover': {
                   borderColor: 'primary.main',
+                  boxShadow: 'none',
                 },
               }}
             >

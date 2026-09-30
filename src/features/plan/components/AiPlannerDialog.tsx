@@ -5,14 +5,12 @@ import {
   Box,
   Stack,
   Typography,
-  Chip,
   CircularProgress,
   InputAdornment,
 } from '@mui/material';
 import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
 import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined';
-import LightbulbOutlinedIcon from '@mui/icons-material/LightbulbOutlined';
 import { useTranslations } from 'next-intl';
 
 import {
@@ -35,15 +33,6 @@ export interface AiPlannerDialogProps {
   onSuccess?: () => void;
   onError?: (message: string) => void;
 }
-
-const PREFERENCE_SUGGESTIONS = [
-  '🍜 Ẩm thực đường phố',
-  '☕ Cafe & check-in',
-  '🌿 Nghỉ dưỡng, thư thái',
-  '💰 Tối ưu ngân sách',
-  '🏛️ Lịch sử & văn hóa',
-  '🌊 Hoạt động ngoài trời',
-];
 
 const AiPlannerDialog = ({
   open,
@@ -73,15 +62,6 @@ const AiPlannerDialog = ({
     if (isPending) return;
     setDestinationInput(null);
     onClose();
-  };
-
-  const handleAddSuggestion = (text: string) => {
-    setPreferences((prev) => {
-      const cleanText = text.replace(/^[^\s]+\s/, '');
-      if (!prev) return cleanText;
-      if (prev.includes(cleanText)) return prev;
-      return `${prev}, ${cleanText}`;
-    });
   };
 
   const handleGenerate = async () => {
@@ -214,46 +194,6 @@ const AiPlannerDialog = ({
           disabled={isPending}
           fullWidth
         />
-
-        <Box>
-          <Typography
-            variant="caption"
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 0.5,
-              fontWeight: 600,
-              color: 'text.secondary',
-              mb: 1,
-            }}
-          >
-            <LightbulbOutlinedIcon
-              sx={{ fontSize: 16, color: 'warning.main' }}
-            />
-            {tDialog('aiStyleSuggestions')}
-          </Typography>
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-            {PREFERENCE_SUGGESTIONS.map((tag) => (
-              <Chip
-                key={tag}
-                label={tag}
-                size="small"
-                onClick={() => handleAddSuggestion(tag)}
-                disabled={isPending}
-                sx={{
-                  cursor: 'pointer',
-                  borderRadius: '12px',
-                  fontWeight: 500,
-                  bgcolor: 'action.hover',
-                  '&:hover': {
-                    bgcolor: 'action.selected',
-                    color: 'primary.main',
-                  },
-                }}
-              />
-            ))}
-          </Box>
-        </Box>
 
         <AppTextField
           label={tDialog('aiPreferencesLabel')}

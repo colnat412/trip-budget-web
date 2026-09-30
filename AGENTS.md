@@ -1942,6 +1942,37 @@ If the user has already supplied a specific task, do not block on a broad questi
     - **Kiểm thử chất lượng**:
       - `export PATH="/home/hanbiro/.nvm/versions/node/v20.20.2/bin:$PATH" && npx tsc --noEmit && npm run lint` -> 0 errors, 0 warnings.
 
+43. **Tối Ưu Kích Thước & Trải Nghiệm Responsive Cho Header Kế Hoạch (`PlanHeader.tsx`)**:
+    - **Yêu cầu & Mục tiêu**:
+      - Trên màn hình di động (mobile viewport), các nút thao tác (Lịch sử thay đổi, Chia sẻ, Chuẩn bị hành lý, AI Kế hoạch) trước đây bị quá khổ (desktop size `minHeight: 44px`, font lớn, chiếm hết không gian chiều dọc).
+      - Thu gọn kích thước nút, font chữ và khoảng cách (spacing/gap) phù hợp với chuẩn UI mobile (app-like layout), tạo bố cục 2 cột cân xứng, gọn gàng, giảm hơn 35% chiều cao chiếm dụng trên màn hình nhỏ.
+    - **Kiến trúc triển khai & Giải pháp kỹ thuật**:
+      - **Responsive Button Sizing (`secondaryBtnSx`, `primaryBtnSx`)**:
+        - Chiều cao: `minHeight: { xs: '36px', sm: '40px' }` (giảm từ 44px xuống 36px trên mobile).
+        - Đệm ngang: `px: { xs: 1.25, sm: 2 }` (10px trên mobile, 16px trên desktop).
+        - Cỡ chữ: `fontSize: { xs: '12px', sm: '13px' }`, `fontWeight: 700`, `whiteSpace: 'nowrap'`.
+        - Bo viền: `borderRadius: { xs: '10px', sm: '12px' }`.
+        - Cỡ icon: `fontSize: { xs: '16px', sm: '18px' }` tương xứng với cỡ chữ.
+      - **Bố cục 2 cột linh hoạt (2-Column Grid on Mobile)**:
+        - `flex: { xs: '1 1 calc(50% - 4px)', sm: 'initial' }` và `gap: { xs: 1, sm: 1.25 }`.
+        - Trên mobile, 4 nút phụ tự động chia đều thành 2 hàng $\times$ 2 cột cân bằng, vừa vặn không bị tràn mép.
+        - Nút hành động chính ("Thêm hoạt động"): `flex: { xs: '1 1 100%', sm: 'initial' }`, `minHeight: { xs: '38px', sm: '40px' }`, nổi bật làm thanh CTA chính ở dưới cùng.
+      - **Typography & Header Title Responsive**:
+        - Tiêu đề: `fontSize: { xs: '20px', sm: '26px', md: '28px' }`.
+        - Dòng metadata: `fontSize: { xs: '11.5px', sm: '12.5px' }`, `rowGap: 0.25`, tự động ngắt dòng nhẹ nhàng khi màn hình hẹp.
+    - **Kiểm thử chất lượng**:
+      - `export PATH="/home/hanbiro/.nvm/versions/node/v20.20.2/bin:$PATH" && npx tsc --noEmit && npm run lint` -> 0 errors, 0 warnings.
+
+44. **Loại Bỏ Hoàn Toàn Bóng Đổ (`boxShadow: 'none'`) Trong Modal Chia Sẻ Chuyến Đi (`ShareTripDialog.tsx`)**:
+    - **Yêu cầu & Mục tiêu**:
+      - Loại bỏ bóng đổ (`boxShadow`) bao quanh các thẻ chọn quyền truy cập (Riêng tư / Công khai) và ô liên kết chia sẻ trong modal "Chia sẻ chuyến đi", đảm bảo giao diện phẳng (flat design), màu nền đồng bộ tuyệt đối với thân dialog và không bị quầng xám bao quanh.
+    - **Kiến trúc triển khai & Giải pháp kỹ thuật**:
+      - Thay thế toàn bộ thẻ `<Card variant="outlined">` sang component `<Box>` chuyên dụng để loại bỏ triệt để bóng đổ mặc định kế thừa từ theme (`boxShadow: '0 24px 70px ...'`).
+      - Cấu hình `boxShadow: 'none'` cho thẻ quyền Riêng tư, thẻ quyền Công khai và khung liên kết chia sẻ (cả trạng thái thường lẫn khi `&:hover`).
+      - Giữ nguyên viền nét `border: '1px solid'`, bo góc `borderRadius: '14px'`, phân tách trạng thái active (`primary.main`) và inactive (`divider`) rõ ràng.
+    - **Kiểm thử chất lượng**:
+      - `export PATH="/home/hanbiro/.nvm/versions/node/v20.20.2/bin:$PATH" && npx tsc --noEmit && npm run lint` -> 0 errors, 0 warnings.
+
 ### Immediate likely next tasks:
 
 1. **Module Quét Hóa Đơn Bằng AI / Camera (`/scan`)**: OCR hóa đơn chi tiêu tự động trích xuất số tiền, ngày, danh mục, gán vào chuyến đi.
