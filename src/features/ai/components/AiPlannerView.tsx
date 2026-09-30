@@ -6,7 +6,6 @@ import {
   Box,
   Stack,
   Typography,
-  Chip,
   CircularProgress,
   InputAdornment,
   MenuItem,
@@ -16,7 +15,6 @@ import {
   Alert,
 } from '@mui/material';
 import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
-import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined';
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
 import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined';
 import LightbulbOutlinedIcon from '@mui/icons-material/LightbulbOutlined';
@@ -39,17 +37,18 @@ import {
 } from '@/base/components/ui';
 import { useTripContext } from '@/features/trip/context/TripContext';
 import { useGenerateAiPlan } from '@/features/plan/hooks/usePlanMutation';
+import DestinationAutocomplete from '@/features/trip/components/DestinationAutocomplete';
 
-const PREFERENCE_CHIPS = [
-  '🍜 Ẩm thực & đặc sản bản địa',
-  '☕ Cafe view đẹp & check-in',
-  '🌿 Nghỉ dưỡng & thư giãn nhẹ nhàng',
-  '💰 Tối ưu ngân sách sinh viên',
-  '🏛️ Lịch sử & danh lam thắng cảnh',
-  '🌊 Trải nghiệm ngoài trời & trekking',
-  '🛍️ Mua sắm chợ đêm & quà lưu niệm',
-  '🌙 Trải nghiệm ẩm thực đêm',
-];
+// const PREFERENCE_CHIPS = [
+//   '🍜 Ẩm thực & đặc sản bản địa',
+//   '☕ Cafe view đẹp & check-in',
+//   '🌿 Nghỉ dưỡng & thư giãn nhẹ nhàng',
+//   '💰 Tối ưu ngân sách sinh viên',
+//   '🏛️ Lịch sử & danh lam thắng cảnh',
+//   '🌊 Trải nghiệm ngoài trời & trekking',
+//   '🛍️ Mua sắm chợ đêm & quà lưu niệm',
+//   '🌙 Trải nghiệm ẩm thực đêm',
+// ];
 
 const AiPlannerView = () => {
   const router = useRouter();
@@ -59,23 +58,22 @@ const AiPlannerView = () => {
   const currentTrip = activeTrip || trips[0] || null;
   const tripId = currentTrip?.id;
 
-  const defaultCalculatedDays = (() => {
+  const tripDays = (() => {
     if (!currentTrip?.startDate || !currentTrip?.endDate) return 3;
     const start = new Date(currentTrip.startDate).getTime();
     const end = new Date(currentTrip.endDate).getTime();
     const diff = Math.ceil((end - start) / (1000 * 3600 * 24)) + 1;
-    return diff > 0 && diff <= 30 ? diff : 3;
+    return diff > 0 ? diff : 1;
   })();
 
   const [destinationInput, setDestinationInput] = useState<string | null>(null);
-  const [daysInput, setDaysInput] = useState<number | null>(null);
   const [people, setPeople] = useState(2);
   const [budget, setBudget] = useState<number | undefined>(5000000);
   const [preferences, setPreferences] = useState('');
   const [generatedSuccess, setGeneratedSuccess] = useState(false);
 
   const destination = destinationInput ?? (currentTrip?.destination || '');
-  const days = daysInput ?? defaultCalculatedDays;
+  const days = tripDays;
 
   const [toast, setToast] = useState<{
     open: boolean;
@@ -98,14 +96,14 @@ const AiPlannerView = () => {
     tripId: tripId || '',
   });
 
-  const handleAddChip = (chipText: string) => {
-    const text = chipText.replace(/^[^\s]+\s/, '');
-    setPreferences((prev) => {
-      if (!prev) return text;
-      if (prev.includes(text)) return prev;
-      return `${prev}, ${text}`;
-    });
-  };
+  // const handleAddChip = (chipText: string) => {
+  //   const text = chipText.replace(/^[^\s]+\s/, '');
+  //   setPreferences((prev) => {
+  //     if (!prev) return text;
+  //     if (prev.includes(text)) return prev;
+  //     return `${prev}, ${text}`;
+  //   });
+  // };
 
   const handleGenerate = async () => {
     if (!tripId) {
@@ -210,12 +208,12 @@ const AiPlannerView = () => {
               <AutoAwesomeRoundedIcon sx={{ fontSize: 16 }} />
               {t('badge')}
             </Box>
-            <Typography
+            {/* <Typography
               variant="caption"
               sx={{ color: 'text.secondary', fontWeight: 600 }}
             >
               {t('provider')}
-            </Typography>
+            </Typography> */}
           </Stack>
 
           <Typography
@@ -322,7 +320,6 @@ const AiPlannerView = () => {
                     onChange={(e) => {
                       selectTrip(e.target.value);
                       setDestinationInput(null);
-                      setDaysInput(null);
                     }}
                   >
                     {trips.map((tr) => (
@@ -334,26 +331,13 @@ const AiPlannerView = () => {
                 </FormControl>
               )}
 
-              <AppTextField
-                label={t('destinationLabel')}
-                placeholder={t('destinationPlaceholder')}
+              <DestinationAutocomplete
                 value={destination}
-                onChange={(e) => setDestinationInput(e.target.value)}
+                onChange={(val) => setDestinationInput(val)}
                 disabled={isPending}
                 required
-                fullWidth
-                slotProps={{
-                  input: {
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <PlaceOutlinedIcon
-                          fontSize="small"
-                          sx={{ color: 'primary.main' }}
-                        />
-                      </InputAdornment>
-                    ),
-                  },
-                }}
+                label={t('destinationLabel')}
+                placeholder={t('destinationPlaceholder')}
               />
 
               <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2.5}>
@@ -361,10 +345,8 @@ const AiPlannerView = () => {
                   label={t('daysLabel')}
                   type="number"
                   value={days}
-                  onChange={(e) =>
-                    setDaysInput(Math.max(1, parseInt(e.target.value, 10) || 1))
-                  }
-                  disabled={isPending}
+                  disabled
+                  helperText={t('daysDisabledHelper')}
                   fullWidth
                   slotProps={{
                     input: {
@@ -412,7 +394,6 @@ const AiPlannerView = () => {
                 disabled={isPending}
                 fullWidth
               />
-
               {/* <Box>
                 <Typography
                   variant="body2"

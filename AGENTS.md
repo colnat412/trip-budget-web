@@ -1878,7 +1878,48 @@ If the user has already supplied a specific task, do not block on a broad questi
     - **Kiểm thử chất lượng**:
       - `export PATH="/home/hanbiro/.nvm/versions/node/v20.20.2/bin:$PATH" && npx tsc --noEmit && npm run lint` -> 0 errors, 0 warnings.
 
+40. **Triển khai Cơ chế Xác thực Nội bộ Service-to-Service (M2M) Cho AI Microservice (`X-Internal-API-Key`)**:
+    - **Yêu cầu & Mục tiêu**:
+      - Loại bỏ lỗ hổng bảo mật: Service AI Python (`tripbudget-ai`) trước đây mở công khai không có xác thực, dẫn tới rủi ro bị khai thác "xài chùa" Google Gemini API Key hoặc tấn công DDoS làm cạn kiệt hạn mức.
+      - Thiết lập cơ chế xác thực nội bộ an toàn, zero-latency, chuẩn kiến trúc Microservices giữa Spring Boot Core và Python FastAPI.
+      - Chống tấn công Timing Attack khi so sánh chuỗi bảo mật.
+      - Đảm bảo trải nghiệm dev mượt mà: Có fallback key mặc định cho môi trường local dev để các lập trình viên không bị vướng lỗi cấu hình, đồng thời hỗ trợ ghi đè linh hoạt qua biến môi trường (`INTERNAL_API_KEY` / `AI_SERVICE_API_KEY`) khi deploy production lên Render/Cloud.
+    - **Kiến trúc triển khai & Giải pháp kỹ thuật**:
+      - **Tầng AI Service (Python FastAPI)**:
+        - `app/core/security.py`: Xây dựng dependency `verify_internal_api_key` sử dụng `APIKeyHeader(name="X-Internal-API-Key")`.
+        - Ứng dụng hàm **`secrets.compare_digest(api_key, expected_key)`** chuẩn thư viện bảo mật Python để so sánh chuỗi với thời gian cố định ($O(1)$ constant-time), chặn đứng mọi hình thức tấn công Timing Attack đo độ trễ suy đoán key.
+        - Gắn dependency bảo vệ các endpoint nhạy cảm (`/api/ai/generate-plan`, `/api/ai/models`).
+        - Duy trì endpoint công khai `/api/ai/health` phục vụ kiểm tra trạng thái (health-check/liveness probe) tự động cho hạ tầng Render.com / Kubernetes.
+      - **Tầng Core Backend (Spring Boot)**:
+        - Cấu hình `ai.service.api-key: ${AI_SERVICE_API_KEY:tb_sec_dev_internal_key_2026}` trong `application.yml` và `.env`.
+        - `AiPlanService.java`: Khai báo `@Value("${ai.service.api-key}")`, đóng gói request vào `HttpEntity` với header `X-Internal-API-Key` khi thực hiện gọi REST Template sang Python AI.
+    - **Kiểm thử chất lượng**:
+      - Python unit test: Xác thực từ chối 401 khi thiếu header hoặc sai key, chấp thuận 200 khi đúng key.
+      - Spring Boot Core: `mvn compile -o -DskipTests` -> `BUILD SUCCESS`.
+      - Frontend Web: `export PATH="/home/hanbiro/.nvm/versions/node/v20.20.2/bin:$PATH" && npx tsc --noEmit && npm run lint` -> 0 errors, 0 warnings.
+
+41. **Thay Thế Favicon Gốc Thành Logo Thương Hiệu Trên Tab Trình Duyệt (`src/app/icon.svg`, `favicon.ico`, `apple-icon.png`)**:
+    - **Yêu cầu & Mục tiêu**:
+      - Thay thế biểu tượng tam giác Vercel mặc định của Next.js bằng logo thương hiệu chính thức của Trip Budget (tương tự component `SidebarBrand.tsx`):
+        - Hộp bo góc vuông mềm mại (`border-radius: 12px` / 28%).
+        - Gradient chéo 135 độ từ màu thương hiệu chính (`#1E3A8A`) sang xanh tươi sáng (`#0EA5E9`).
+        - Biểu tượng máy bay cất cánh màu trắng (`FlightTakeoffRoundedIcon`) xoay nghiêng -18 độ sắc nét.
+      - Tối ưu hiển thị hoàn hảo trên mọi kích cỡ màn hình, tab trình duyệt, màn hình Retina/4K và thiết bị di động.
+    - **Kiến trúc triển khai & Giải pháp kỹ thuật**:
+      - **Vector Icon SVG (`src/app/icon.svg` & `public/icon.svg`)**:
+        - Chuẩn hóa tọa độ SVG `viewBox="0 0 38 38"`, định nghĩa `<linearGradient id="brandGradient" x1="0%" y1="0%" x2="100%" y2="100%">`.
+        - Tọa độ icon máy bay được căn chính giữa tại `(19, 19)`, xoay `rotate(-18)` và scale tỉ lệ chuẩn `0.8333`.
+        - Trình duyệt hiện đại (Chrome, Safari, Firefox, Edge) tự động ưu tiên load file vector SVG với `type="image/svg+xml" sizes="any"`, đảm bảo hình ảnh không bao giờ bị vỡ hạt.
+      - **Multi-size ICO (`src/app/favicon.ico` & `public/favicon.ico`)**:
+        - Tạo file nhị phân `.ico` chuẩn chứa đồng thời 3 kích thước: `16x16`, `32x32`, `48x48` để phục vụ các yêu cầu trực tiếp `/favicon.ico` và các trình duyệt truyền thống.
+      - **Apple Touch Icon (`src/app/apple-icon.png`)**:
+        - Sinh ảnh PNG độ phân giải cao `180x180` dành cho tính năng Add to Home Screen và bookmark trên iOS/macOS Safari.
+      - **Metadata Configuration (`src/app/layout.tsx`)**:
+        - Khai báo rõ ràng trong `metadata.icons` theo đúng chuẩn Next.js App Router.
+    - **Kiểm thử chất lượng**:
+      - `export PATH="/home/hanbiro/.nvm/versions/node/v20.20.2/bin:$PATH" && npx tsc --noEmit && npm run lint` -> 0 errors, 0 warnings.
+
 ### Immediate likely next tasks:
 
-1. **Kết nối Dữ liệu Thực tế cho Trang Tổng quan (`/overview`)**: Thay thế dữ liệu mock trong `RecentExpenseList` và `CategoryList` bằng dữ liệu thực tế từ API chi tiêu của chuyến đi đang diễn ra.
-2. **Module Quét Hóa Đơn Bằng AI / Camera (`/scan`)**: OCR hóa đơn chi tiêu tự động trích xuất số tiền, ngày, danh mục, gán vào chuyến đi.
+1. **Module Quét Hóa Đơn Bằng AI / Camera (`/scan`)**: OCR hóa đơn chi tiêu tự động trích xuất số tiền, ngày, danh mục, gán vào chuyến đi.
+2. **Xuất Báo Cáo Kế Hoạch & Chi Tiêu Chuyến Đi (Export PDF / Excel)**: Xuất file lịch trình du lịch và bảng kê quyết toán chia tiền.
