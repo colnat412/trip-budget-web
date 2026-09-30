@@ -542,7 +542,7 @@
       "emptyTitle": "No changes recorded",
       "emptyDesc": "Any activity modifications will be logged here."
     },
-    "totalDays": "Total Days",
+    "totalDays": "days",
     "totalActivities": "Activities",
     "completedActivities": "Completed",
     "totalEstimatedCost": "Estimated Cost",

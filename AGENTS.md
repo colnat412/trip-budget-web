@@ -1919,6 +1919,29 @@ If the user has already supplied a specific task, do not block on a broad questi
     - **Kiểm thử chất lượng**:
       - `export PATH="/home/hanbiro/.nvm/versions/node/v20.20.2/bin:$PATH" && npx tsc --noEmit && npm run lint` -> 0 errors, 0 warnings.
 
+42. **Đồng Bộ Giao Diện Dialog Lịch Sử Hoạt Động (`ActivityLogDialog.tsx`) Theo Chuẩn `AppDialog`, Xóa Lệch Màu Background & Bo Viền Thẻ Log**:
+    - **Yêu cầu & Mục tiêu**:
+      - Hoàn trả dialog về cấu trúc chuẩn `AppDialog` đồng bộ 100% với hệ thống modal của Trip Budget (`AiPlannerDialog`, `AppConfirmDialog`, `AddExpenseDialog`...).
+      - **Khắc phục lỗi lệch màu background**: Loại bỏ hoàn toàn mảng nền xám thô (`#f1f3f6`) gây tương phản gắt với thân dialog trắng. Đưa màu nền container về trong suốt (`transparent`) đồng bộ tuyệt đối với `background.paper` của dialog.
+      - **Bo viền thẩm mỹ cho từng log**: Thêm viền bo tròn mềm mại (`borderRadius: 16px`, `border: 1px solid divider`) cho từng thẻ nhật ký, giúp giao diện gọn gàng, có điểm nhấn và phân tách rõ ràng.
+      - Tinh chỉnh action badge mềm mại (`borderRadius: 8px`, pastel alpha fill), avatar định danh hài hòa với theme thương hiệu.
+    - **Kiến trúc triển khai & Giải pháp kỹ thuật**:
+      - **Tái cấu trúc trên nền tảng `AppDialog`**:
+        - Icon tròn vuông 12px màu `primary.main`, Display font `h2` kèm subtitle `description`.
+        - Nút đóng footer `AppButton intent="secondary"` trong `DialogActions` chuẩn mực.
+        - Khung dialog `maxWidth="md"` rộng rãi, thoáng đãng.
+      - **Xử lý nền & Viền thẻ (Card Border & Background Architecture)**:
+        - Sử dụng component `<Box>` với `borderRadius: '16px'`, `bgcolor: 'background.paper'`, `border: '1px solid'` theo `theme.palette.divider` (`rgba(30, 58, 138, 0.12)`).
+        - `boxShadow: '0 1px 4px rgba(...)'` nhẹ nhàng, hover đổi viền `primary.light` và nền xanh nhạt 2% `alpha(theme.palette.primary.main, 0.02)`.
+        - Tránh hoàn toàn việc dùng `Card` mặc định bị ảnh hưởng bởi global shadow lớn (`boxShadow: 0 24px 70px`).
+      - **Tối ưu danh sách cuộn**:
+        - `flexShrink: 0`, `width: '100%'`, `boxSizing: 'border-box'` loại bỏ hoàn toàn lỗi co rút thẻ.
+        - Thanh cuộn tùy chỉnh 6px bo góc mềm mại, không che lấp viền ngoài thẻ.
+      - **Tuân thủ quy chuẩn Spacing & Layout**:
+        - 100% khoảng cách được điều phối qua `gap` và `Stack spacing`. Không sử dụng `margin`, `mt`, `mb`.
+    - **Kiểm thử chất lượng**:
+      - `export PATH="/home/hanbiro/.nvm/versions/node/v20.20.2/bin:$PATH" && npx tsc --noEmit && npm run lint` -> 0 errors, 0 warnings.
+
 ### Immediate likely next tasks:
 
 1. **Module Quét Hóa Đơn Bằng AI / Camera (`/scan`)**: OCR hóa đơn chi tiêu tự động trích xuất số tiền, ngày, danh mục, gán vào chuyến đi.

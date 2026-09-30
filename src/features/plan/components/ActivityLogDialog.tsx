@@ -4,23 +4,21 @@ import React from 'react';
 import {
   Avatar,
   Box,
-  Card,
   Chip,
   CircularProgress,
-  Divider,
   Stack,
   Typography,
 } from '@mui/material';
-import { alpha, useTheme } from '@mui/material/styles';
 import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded';
 import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
 import SwapVertRoundedIcon from '@mui/icons-material/SwapVertRounded';
+import AccessTimeRoundedIcon from '@mui/icons-material/AccessTimeRounded';
 import { useTranslations } from 'next-intl';
 
-import { AppButton, AppDialog } from '@/base/components/ui';
+import { AppDialog, AppButton } from '@/base/components/ui';
 import usePlanActivityLogs from '../hooks/usePlanActivityLogs';
 import type { ActivityLogAction, PlanActivityLog } from '../types';
 
@@ -30,46 +28,50 @@ export interface ActivityLogDialogProps {
   tripId: string | number | null;
 }
 
-const getActionConfig = (action: ActivityLogAction) => {
-  switch (action) {
-    case 'CREATED':
-      return {
-        label: 'Tạo mới',
-        color: 'success' as const,
-        icon: <AddCircleRoundedIcon sx={{ fontSize: '14px' }} />,
-      };
-    case 'UPDATED':
-      return {
-        label: 'Chỉnh sửa',
-        color: 'info' as const,
-        icon: <EditRoundedIcon sx={{ fontSize: '14px' }} />,
-      };
-    case 'STATUS_CHANGED':
-      return {
-        label: 'Trạng thái',
-        color: 'warning' as const,
-        icon: <CheckCircleRoundedIcon sx={{ fontSize: '14px' }} />,
-      };
-    case 'DELETED':
-      return {
-        label: 'Đã xóa',
-        color: 'error' as const,
-        icon: <DeleteOutlineRoundedIcon sx={{ fontSize: '14px' }} />,
-      };
-    case 'REORDERED':
-      return {
-        label: 'Sắp xếp',
-        color: 'secondary' as const,
-        icon: <SwapVertRoundedIcon sx={{ fontSize: '14px' }} />,
-      };
-    default:
-      return {
-        label: 'Thay đổi',
-        color: 'default' as const,
-        icon: <HistoryRoundedIcon sx={{ fontSize: '14px' }} />,
-      };
-  }
-};
+const ACTION_CONFIGS = {
+  CREATED: {
+    label: 'Tạo mới',
+    bg: 'rgba(22, 163, 74, 0.08)',
+    color: '#16A34A',
+    borderColor: 'rgba(22, 163, 74, 0.25)',
+    icon: <AddCircleRoundedIcon sx={{ fontSize: '13px' }} />,
+  },
+  UPDATED: {
+    label: 'Chỉnh sửa',
+    bg: 'rgba(14, 165, 233, 0.1)',
+    color: '#0284C7',
+    borderColor: 'rgba(14, 165, 233, 0.25)',
+    icon: <EditRoundedIcon sx={{ fontSize: '13px' }} />,
+  },
+  STATUS_CHANGED: {
+    label: 'Trạng thái',
+    bg: 'rgba(245, 158, 11, 0.1)',
+    color: '#D97706',
+    borderColor: 'rgba(245, 158, 11, 0.25)',
+    icon: <CheckCircleRoundedIcon sx={{ fontSize: '13px' }} />,
+  },
+  DELETED: {
+    label: 'Đã xóa',
+    bg: 'rgba(220, 38, 38, 0.08)',
+    color: '#DC2626',
+    borderColor: 'rgba(220, 38, 38, 0.22)',
+    icon: <DeleteOutlineRoundedIcon sx={{ fontSize: '13px' }} />,
+  },
+  REORDERED: {
+    label: 'Sắp xếp',
+    bg: 'rgba(30, 58, 138, 0.08)',
+    color: '#1E3A8A',
+    borderColor: 'rgba(30, 58, 138, 0.2)',
+    icon: <SwapVertRoundedIcon sx={{ fontSize: '13px' }} />,
+  },
+  DEFAULT: {
+    label: 'Thay đổi',
+    bg: 'rgba(71, 85, 105, 0.08)',
+    color: '#475569',
+    borderColor: 'rgba(71, 85, 105, 0.2)',
+    icon: <HistoryRoundedIcon sx={{ fontSize: '13px' }} />,
+  },
+} as const;
 
 const formatLogTime = (isoString: string) => {
   try {
@@ -91,15 +93,19 @@ const ActivityLogDialog = ({
   onClose,
   tripId,
 }: ActivityLogDialogProps) => {
-  const theme = useTheme();
   const t = useTranslations('plan');
   const { logs, isLoading } = usePlanActivityLogs({ tripId, enabled: open });
+
+  const getActionConfig = (action: ActivityLogAction) => {
+    return ACTION_CONFIGS[action] ?? ACTION_CONFIGS.DEFAULT;
+  };
 
   return (
     <AppDialog
       open={open}
       onClose={onClose}
       title={t('activityLog.title')}
+      description={t('activityLog.subtitle')}
       icon={<HistoryRoundedIcon />}
       maxWidth="md"
       actions={
@@ -108,173 +114,250 @@ const ActivityLogDialog = ({
         </AppButton>
       }
     >
-      <Stack spacing={2}>
-        <Typography sx={{ color: 'text.secondary', fontSize: '13px' }}>
-          {t('activityLog.subtitle')}
-        </Typography>
-
-        <Divider />
-
-        {isLoading ? (
+      {isLoading ? (
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: 1.5,
+            py: 6,
+          }}
+        >
+          <CircularProgress size={32} />
+        </Box>
+      ) : logs.length === 0 ? (
+        <Box
+          sx={{
+            textAlign: 'center',
+            py: 6,
+            px: 2,
+            color: 'text.secondary',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: 1.5,
+          }}
+        >
           <Box
             sx={{
+              width: 56,
+              height: 56,
+              borderRadius: '16px',
+              bgcolor: 'action.hover',
               display: 'flex',
+              alignItems: 'center',
               justifyContent: 'center',
-              alignItems: 'center',
-              py: 6,
-            }}
-          >
-            <CircularProgress size={32} />
-          </Box>
-        ) : logs.length === 0 ? (
-          <Box
-            sx={{
-              textAlign: 'center',
-              py: 6,
               color: 'text.secondary',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: 1,
             }}
           >
-            <HistoryRoundedIcon sx={{ fontSize: '48px', opacity: 0.3 }} />
-            <Typography sx={{ fontWeight: 600, fontSize: '14px' }}>
-              {t('activityLog.emptyTitle')}
-            </Typography>
-            <Typography variant="caption" sx={{ color: 'text.disabled' }}>
-              {t('activityLog.emptyDesc')}
-            </Typography>
+            <HistoryRoundedIcon sx={{ fontSize: '28px', opacity: 0.7 }} />
           </Box>
-        ) : (
-          <Stack
-            spacing={1.5}
-            sx={{
-              maxHeight: '60vh',
-              overflowY: 'auto',
-              pr: 0.5,
-              minHeight: 0,
-            }}
+          <Typography
+            sx={{ fontWeight: 700, fontSize: '15px', color: 'text.primary' }}
           >
-            {logs.map((log: PlanActivityLog) => {
-              const actionCfg = getActionConfig(log.action);
-              return (
-                <Card
-                  key={log.id}
-                  variant="outlined"
-                  sx={{
-                    p: 2,
-                    borderRadius: '14px',
-                    bgcolor: alpha(theme.palette.background.paper, 0.6),
-                    flexShrink: 0,
-                    minHeight: 'fit-content',
-                    transition: 'all 0.2s',
-                    '&:hover': {
-                      bgcolor: 'action.hover',
-                      borderColor: 'primary.light',
-                    },
-                  }}
-                >
-                  <Stack spacing={1}>
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: { xs: 'flex-start', sm: 'center' },
-                        flexDirection: { xs: 'column', sm: 'row' },
-                        gap: 1,
-                      }}
+            {t('activityLog.emptyTitle')}
+          </Typography>
+          <Typography
+            variant="caption"
+            sx={{ color: 'text.secondary', maxWidth: 360, lineHeight: 1.5 }}
+          >
+            {t('activityLog.emptyDesc')}
+          </Typography>
+        </Box>
+      ) : (
+        <Box
+          sx={{
+            maxHeight: '60vh',
+            overflowY: 'auto',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 1.5,
+            pr: 0.5,
+            bgcolor: 'transparent',
+            '&::-webkit-scrollbar': { width: '6px' },
+            '&::-webkit-scrollbar-track': { bgcolor: 'transparent' },
+            '&::-webkit-scrollbar-thumb': {
+              bgcolor: 'divider',
+              borderRadius: '3px',
+              '&:hover': { bgcolor: 'text.disabled' },
+            },
+          }}
+        >
+          {logs.map((log: PlanActivityLog) => {
+            const actionCfg = getActionConfig(log.action);
+            return (
+              <Box
+                key={log.id}
+                sx={{
+                  flexShrink: 0,
+                  width: '100%',
+                  boxSizing: 'border-box',
+                  p: 2,
+                  borderRadius: '16px',
+                  bgcolor: 'background.paper',
+                  border: '1px solid',
+                  borderColor: 'divider',
+                  boxShadow: 'none',
+                  '&:hover': {
+                    borderColor: 'primary.light',
+                    bgcolor: 'action.hover',
+                    boxShadow: 'none',
+                  },
+                }}
+              >
+                <Stack spacing={1.25}>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      alignItems: { xs: 'flex-start', sm: 'center' },
+                      justifyContent: 'space-between',
+                      flexDirection: { xs: 'column', sm: 'row' },
+                      gap: 1,
+                    }}
+                  >
+                    <Stack
+                      direction="row"
+                      spacing={1.25}
+                      sx={{ alignItems: 'center', minWidth: 0 }}
                     >
-                      <Stack
-                        direction="row"
-                        spacing={1.25}
-                        sx={{ alignItems: 'center' }}
+                      <Avatar
+                        src={log.userAvatar ?? undefined}
+                        sx={{
+                          width: 34,
+                          height: 34,
+                          fontSize: '13px',
+                          fontWeight: 700,
+                          bgcolor: 'rgba(30, 58, 138, 0.08)',
+                          color: 'primary.main',
+                          border: '1px solid',
+                          borderColor: 'rgba(30, 58, 138, 0.18)',
+                          flexShrink: 0,
+                        }}
                       >
-                        <Avatar
-                          src={log.userAvatar ?? undefined}
+                        {log.userName
+                          ? log.userName.charAt(0).toUpperCase()
+                          : 'U'}
+                      </Avatar>
+                      <Box sx={{ minWidth: 0 }}>
+                        <Typography
                           sx={{
-                            width: 28,
-                            height: 28,
-                            fontSize: '12px',
+                            fontSize: '13.5px',
                             fontWeight: 700,
-                            bgcolor: 'primary.main',
+                            color: 'text.primary',
+                            lineHeight: 1.3,
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
                           }}
                         >
-                          {log.userName
-                            ? log.userName.charAt(0).toUpperCase()
-                            : 'U'}
-                        </Avatar>
-                        <Box>
+                          {log.userName}
+                        </Typography>
+                        {log.userEmail && (
                           <Typography
-                            sx={{ fontSize: '13px', fontWeight: 700 }}
+                            variant="caption"
+                            sx={{
+                              color: 'text.secondary',
+                              fontSize: '11.5px',
+                              display: 'block',
+                              lineHeight: 1.2,
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              whiteSpace: 'nowrap',
+                            }}
                           >
-                            {log.userName}
+                            {log.userEmail}
                           </Typography>
-                          {log.userEmail && (
-                            <Typography
-                              variant="caption"
-                              sx={{ color: 'text.secondary', fontSize: '11px' }}
-                            >
-                              {log.userEmail}
-                            </Typography>
-                          )}
-                        </Box>
-                      </Stack>
+                        )}
+                      </Box>
+                    </Stack>
 
+                    <Stack
+                      direction="row"
+                      spacing={1}
+                      sx={{
+                        alignItems: 'center',
+                        flexShrink: 0,
+                        alignSelf: { xs: 'flex-start', sm: 'center' },
+                      }}
+                    >
+                      <Chip
+                        size="small"
+                        icon={actionCfg.icon}
+                        label={actionCfg.label}
+                        sx={{
+                          height: 24,
+                          fontSize: '11px',
+                          fontWeight: 700,
+                          borderRadius: '8px',
+                          bgcolor: actionCfg.bg,
+                          color: actionCfg.color,
+                          border: `1px solid ${actionCfg.borderColor}`,
+                          '& .MuiChip-icon': {
+                            color: 'inherit',
+                            fontSize: '13px',
+                          },
+                        }}
+                      />
                       <Stack
                         direction="row"
-                        spacing={1}
+                        spacing={0.5}
                         sx={{ alignItems: 'center' }}
                       >
-                        <Chip
-                          size="small"
-                          icon={actionCfg.icon}
-                          label={actionCfg.label}
-                          color={actionCfg.color}
-                          sx={{ height: 22, fontSize: '11px', fontWeight: 700 }}
+                        <AccessTimeRoundedIcon
+                          sx={{ fontSize: '13px', color: 'text.disabled' }}
                         />
                         <Typography
                           variant="caption"
                           sx={{
                             color: 'text.secondary',
-                            fontSize: '11px',
+                            fontSize: '11.5px',
                             whiteSpace: 'nowrap',
                           }}
                         >
                           {formatLogTime(log.createdAt)}
                         </Typography>
                       </Stack>
-                    </Box>
+                    </Stack>
+                  </Box>
 
-                    <Box sx={{ pl: { sm: 4.75 } }}>
+                  <Box
+                    sx={{
+                      pl: { xs: 0, sm: 5.5 },
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: 0.5,
+                    }}
+                  >
+                    <Typography
+                      sx={{
+                        fontSize: '13.5px',
+                        fontWeight: 600,
+                        color: 'text.primary',
+                        lineHeight: 1.4,
+                      }}
+                    >
+                      {log.activityTitle}
+                    </Typography>
+                    {log.description && (
                       <Typography
                         sx={{
-                          fontSize: '13px',
-                          fontWeight: 600,
-                          color: 'text.primary',
+                          fontSize: '12.5px',
+                          color: 'text.secondary',
+                          lineHeight: 1.45,
                         }}
                       >
-                        {log.activityTitle}
+                        {log.description}
                       </Typography>
-                      {log.description && (
-                        <Typography
-                          sx={{
-                            fontSize: '12px',
-                            color: 'text.secondary',
-                            mt: 0.25,
-                          }}
-                        >
-                          {log.description}
-                        </Typography>
-                      )}
-                    </Box>
-                  </Stack>
-                </Card>
-              );
-            })}
-          </Stack>
-        )}
-      </Stack>
+                    )}
+                  </Box>
+                </Stack>
+              </Box>
+            );
+          })}
+        </Box>
+      )}
     </AppDialog>
   );
 };
