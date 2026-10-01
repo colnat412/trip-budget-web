@@ -1,5 +1,4 @@
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
-import DocumentScannerOutlinedIcon from '@mui/icons-material/DocumentScannerOutlined';
 import FlightTakeoffOutlinedIcon from '@mui/icons-material/FlightTakeoffOutlined';
 import HandshakeOutlinedIcon from '@mui/icons-material/HandshakeOutlined';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
@@ -37,13 +36,13 @@ export const DEFAULT_SIDEBAR_MENU: SidebarMenuItem[] = [
     messageKey: 'expenses',
     icon: <SavingsOutlinedIcon />,
   },
-  {
-    id: 'scan',
-    href: '/scan',
-    label: 'Quét hóa đơn',
-    messageKey: 'scan',
-    icon: <DocumentScannerOutlinedIcon />,
-  },
+  // {
+  //   id: 'scan',
+  //   href: '/scan',
+  //   label: 'Quét hóa đơn',
+  //   messageKey: 'scan',
+  //   icon: <DocumentScannerOutlinedIcon />,
+  // },
   {
     id: 'settlement',
     href: '/settlement',

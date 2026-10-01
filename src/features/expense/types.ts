@@ -112,3 +112,20 @@ export interface SetBudgetPayload {
   currency?: string;
   categoryLimits?: Partial<Record<ExpenseCategory, number>>;
 }
+
+export interface ReceiptItem {
+  name: string;
+  quantity?: number;
+  price?: number;
+}
+
+export interface ScannedReceipt {
+  merchant_name: string;
+  amount: number;
+  currency: string;
+  expense_date?: string | null;
+  category: ExpenseCategory;
+  confidence?: number;
+  items?: ReceiptItem[];
+  raw_text?: string | null;
+}

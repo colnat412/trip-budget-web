@@ -12,10 +12,13 @@ import {
 } from '@/base/components/ui';
 import { getCategorySelectOptions } from '@/base/constants';
 import type { TripMember } from '@/features/trip/types/member.types';
+import ReceiptScanBanner from './ReceiptScanBanner';
 import type {
   AddExpenseInitialData,
   CreateExpensePayload,
   ExpenseCategory,
+  ReceiptItem,
+  ScannedReceipt,
   SplitItemPayload,
   SplitType,
 } from '../types';
@@ -88,6 +91,33 @@ const AddExpenseForm = ({
     [],
   );
 
+  const handleScanSuccess = (scanned: ScannedReceipt) => {
+    if (scanned.merchant_name) {
+      setTitle(scanned.merchant_name);
+      setErrors((prev) => ({ ...prev, title: undefined }));
+    }
+    if (scanned.amount != null && scanned.amount > 0) {
+      setAmount(String(scanned.amount));
+      setErrors((prev) => ({ ...prev, amount: undefined }));
+    }
+    if (scanned.category) {
+      setCategory(scanned.category);
+    }
+    if (scanned.expense_date) {
+      setExpenseDate(scanned.expense_date);
+      setErrors((prev) => ({ ...prev, expenseDate: undefined }));
+    }
+    if (scanned.raw_text) {
+      setNote(scanned.raw_text);
+    } else if (scanned.items && scanned.items.length > 0) {
+      setNote(
+        scanned.items
+          .map((i: ReceiptItem) => `${i.name} (x${i.quantity || 1})`)
+          .join(', '),
+      );
+    }
+  };
+
   const [errors, setErrors] = useState<{
     title?: string;
     amount?: string;
@@ -143,6 +173,11 @@ const AddExpenseForm = ({
       noValidate
       sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
     >
+      <ReceiptScanBanner
+        onScanSuccess={handleScanSuccess}
+        disabled={isLoading}
+      />
+
       <AppTextField
         label={tForm('titleLabel')}
         placeholder={tForm('titlePlaceholder')}

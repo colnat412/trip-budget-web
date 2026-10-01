@@ -1989,7 +1989,46 @@ If the user has already supplied a specific task, do not block on a broad questi
     - **Kiểm thử chất lượng**:
       - `export PATH="/home/hanbiro/.nvm/versions/node/v20.20.2/bin:$PATH" && npx tsc --noEmit && npm run lint` -> 0 errors, 0 warnings.
 
+46. **Tích Hợp Trực Tiếp AI Receipt Scanner Vào Frontend Next.js BFF & Form Chi Tiêu (`AddExpenseForm.tsx`)**:
+    - **Yêu cầu & Mục tiêu**:
+      - Cho phép người dùng tải lên hình ảnh biên lai/hóa đơn hoặc file PDF hóa đơn điện tử (VAT/vé máy bay/booking) ngay trong form thêm chi tiêu (`AddExpenseDialog` -> `AddExpenseForm.tsx`).
+      - AI tự động trích xuất: Tên người bán/quán (`merchant_name` -> `title`), số tiền (`amount`), danh mục (`category`), ngày chi tiêu (`expense_date`), và danh sách line-items/ghi chú (`raw_text` -> `note`).
+    - **Kiến trúc triển khai & Giải pháp kỹ thuật**:
+      - **BFF Route Handler (`src/app/api/ai/scan-receipt/route.ts`)**:
+        - Xác thực phiên làm việc qua HttpOnly cookie `access_token`.
+        - Nhận `multipart/form-data`, chuyển tiếp an toàn sang Python microservice (`POST http://localhost:8000/api/ai/scan-receipt`) kèm header bảo mật `X-Internal-API-Key`.
+        - Giữ kín hoàn toàn API Key và URL microservice ở phía server BFF, không bao giờ lộ ra trình duyệt.
+      - **Hook Tái Sử Dụng (`src/features/expense/hooks/useScanReceipt.ts`)**:
+        - Sử dụng `useMutationPost` từ base layer, thiết lập `mutationKey: ['receipt', 'scan']`, tự động đính kèm `Content-Type: multipart/form-data`.
+      - **Giao Diện Quét Hóa Đơn (`AddExpenseForm.tsx`)**:
+        - Thiết kế banner quét hóa đơn phẳng, viền nét đứt (`border: '1px dashed'`), bo góc `12px`, màu nền tương phản nhẹ nhàng theo theme (`rgba(37, 99, 235, 0.04)`).
+        - Sử dụng component `AppButton intent="secondary"` với icon `DocumentScannerOutlinedIcon`, hỗ trợ trạng thái `loading` và tự động hiển thị alert phản hồi độ tin cậy (`confidence` %).
+        - Tuân thủ nghiêm ngặt quy tắc Container owns spacing (Flexbox `gap: 1.5`, không dùng child margins), đa ngôn ngữ 100% (`messages/vi.json`, `messages/en.json`).
+    - **Kiểm thử chất lượng**:
+      - `export PATH="/home/hanbiro/.nvm/versions/node/v20.20.2/bin:$PATH" && npx tsc --noEmit && npm run lint` -> **0 errors, 0 warnings**.
+
+47. **Xây Dựng Component Chụp Ảnh Trực Tiếp Bằng Camera (`CameraCaptureDialog.tsx`) & Đóng Gói `ReceiptScanBanner.tsx`**:
+    - **Yêu cầu & Mục tiêu**:
+      - Giải quyết triệt để vấn đề thẻ `<input type="file">` trên máy tính/laptop và một số trình duyệt không mở được camera/webcam để chụp ảnh trực tiếp.
+      - Tách riêng 2 hành vi rõ ràng: "Chụp ảnh" (mở camera trực tiếp với khung ngắm viewfinder) và "Tải file" (chọn ảnh/PDF từ thiết bị).
+      - Áp dụng 100% màu theo Theme tokens (`action.hover`, `action.selected`, `primary.main`, `divider`), loại bỏ hoàn toàn các mã màu cứng `rgba(...)`.
+      - Ẩn banner thông báo thành công rườm rà, tự động điền dữ liệu trực tiếp vào form.
+    - **Kiến trúc triển khai & Giải pháp kỹ thuật**:
+      - **Component Camera Trực Tiếp (`CameraCaptureDialog.tsx`)**:
+        - Ứng dụng WebRTC API (`navigator.mediaDevices.getUserMedia`) hiển thị luồng video thời gian thực với độ phân giải tối ưu (1920x1080).
+        - Khung ngắm Viewfinder trực quan với đường viền nét đứt hướng dẫn canh hóa đơn.
+        - Hỗ trợ đổi camera trước/sau (`facingMode: 'environment' | 'user'`), nút chụp tròn nổi bật.
+        - Màn hình xem trước ảnh chụp với 2 lựa chọn: "Chụp lại" hoặc "Quét ảnh này".
+        - Tự động ngắt toàn bộ track (`track.stop()`) ngay khi đóng dialog để tắt đèn camera phần cứng và giải phóng bộ nhớ.
+      - **Đóng Gói Reusable Banner (`ReceiptScanBanner.tsx`)**:
+        - Tách rời toàn bộ logic quét hóa đơn ra khỏi `AddExpenseForm.tsx`.
+        - Pattern chuẩn Material UI: `AppButton component="label"` kết hợp `VisuallyHiddenInput` cho tải file, và `AppButton` gọi `CameraCaptureDialog` cho chụp ảnh trực tiếp.
+    - **Kiểm thử chất lượng**:
+      - `export PATH="/home/hanbiro/.nvm/versions/node/v20.20.2/bin:$PATH" && npx tsc --noEmit && npm run lint` -> **0 errors, 0 warnings**.
+
 ### Immediate likely next tasks:
 
-1. **Module Quét Hóa Đơn Bằng AI / Camera (`/scan`)**: OCR hóa đơn chi tiêu tự động trích xuất số tiền, ngày, danh mục, gán vào chuyến đi.
-2. **Xuất Báo Cáo Kế Hoạch & Chi Tiêu Chuyến Đi (Export PDF / Excel)**: Xuất file lịch trình du lịch và bảng kê quyết toán chia tiền.
+1. **Xuất Báo Cáo Kế Hoạch & Chi Tiêu Chuyến Đi (Export PDF / Excel)**: Xuất file lịch trình du lịch và bảng kê quyết toán chia tiền.
+2. **Offline-first & Service Worker Caching**: Hỗ trợ xem lại lịch trình và hóa đơn khi mất kết nối mạng.
+
+

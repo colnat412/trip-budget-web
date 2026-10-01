@@ -31,7 +31,7 @@ const SetBudgetDialog = ({
       open={open}
       onClose={onClose}
       title={t('dialog.setBudgetTitle')}
-      icon={<AccountBalanceWalletRoundedIcon color="primary" />}
+      icon={<AccountBalanceWalletRoundedIcon />}
       maxWidth="sm"
     >
       <SetBudgetForm

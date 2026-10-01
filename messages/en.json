@@ -331,7 +331,25 @@
       "remainingUnallocated": "{amount} unallocated (contingency fund)",
       "exactAllocated": "100% budget fully allocated"
     },
+    "camera": {
+      "dialogTitle": "Take Receipt Photo",
+      "dialogDesc": "Align the receipt within the frame and click capture for AI scanning",
+      "takePhoto": "Capture",
+      "retake": "Retake",
+      "usePhoto": "Scan This Photo",
+      "switchCamera": "Switch Camera",
+      "cameraError": "Cannot access camera. Please check camera permissions in your browser or upload a file instead.",
+      "guide": "Please ensure the receipt is well-lit and legible"
+    },
     "form": {
+      "scanReceipt": "Take Photo / Scan Receipt (AI)",
+      "scanReceiptDesc": "AI will help you fill in the expense details below faster.",
+      "scanReceiptLoading": "AI is analyzing receipt...",
+      "scanReceiptSuccess": "Detected: {merchant} ({confidence}% confidence)",
+      "scanReceiptError": "Could not recognize receipt. Please check the image or enter manually.",
+      "scanReceiptButton": "Take Photo / Scan Receipt",
+      "takePhotoButton": "Camera",
+      "uploadFileButton": "Upload",
       "titleLabel": "Expense Title *",
       "titlePlaceholder": "e.g. Seafood dinner, Cable car ticket...",
       "amountLabel": "Amount *",

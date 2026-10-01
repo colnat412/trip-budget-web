@@ -35,7 +35,7 @@ const AddExpenseDialog = ({
       open={open}
       onClose={onClose}
       title={t('dialog.addTitle')}
-      icon={<ReceiptLongRoundedIcon color="primary" />}
+      icon={<ReceiptLongRoundedIcon />}
       maxWidth="sm"
     >
       <AddExpenseForm
