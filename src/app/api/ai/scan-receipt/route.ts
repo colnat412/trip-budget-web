@@ -2,8 +2,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 
 const AI_SERVICE_URL =
   process.env.NEXT_PUBLIC_AI_SERVICE_URL || 'http://localhost:8000';
-const AI_SERVICE_INTERNAL_KEY =
-  process.env.AI_SERVICE_INTERNAL_KEY || 'd39ii0q7NIXbVsTh824Sc6ERIREzBQfN';
+const AI_SERVICE_INTERNAL_KEY = process.env.NEXT_PUBLIC_AI_SERVICE_INTERNAL_KEY;
 
 export async function POST(request: NextRequest) {
   try {
@@ -40,7 +39,7 @@ export async function POST(request: NextRequest) {
     const response = await fetch(`${AI_SERVICE_URL}/api/ai/scan-receipt`, {
       method: 'POST',
       headers: {
-        'X-Internal-API-Key': AI_SERVICE_INTERNAL_KEY,
+        'X-Internal-API-Key': AI_SERVICE_INTERNAL_KEY ?? '',
       },
       body: forwardFormData,
     });
