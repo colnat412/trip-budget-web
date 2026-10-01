@@ -2026,6 +2026,27 @@ If the user has already supplied a specific task, do not block on a broad questi
     - **Kiểm thử chất lượng**:
       - `export PATH="/home/hanbiro/.nvm/versions/node/v20.20.2/bin:$PATH" && npx tsc --noEmit && npm run lint` -> **0 errors, 0 warnings**.
 
+48. **Xóa Bỏ Triệt Để Fallback Hardcode Secret Key Ra Khỏi Source Code Toàn Bộ Hệ Thống**:
+    - **Yêu cầu & Mục tiêu**:
+      - Loại bỏ hoàn toàn mọi secret key dev / fallback chuỗi mặc định (`tb_sec_dev_internal_key_2026`) ra khỏi toàn bộ mã nguồn (`tripbudget-ai`, `trip-budget-web`, `tripbudget-core`).
+      - Bắt buộc các service phải đọc secret qua biến môi trường (`INTERNAL_API_KEY`, `AI_SERVICE_INTERNAL_KEY`, `AI_SERVICE_API_KEY`).
+      - Nếu môi trường thiếu biến cấu hình, hệ thống lập tức ném lỗi 500 (Internal Server Error) chỉ rõ biến môi trường bị thiếu, không âm thầm chạy với key rò rỉ trong git repository.
+    - **Kiến trúc triển khai & Giải pháp kỹ thuật**:
+      - **Python AI Microservice (`tripbudget-ai/app/core/security.py`)**:
+        - Bỏ hằng số `DEFAULT_DEV_INTERNAL_KEY`.
+        - Đọc `os.getenv("INTERNAL_API_KEY", "").strip()`. Nếu rỗng, ném `HTTPException(500, detail="Server configuration error: 'INTERNAL_API_KEY' environment variable is not configured.")`.
+      - **Next.js BFF Handler (`trip-budget-web/src/app/api/ai/scan-receipt/route.ts`)**:
+        - Bỏ fallback key `tb_sec_dev_internal_key_2026`.
+        - Đọc `AI_SERVICE_INTERNAL_KEY = process.env.AI_SERVICE_INTERNAL_KEY || process.env.NEXT_PUBLIC_AI_SERVICE_INTERNAL_KEY`.
+        - Nếu biến môi trường chưa được thiết lập, trả về HTTP 500 kèm log lỗi chi tiết phía server.
+      - **Java Spring Boot Core (`tripbudget-core`)**:
+        - Cập nhật `application.yml` thành `api-key: ${AI_SERVICE_API_KEY:}` (loại bỏ giá trị mặc định trong yml).
+        - Cập nhật `AiPlanService.java` thành `@Value("${ai.service.api-key:}")` và thêm validation `isBlank()` ném `ResponseStatusException(500)` nếu chưa có cấu hình.
+    - **Kiểm thử chất lượng**:
+      - `grep -rn "tb_sec_dev_internal_key"` trên toàn bộ source code -> **0 kết quả**.
+      - `tsc --noEmit && npm run lint` -> **0 errors, 0 warnings**.
+      - `mvn compile -o -DskipTests` -> **BUILD SUCCESS**.
+
 ### Immediate likely next tasks:
 
 1. **Xuất Báo Cáo Kế Hoạch & Chi Tiêu Chuyến Đi (Export PDF / Excel)**: Xuất file lịch trình du lịch và bảng kê quyết toán chia tiền.

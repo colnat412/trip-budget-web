@@ -1,8 +1,13 @@
 import { NextResponse, type NextRequest } from 'next/server';
 
 const AI_SERVICE_URL =
-  process.env.NEXT_PUBLIC_AI_SERVICE_URL || 'http://localhost:8000';
-const AI_SERVICE_INTERNAL_KEY = process.env.NEXT_PUBLIC_AI_SERVICE_INTERNAL_KEY;
+  process.env.AI_SERVICE_URL ||
+  process.env.NEXT_PUBLIC_AI_SERVICE_URL ||
+  'http://localhost:8000';
+
+const AI_SERVICE_INTERNAL_KEY =
+  process.env.AI_SERVICE_INTERNAL_KEY ||
+  process.env.NEXT_PUBLIC_AI_SERVICE_INTERNAL_KEY;
 
 export async function POST(request: NextRequest) {
   try {
@@ -69,7 +74,10 @@ export async function POST(request: NextRequest) {
       { status: 200 },
     );
   } catch (error) {
-    console.error('Error in BFF POST /api/ai/scan-receipt:', error);
+    console.error(
+      `Error in BFF POST /api/ai/scan-receipt (Target URL: ${AI_SERVICE_URL}):`,
+      error,
+    );
     return NextResponse.json(
       {
         status: 500,
