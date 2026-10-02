@@ -41,5 +41,15 @@ export type { AppCategoryChipProps, CategoryType } from './AppCategoryChip';
 export { default as AppNumberInput } from './AppNumberInput';
 export type { AppNumberInputProps } from './AppNumberInput';
 
+export {
+  default as AppFilterChip,
+  AppFilterChipGroup,
+} from './AppFilterChip';
+export type {
+  AppFilterChipProps,
+  AppFilterChipGroupProps,
+  AppFilterChipOption,
+} from './AppFilterChip';
+
 export * from '../table';
 export * from '../layout';

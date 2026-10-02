@@ -8,7 +8,8 @@
   },
   "topBar": {
     "addExpense": "Add expense",
-    "inviteMember": "Member"
+    "inviteMember": "Member",
+    "notifications": "Notifications"
   },
   "tripFeature": {
     "description": "This route is connected and ready for its business UI to be developed.",
@@ -55,6 +56,7 @@
     "currentTrip": "Current trip",
     "expenseCount": "expenses",
     "budget": "Budget",
+    "personalSection": "Personal & Utilities",
     "noInProgressTrip": "No trip in progress",
     "noInProgressTripDesc": "Only trips in 'In Progress' status are displayed here."
   },
@@ -191,7 +193,28 @@
     "updateSuccess": "Trip updated successfully!",
     "deleteTitle": "Confirm Delete Trip",
     "deleteConfirm": "Are you sure you want to delete trip \"{name}\"? All related expenses and data will be removed and cannot be undone.",
-    "deleteSuccess": "Trip deleted successfully!"
+    "deleteSuccess": "Trip deleted successfully!",
+    "all": "All",
+    "allDestinations": "Location",
+    "allCurrencies": "Currency",
+    "popularKeywords": "Near / Suggested:",
+    "resultsLabel": "results",
+    "sortBy": "Sort by:",
+    "sortNewest": "Newest",
+    "sortOldest": "Oldest",
+    "sortName": "Name A-Z",
+    "sortDestination": "Destination",
+    "noPhoto": "No photo",
+    "daysLabel": "days",
+    "nightsLabel": "nights",
+    "roleOwner": "Owner",
+    "roleMember": "Member",
+    "noDestination": "No destination set",
+    "activeTripTip": "Currently selected trip",
+    "makeActiveTip": "Set as active trip",
+    "tripsUnit": "trips",
+    "perPageLabel": "/ page",
+    "pageSizeLabel": "Show:"
   },
   "profile": {
     "title": "User Profile",
