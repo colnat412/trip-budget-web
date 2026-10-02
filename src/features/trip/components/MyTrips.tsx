@@ -1,7 +1,8 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { Box } from '@mui/material';
 
 import {
   AppPageContainer,
@@ -11,7 +12,10 @@ import {
 import useMyTrips from '../hooks/useMyTrips';
 import { useTripContext } from '../context/TripContext';
 import MyTripsHeader from './my-trips/MyTripsHeader';
+import TripFilterBar, { type TripFilterValues } from './my-trips/TripFilterBar';
+import TripCardGrid from './my-trips/TripCardGrid';
 import TripTable from './my-trips/TripTable';
+import TripGridPagination from './my-trips/TripGridPagination';
 import EditTripDialog from './EditTripDialog';
 import DeleteTripDialog from './DeleteTripDialog';
 import type { Trip } from '../types';
@@ -19,9 +23,10 @@ import type { Trip } from '../types';
 const MyTrips = () => {
   const router = useRouter();
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(12);
   const [sort, setSort] = useState<TableSortState | null>(null);
   const [filters, setFilters] = useState<Record<string, ColumnFilterValue>>({});
+  const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
   const [editingTrip, setEditingTrip] = useState<Trip | null>(null);
   const [deletingTrip, setDeletingTrip] = useState<Trip | null>(null);
 
@@ -99,6 +104,51 @@ const MyTrips = () => {
     [],
   );
 
+  const filterValues: TripFilterValues = useMemo(
+    () => ({
+      search: typeof filters.name === 'string' ? filters.name : '',
+      destination:
+        typeof filters.destination === 'string' ? filters.destination : '',
+      status:
+        typeof filters.status === 'string'
+          ? filters.status
+          : Array.isArray(filters.status)
+            ? filters.status.join(',')
+            : '',
+      currency:
+        typeof filters.baseCurrency === 'string'
+          ? filters.baseCurrency
+          : Array.isArray(filters.baseCurrency)
+            ? filters.baseCurrency.join(',')
+            : '',
+    }),
+    [filters],
+  );
+
+  const handleFilterUpdate = useCallback((patch: Partial<TripFilterValues>) => {
+    setFilters((prev) => {
+      const next = { ...prev };
+      if ('search' in patch) {
+        if (!patch.search) delete next.name;
+        else next.name = patch.search;
+      }
+      if ('destination' in patch) {
+        if (!patch.destination) delete next.destination;
+        else next.destination = patch.destination;
+      }
+      if ('status' in patch) {
+        if (!patch.status) delete next.status;
+        else next.status = patch.status;
+      }
+      if ('currency' in patch) {
+        if (!patch.currency) delete next.baseCurrency;
+        else next.baseCurrency = patch.currency;
+      }
+      return next;
+    });
+    setPage(0);
+  }, []);
+
   const handleEditSuccess = useCallback(() => {
     void refetchTrips('updated');
   }, [refetchTrips]);
@@ -113,35 +163,72 @@ const MyTrips = () => {
     <AppPageContainer>
       <MyTripsHeader totalTrips={totalCount} onCreateTrip={openCreateTrip} />
 
-      <TripTable
-        trips={trips}
-        isLoading={isLoading}
-        isFetching={isFetching}
-        activeTripId={activeTrip?.id ?? null}
-        onSelectTrip={handleSelectTrip}
-        onCreateTrip={openCreateTrip}
-        onEditTrip={setEditingTrip}
-        onDeleteTrip={setDeletingTrip}
+      <TripFilterBar
+        filters={filterValues}
+        onFilterChange={handleFilterUpdate}
         sort={sort}
         onSortChange={handleSortChange}
-        filters={filters}
-        onFilterChange={handleFilterChange}
-        pagination={
-          totalCount > 0
-            ? {
-                page,
-                pageSize: rowsPerPage,
-                totalCount,
-                onPageChange: setPage,
-                onPageSizeChange: (newSize) => {
-                  setRowsPerPage(newSize);
-                  setPage(0);
-                },
-                pageSizeOptions: [5, 10, 20],
-              }
-            : null
-        }
+        totalTrips={totalCount}
+        viewMode={viewMode}
+        onViewModeChange={setViewMode}
       />
+
+      {viewMode === 'grid' ? (
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
+          <TripCardGrid
+            trips={trips}
+            isLoading={isLoading}
+            activeTripId={activeTrip?.id ?? null}
+            onSelectTrip={handleSelectTrip}
+            onCreateTrip={openCreateTrip}
+            onEditTrip={setEditingTrip}
+            onDeleteTrip={setDeletingTrip}
+          />
+
+          {totalCount > 0 && (
+            <TripGridPagination
+              count={totalCount}
+              page={page}
+              rowsPerPage={rowsPerPage}
+              onPageChange={setPage}
+              onRowsPerPageChange={(newSize) => {
+                setRowsPerPage(newSize);
+                setPage(0);
+              }}
+            />
+          )}
+        </Box>
+      ) : (
+        <TripTable
+          trips={trips}
+          isLoading={isLoading}
+          isFetching={isFetching}
+          activeTripId={activeTrip?.id ?? null}
+          onSelectTrip={handleSelectTrip}
+          onCreateTrip={openCreateTrip}
+          onEditTrip={setEditingTrip}
+          onDeleteTrip={setDeletingTrip}
+          sort={sort}
+          onSortChange={handleSortChange}
+          filters={filters}
+          onFilterChange={handleFilterChange}
+          pagination={
+            totalCount > 0
+              ? {
+                  page,
+                  pageSize: rowsPerPage,
+                  totalCount,
+                  onPageChange: setPage,
+                  onPageSizeChange: (newSize) => {
+                    setRowsPerPage(newSize);
+                    setPage(0);
+                  },
+                  pageSizeOptions: [5, 10, 20],
+                }
+              : null
+          }
+        />
+      )}
 
       <EditTripDialog
         open={Boolean(editingTrip)}

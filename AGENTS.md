@@ -2047,9 +2047,106 @@ If the user has already supplied a specific task, do not block on a broad questi
       - `tsc --noEmit && npm run lint` -> **0 errors, 0 warnings**.
       - `mvn compile -o -DskipTests` -> **BUILD SUCCESS**.
 
+49. **Tái Thiết Kế Toàn Diện UX-UI Theo Layout Khám Phá & Danh Mục Thẻ Hiện Đại (Tham Chiếu 68Lane)**:
+    - **Yêu cầu & Mục tiêu**:
+      - Điều chỉnh giao diện theo mẫu tham khảo (layout 68Lane discovery) nhưng **giữ nguyên 100% màu sắc theme của TripBudget** (`#1E3A8A` dark blue, `#0EA5E9` sky blue, divider, background paper/default).
+      - Chuyển đổi UX/UI của trang Chuyến đi (`/trips`) từ bảng thuần túy sang **lưới thẻ du lịch (Card Grid Catalog)** kết hợp thanh tìm kiếm dạng viên thuốc (Pill Search Bar), bộ lọc dropdown nhanh (Điểm đến, Trạng thái, Tiền tệ), thanh gợi ý từ khóa (Quick Tags Chip), và bộ chuyển đổi hiển thị (Lưới ⊞ vs Bảng ☰).
+      - Nâng cấp Sidebar: Nút điều hướng active dạng viên thuốc (Pill shape), phân nhóm danh mục ("ĐIỀU HƯỚNG CHÍNH", "CÁ NHÂN & TIỆN ÍCH"), đính kèm badge "MỚI" cho Quét hóa đơn và Trợ lý AI.
+      - Nâng cấp TopBar: Bổ sung chuông thông báo (Notification bell with dot badge), nút `+ Tạo chuyến đi` bo tròn viên thuốc nổi bật.
+    - **Kiến trúc triển khai & Giải pháp kỹ thuật**:
+      - **Helper Hình Ảnh Điểm Đến (`src/features/trip/utils/destinationImages.ts`)**:
+        - Ánh xạ tự động các điểm đến nổi tiếng (Đà Nẵng, Đà Lạt, Hà Nội, TP.HCM, Phú Quốc, Sapa, Hội An, Nha Trang, Tokyo, Bangkok, Paris...) sang ảnh bìa du lịch chất lượng cao (Unsplash CDN tối ưu).
+        - Hỗ trợ placeholder "Chưa có ảnh" chuẩn theo mẫu thẻ thứ 6 trong ảnh tham khảo khi không có điểm đến hoặc ảnh lỗi.
+        - Tiện ích tính toán số ngày lưu trú (`calculateTripDays`).
+      - **Thẻ Chuyến Đi Hiện Đại (`src/features/trip/components/my-trips/TripCardItem.tsx`)**:
+        - Thiết kế thẻ tỉ lệ ảnh 16:10, hiệu ứng hover zoom ảnh và nâng thẻ mượt mà (`translateY(-3px)`, shadow theo theme).
+        - Overlay góc ảnh: Chip trạng thái (`TripStatusChip`) góc trên trái, nút đánh dấu / chọn chuyến đi góc trên phải, huy hiệu thời lượng `📷 X ngày` góc dưới phải với nền kính mờ.
+        - Thân thẻ: Nổi bật số tiền / tiền tệ chính bằng màu `primary.main`, khoảng ngày khởi hành, tiêu đề in đậm kèm thời lượng đêm/ngày, dòng vị trí `📍 Điểm đến`, và chân thẻ với nút "Mở" + menu 3 chấm (Sửa/Xóa).
+      - **Thanh Tìm Kiếm & Lọc Toàn Diện (`src/features/trip/components/my-trips/TripFilterBar.tsx`)**:
+        - Input tìm kiếm pill (`borderRadius: '9999px'`), 3 dropdown bộ lọc khu vực, trạng thái, tiền tệ.
+        - Thanh tag gợi ý nhanh: `Gần / Gợi ý:` `[Tất cả]`, `[Đà Nẵng]`, `[Đà Lạt]`, `[Hà Nội]`, `[Phú Quốc]`, `[Sapa]`... bấm vào lọc ngay lập tức.
+        - Dòng tóm tắt số lượng (`X kết quả`), dropdown sắp xếp (`Mới nhất`, `Cũ nhất`, `Tên A-Z`, `Điểm đến`), và `ToggleButtonGroup` chuyển đổi Grid/Table.
+      - **Lưới Thẻ Đáp Ứng (`src/features/trip/components/my-trips/TripCardGrid.tsx`)**:
+        - Grid responsive: 1 cột (mobile), 2 cột (tablet), 3 cột (desktop nhỏ), 4 cột (desktop lớn).
+        - Hỗ trợ Skeleton loading và Empty state trực quan.
+      - **Sidebar Navigation (`SidebarMenu.tsx`, `SidebarBrand.tsx`, `config.tsx`)**:
+        - Menu active dạng viên thuốc `borderRadius: '9999px'`, màu nền `primary.main`, chữ và icon `primary.contrastText`.
+        - Phân vùng menu với tiêu đề chữ hoa "Cá nhân & Tiện ích", gắn badge đỏ "MỚI" cho Quét hóa đơn và Trợ lý AI.
+    - **Kiểm thử chất lượng**:
+      - `export PATH="/home/hanbiro/.nvm/versions/node/v20.20.2/bin:$PATH" && npx tsc --noEmit && npm run lint` -> **0 errors, 0 warnings**.
+
+50. **Tối Ưu Hóa Kích Thước Nhập Liệu (Compact Filters) & Đáp Ứng Toàn Diện Đa Màn Hình (Full Responsive)**:
+    - **Yêu cầu & Mục tiêu**:
+      - Giải quyết triệt để tình trạng các ô input và component lọc trên trang Chuyến đi (`/trips`) bị quá khổ (oversized) do theme áp `minHeight: 50` mặc định.
+      - Tinh chỉnh kích thước gọn gàng, thanh thoát (`height: 38px`, `fontSize: 13px`), căn chỉnh tỉ lệ hài hòa giữa thanh tìm kiếm và các dropdown lọc.
+      - Tối ưu hóa hiển thị Responsive toàn diện từ Mobile (360px - 480px), Tablet (600px - 900px), đến Desktop màn hình rộng (> 1200px).
+    - **Kiến trúc triển khai & Giải pháp kỹ thuật**:
+      - **Thanh Tìm Kiếm & Lọc Gọn Nhẹ (`TripFilterBar.tsx`)**:
+        - Ghi đè `minHeight: '38px !important'`, `height: 38`, `& .MuiOutlinedInput-input: { py: '8px !important' }`, bo góc `10px` thanh thoát.
+        - 3 dropdown bộ lọc (`Khu vực`, `Trạng thái`, `Tiền tệ`): Thu gọn `height: 38px`, `fontSize: 13px`, thêm `KeyboardArrowDownRoundedIcon` nhỏ gọn, đổi nền và viền sang `action.selected` + `primary.main` khi có bộ lọc kích hoạt.
+        - Trên Mobile (`xs`): Phân bố linh hoạt theo lưới tự co giãn, không bị tràn ngang hay vỡ layout.
+        - Dải tag gợi ý (`Gợi ý:`): Chiều cao `26px`, font chữ `11.5px`, bo góc `6px`, hỗ trợ cuộn ngang mượt mà với cảm ứng di động (`WebkitOverflowScrolling: 'touch'`).
+        - Dòng sắp xếp & chuyển chế độ: Đưa về chiều cao `32px`, tự động căn chỉnh khoảng cách hợp lý trên màn hình nhỏ.
+      - **Lưới Thẻ Du Lịch Co Giãn Tự Động (`TripCardGrid.tsx`)**:
+        - Áp dụng `gridTemplateColumns: { xs: '1fr', sm: 'repeat(auto-fill, minmax(250px, 1fr))' }` kết hợp khoảng cách `gap: { xs: 1.5, sm: 2, md: 2.5 }`.
+        - Không cố định số cột cứng ngắc gây bó hẹp thẻ; thẻ luôn duy trì độ rộng lý tưởng từ 250px đến 350px ở mọi độ phân giải.
+      - **Thẻ Chuyến Đi Cân Đối (`TripCardItem.tsx`)**:
+        - Chuẩn hóa tỉ lệ ảnh bìa 16:9 (`pt: '56.25%'`), bo góc `14px`, padding `1.75` vừa vặn.
+        - Tinh chỉnh font size: Tiền tệ `15px`, Tiêu đề `14px`, chi tiết `11.5px`, nút hành động `height: 28px`.
+      - **TopBar & Phân Trang Di Động (`AppTopBar.tsx`, `TripTablePagination.tsx`, `MyTripsHeader.tsx`)**:
+        - Nút `+ Tạo chuyến đi` trên TopBar tự động hiển thị gọn `+ Tạo` trên mobile và đầy đủ trên desktop.
+        - Phân trang `TablePagination`: Tối ưu padding và ẩn bớt label rườm rà trên màn hình điện thoại.
+    - **Kiểm thử chất lượng**:
+51. **Chuẩn Hóa Base Components Cho Filter UI & Reusable Tag Chips (`AppFilterChip`, `AppSelect`, `AppTextField`)**:
+    - **Yêu cầu & Mục tiêu**:
+      - Bám sát tôn chỉ kiến trúc của `AGENTS.md`: Tái sử dụng tối đa và mở rộng các base UI component tại `@/base/components/ui`, tuyệt đối không viết code MUI thô (ad-hoc) rải rác trong các feature components.
+      - Xử lý triệt để lỗi icon mũi tên đè lên chữ trong `<Select>` (`pr: '34px !important'`) và rút gọn nhãn hiển thị.
+      - Tạo mới base component `AppFilterChip` và `AppFilterChipGroup` để tái sử dụng toàn diện cho các dải thẻ lọc / tag gợi ý trên toàn dự án.
+      - Nâng cấp `AppSelect` hỗ trợ các biến thể `variantType: 'form' | 'filter' | 'compact'`, tích hợp checkmark icon và active highlight theo theme.
+      - Nâng cấp `AppTextField` hỗ trợ `variantType: 'search'` với chiều cao 38px, bo góc và padding chuẩn mực.
+    - **Kiến trúc triển khai & Giải pháp kỹ thuật**:
+      - **Thẻ Tag Lọc Tái Sử Dụng (`AppFilterChip.tsx`)**:
+        - Xuất khẩu `AppFilterChip`: Thẻ chip đơn hỗ trợ hiển thị nhãn, icon, badge đếm số lượng (`count`), trạng thái active với màu `primary.main`, hover và transition mượt mà.
+        - Xuất khẩu `AppFilterChipGroup`: Dải container tự động cuộn ngang mượt mà trên mobile (`touch scroll`, ẩn scrollbar), hỗ trợ tùy chọn "Tất cả" (`showAll`, `allLabel`, `allValue`), callback chọn/bỏ chọn (`onChange`).
+      - **Select Dropdown Đa Dạng Hóa (`AppSelect.tsx`)**:
+        - Bổ sung `variantType='filter'`: Tự động nhận diện trạng thái lọc (`isFiltered`), hiển thị nhãn mặc định khi rỗng hoặc nhãn đã chọn khi kích hoạt, icon checkmark `<CheckRoundedIcon />` cạnh mục đang chọn trong dropdown.
+        - Khắc phục triệt để va chạm icon: Cố định `pr: '34px !important'` trên `.MuiSelect-select`, đảm bảo văn bản không bao giờ bị đè bởi chevron arrow.
+        - Bổ sung `variantType='compact'`: Phù hợp cho dropdown sắp xếp (Sort) hoặc chuyển số dòng phân trang với chiều cao 32px thanh lịch.
+      - **Input Tìm Kiếm Chuẩn Hóa (`AppTextField.tsx`)**:
+        - Thêm thuộc tính `variantType='search'`: Tự động cấu hình kích thước 38px, font 13px, bo góc 10px, loại bỏ ảnh hưởng từ `minHeight: 50` của theme toàn cục.
+      - **Tái Cấu Trúc Toàn Bộ `TripFilterBar.tsx`**:
+        - Xóa bỏ hoàn toàn các hook quản lý menu anchor thủ công và các thẻ MUI thô.
+        - Tiêu thụ trực tiếp `AppTextField`, `AppSelect` (`filter` & `compact`), và `AppFilterChipGroup`. Code sạch, ngắn gọn, dễ bảo trì.
+52. **Tối Giản Hóa Xử Lý Bộ Lọc (Unified Filter State & Handlers Refactor)**:
+    - **Yêu cầu & Mục tiêu**:
+      - Bám sát tôn chỉ kiến trúc của `AGENTS.md`: Loại bỏ code smell truyền quá nhiều props và các hàm handle con trùng lặp (`handleSearchChange`, `handleDestinationChange`, `handleStatusChange`, `handleCurrencyChange`) từ `MyTrips` xuống `TripFilterBar`.
+      - Đồng nhất dữ liệu filter thành 1 object `TripFilterValues` và 1 hàm dispatch `handleFilterUpdate(patch: Partial<TripFilterValues>)`.
+      - Giữ nguyên 100% layout UI và các nút bấm chuẩn không bị xáo trộn.
+    - **Kiến trúc triển khai & Giải pháp kỹ thuật**:
+      - **Đồng Nhất Interface Props (`TripFilterBar.tsx`)**:
+        - Định nghĩa interface `TripFilterValues` gồm 4 trường (`search`, `destination`, `status`, `currency`).
+        - Thay thế toàn bộ các props rời rạc bằng `filters: TripFilterValues` và `onFilterChange: (patch: Partial<TripFilterValues>) => void`.
+      - **Tối Giản Hóa Component Cha (`MyTrips.tsx`)**:
+        - Tạo `filterValues` được `useMemo` an toàn từ state `filters`.
+        - Xóa bỏ hoàn toàn 4 hàm `useCallback` riêng lẻ (~50 dòng code boilerplate), thay thế bằng duy nhất 1 hàm `handleFilterUpdate` xử lý cập nhật state linh hoạt theo từng key.
+        - Gọi `<TripFilterBar filters={filterValues} onFilterChange={handleFilterUpdate} ... />` sạch sẽ, rõ ràng.
+54. **Đồng Bộ Phân Trang Đánh Số 1, 2, 3... Cho Cả Grid Và List/Table (`TripGridPagination.tsx` & `AppTablePagination.tsx`)**:
+    - **Yêu cầu & Mục tiêu**:
+      - Bám sát tôn chỉ kiến trúc của `AGENTS.md`: Chuyển đổi toàn diện cơ chế phân trang ở **cả 2 chế độ Grid (Lưới thẻ) và List/Table (Bảng)** từ cơ chế điều hướng 2 mũi tên `< >` sang **dãy nút số trang trực quan `1, 2, 3...`**.
+      - Tích hợp bộ chọn số lượng dòng/thẻ mỗi trang bằng `AppSelect variantType="compact"` (`6, 12, 24 / trang` cho Grid và `5, 10, 20, 50 / trang` cho Table).
+      - Dòng tóm tắt kết quả chuyên nghiệp: `{from} – {to} trên {totalCount}`.
+      - Nút trang active được tô màu thương hiệu `primary.main`, bo góc `8px`, hiệu ứng hover êm ái.
+    - **Kiến trúc triển khai & Giải pháp kỹ thuật**:
+      - **Nâng cấp `AppTablePagination.tsx` (Dành cho List/Table)**:
+        - Thay thế toàn bộ component `TablePagination` cũ của MUI bằng layout kết hợp: Dòng tóm tắt + `AppSelect variantType="compact"` bên trái và `Pagination` số trang của MUI bên phải.
+        - Tự động áp dụng cho tất cả các bảng dữ liệu trên toàn dự án (`TripTable`, `ExpenseTable`...).
+      - **Hoàn thiện `TripGridPagination.tsx` (Dành cho Grid)**:
+        - Đồng bộ phong cách hiển thị số trang `1, 2, 3...`, kích thước cân đối, loại bỏ wrapper viền kép.
+    - **Kiểm thử chất lượng**:
+      - `export PATH="/home/hanbiro/.nvm/versions/node/v20.20.2/bin:$PATH" && npx tsc --noEmit && npm run lint` -> **0 errors, 0 warnings**.
+
 ### Immediate likely next tasks:
 
 1. **Xuất Báo Cáo Kế Hoạch & Chi Tiêu Chuyến Đi (Export PDF / Excel)**: Xuất file lịch trình du lịch và bảng kê quyết toán chia tiền.
 2. **Offline-first & Service Worker Caching**: Hỗ trợ xem lại lịch trình và hóa đơn khi mất kết nối mạng.
-
 

@@ -8,7 +8,8 @@
   },
   "topBar": {
     "addExpense": "Thêm khoản chi",
-    "inviteMember": "Thành viên"
+    "inviteMember": "Thành viên",
+    "notifications": "Thông báo"
   },
   "tripFeature": {
     "description": "Trang đã được kết nối route và đang chờ phát triển giao diện nghiệp vụ.",
@@ -55,6 +56,7 @@
     "currentTrip": "Đang đi",
     "expenseCount": "khoản chi",
     "budget": "Ngân sách",
+    "personalSection": "Cá nhân & Tiện ích",
     "noInProgressTrip": "Không có chuyến đi đang diễn ra",
     "noInProgressTripDesc": "Chỉ các chuyến đi có trạng thái Đang đi mới hiển thị tại đây."
   },
@@ -191,7 +193,28 @@
     "updateSuccess": "Cập nhật chuyến đi thành công!",
     "deleteTitle": "Xác nhận xóa chuyến đi",
     "deleteConfirm": "Bạn có chắc chắn muốn xóa chuyến đi \"{name}\"? Dữ liệu chi tiêu và thông tin liên quan sẽ bị xóa và không thể khôi phục.",
-    "deleteSuccess": "Xóa chuyến đi thành công!"
+    "deleteSuccess": "Xóa chuyến đi thành công!",
+    "all": "Tất cả",
+    "allDestinations": "Khu vực",
+    "allCurrencies": "Tiền tệ",
+    "popularKeywords": "Gần / Gợi ý:",
+    "resultsLabel": "kết quả",
+    "sortBy": "Sắp xếp:",
+    "sortNewest": "Mới nhất",
+    "sortOldest": "Cũ nhất",
+    "sortName": "Tên A-Z",
+    "sortDestination": "Điểm đến",
+    "noPhoto": "Chưa có ảnh",
+    "daysLabel": "ngày",
+    "nightsLabel": "đêm",
+    "roleOwner": "Trưởng nhóm",
+    "roleMember": "Thành viên",
+    "noDestination": "Chưa đặt điểm đến",
+    "activeTripTip": "Chuyến đi đang chọn",
+    "makeActiveTip": "Chọn làm chuyến đi hiện tại",
+    "tripsUnit": "chuyến đi",
+    "perPageLabel": "/ trang",
+    "pageSizeLabel": "Hiển thị:"
   },
   "profile": {
     "title": "Thông tin tài khoản",
