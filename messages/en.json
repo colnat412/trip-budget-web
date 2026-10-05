@@ -572,8 +572,8 @@
     "noActiveTrip": "Please select a trip to view and manage its plan.",
     "addActivity": "Add Activity",
     "aiPlannerBtn": "AI Itinerary",
-    "resetDayBtn": "Reset this day",
-    "checklistBtn": "Packing Checklist",
+    "resetDayBtn": "Reset",
+    "checklistBtn": "Packing",
     "shareBtn": "Share",
     "activityLogBtn": "History",
     "activityLog": {

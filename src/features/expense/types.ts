@@ -53,6 +53,7 @@ export interface Expense {
   status: ExpenseStatus;
   note?: string;
   receiptUrl?: string;
+  activityId?: number | string;
   createdAt: string;
   updatedAt: string;
   splits: ExpenseSplit[];
@@ -91,6 +92,7 @@ export interface CreateExpensePayload {
   note?: string;
   receiptUrl?: string;
   payerId?: number | string;
+  activityId?: number | string;
   splits?: SplitItemPayload[];
 }
 
@@ -104,6 +106,7 @@ export interface UpdateExpensePayload {
   note?: string;
   receiptUrl?: string;
   payerId?: number | string;
+  activityId?: number | string;
   splits?: SplitItemPayload[];
 }
 

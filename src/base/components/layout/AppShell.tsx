@@ -19,7 +19,9 @@ export interface AppShellProps {
 
 const AppShell = ({ children, sidebarDisabledPaths = [] }: AppShellProps) => {
   const pathname = usePathname();
-  const showSidebar = !sidebarDisabledPaths.includes(pathname);
+  const showSidebar = !sidebarDisabledPaths.some(
+    (path) => pathname === path || pathname.startsWith(`${path}/`),
+  );
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleDrawerToggle = () => {
