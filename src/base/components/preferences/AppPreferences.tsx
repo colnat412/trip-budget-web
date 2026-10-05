@@ -46,6 +46,10 @@ const AppPreferences = () => {
         onChange={(_event, value: AppLocale | null) => {
           if (!value || value === locale) return;
 
+          window.dispatchEvent(
+            new CustomEvent('localeChange', { detail: value }),
+          );
+
           startLocaleTransition(async () => {
             try {
               await axiosPut<{ locale: AppLocale }, { locale: AppLocale }>(

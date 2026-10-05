@@ -6,6 +6,7 @@ import Link from 'next/link';
 import {
   Box,
   Checkbox,
+  Divider,
   FormControlLabel,
   IconButton,
   InputAdornment,
@@ -24,6 +25,7 @@ import { AppButton, AppTextField, AppToast } from '@/base/components/ui';
 import SidebarBrand from '@/base/components/layout/sidebar/SidebarBrand';
 import useLogin from '@/features/auth/hooks/useLogin';
 import AppPreferences from '@/base/components/preferences/AppPreferences';
+import GoogleAuthButton from './GoogleAuthButton';
 import { useTranslations } from 'next-intl';
 
 interface LoginFormErrors {
@@ -306,11 +308,20 @@ const Login = () => {
               type="submit"
               fullWidth
               loading={loginMutation.isPending}
-              sx={{ minHeight: 54 }}
+              sx={{ minHeight: '54px', height: '54px' }}
             >
               {t('login.submit')}
             </AppButton>
           </Stack>
+
+          <Divider>
+            <Typography variant="caption" color="text.secondary">
+              {t('login.orContinueWithEmail')}
+            </Typography>
+          </Divider>
+
+          <GoogleAuthButton text="signin_with" />
+
           <Stack
             spacing={'4px'}
             direction={'row'}
@@ -321,8 +332,8 @@ const Login = () => {
             </Typography>
             <Box
               component={Link}
-              href="#"
-              sx={{ color: 'primary.main', fontWeight: 700 }}
+              href="/register"
+              sx={{ color: 'primary.main', fontWeight: 700, textDecoration: 'none' }}
             >
               {t('login.createAccount')}
             </Box>

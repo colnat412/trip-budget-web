@@ -5,7 +5,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getLocale } from 'next-intl/server';
 
 import { AppShell } from '@/base/components/layout';
-import { PUBLIC_PATHS } from '@/base/constants';
+import { PUBLIC_AUTH_PATHS, PUBLIC_PATHS } from '@/base/constants';
 import AppThemeProvider from '@/base/providers/AppThemProvider';
 
 import './globals.css';
@@ -42,7 +42,10 @@ export const viewport: import('next').Viewport = {
 };
 
 // add path name to hide sidebar here
-const sidebarDisabledPaths: readonly string[] = ['/login', ...PUBLIC_PATHS];
+const sidebarDisabledPaths: readonly string[] = [
+  ...PUBLIC_AUTH_PATHS,
+  ...PUBLIC_PATHS,
+];
 
 const RootLayout = async ({ children }: { children: React.ReactNode }) => {
   const locale = await getLocale();
