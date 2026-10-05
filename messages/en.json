@@ -74,12 +74,41 @@
     "forgotPassword": "Forgot password?",
     "submit": "Login",
     "noAccount": "Don't have an account yet?",
-    "createAccount": "Create an account"
+    "createAccount": "Create an account",
+    "orContinueWithEmail": "or continue with",
+    "googleSignIn": "Sign in with Google",
+    "googleLoginError": "Google sign-in failed"
+  },
+  "register": {
+    "title": "Create a new account",
+    "description": "Start planning and managing your trip budget smartly.",
+    "googleSignUp": "Sign up with Google",
+    "name": "Full name",
+    "namePlaceholder": "John Doe",
+    "passwordPlaceholder": "At least 8 characters",
+    "submit": "Sign up",
+    "hasAccount": "Already have an account?",
+    "loginNow": "Sign in now",
+    "verifyTitle": "Verify OTP code",
+    "verifyDescription": "A 6-digit verification code has been sent to",
+    "verifyDescriptionSuffix": "Please enter the code to activate your account.",
+    "otpLabel": "OTP Code",
+    "verifySubmit": "Verify & Get Started",
+    "resendCountdown": "Resend code in {seconds}s",
+    "notReceived": "Didn't receive the code?",
+    "resendOtp": "Resend OTP",
+    "back": "Go back",
+    "otpSentToast": "A 6-digit OTP code has been sent to your email!",
+    "otpResentToast": "A new OTP code has been resent!",
+    "googleMissingClientId": "NEXT_PUBLIC_GOOGLE_CLIENT_ID is not configured"
   },
   "validation": {
+    "nameRequired": "Please enter your name.",
     "emailRequired": "Please enter your email.",
     "emailInvalid": "Invalid email format.",
-    "passwordRequired": "Please enter your password."
+    "passwordRequired": "Please enter your password.",
+    "passwordMin": "Password must be at least 8 characters.",
+    "otpRequired": "Please enter all 6 digits of the OTP code."
   },
   "demo": {
     "input": "Input",

@@ -53,3 +53,4 @@ export type {
 
 export * from '../table';
 export * from '../layout';
+export * from '../icons';

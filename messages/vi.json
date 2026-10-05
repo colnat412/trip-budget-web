@@ -74,12 +74,41 @@
     "forgotPassword": "Quên mật khẩu?",
     "submit": "Đăng nhập",
     "noAccount": "Bạn chưa có tài khoản?",
-    "createAccount": "Tạo tài khoản"
+    "createAccount": "Tạo tài khoản",
+    "orContinueWithEmail": "hoặc tiếp tục với",
+    "googleSignIn": "Đăng nhập bằng Google",
+    "googleLoginError": "Đăng nhập Google thất bại"
+  },
+  "register": {
+    "title": "Tạo tài khoản mới",
+    "description": "Bắt đầu lên kế hoạch và quản lý ngân sách chuyến đi thông minh.",
+    "googleSignUp": "Đăng ký bằng Google",
+    "name": "Họ và tên",
+    "namePlaceholder": "Nguyễn Văn A",
+    "passwordPlaceholder": "Ít nhất 8 ký tự",
+    "submit": "Đăng ký tài khoản",
+    "hasAccount": "Đã có tài khoản?",
+    "loginNow": "Đăng nhập ngay",
+    "verifyTitle": "Xác thực mã OTP",
+    "verifyDescription": "Mã xác thực 6 chữ số đã được gửi tới",
+    "verifyDescriptionSuffix": "Vui lòng nhập mã để kích hoạt tài khoản.",
+    "otpLabel": "Mã OTP",
+    "verifySubmit": "Xác nhận & Bắt đầu",
+    "resendCountdown": "Gửi lại mã sau {seconds}s",
+    "notReceived": "Chưa nhận được mã?",
+    "resendOtp": "Gửi lại mã OTP",
+    "back": "Quay lại",
+    "otpSentToast": "Mã OTP 6 số đã được gửi đến email của bạn!",
+    "otpResentToast": "Đã gửi lại mã OTP mới!",
+    "googleMissingClientId": "Chưa cấu hình NEXT_PUBLIC_GOOGLE_CLIENT_ID"
   },
   "validation": {
+    "nameRequired": "Vui lòng nhập họ và tên.",
     "emailRequired": "Vui lòng nhập email.",
     "emailInvalid": "Email không đúng định dạng.",
-    "passwordRequired": "Vui lòng nhập mật khẩu."
+    "passwordRequired": "Vui lòng nhập mật khẩu.",
+    "passwordMin": "Mật khẩu phải có ít nhất 8 ký tự.",
+    "otpRequired": "Vui lòng nhập đủ 6 chữ số mã OTP."
   },
   "demo": {
     "input": "Ô nhập liệu",
