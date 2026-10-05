@@ -244,11 +244,21 @@ const PlanOverview = () => {
     try {
       const response = await axiosClient.post(
         `/trip/${tripId}/expenses`,
-        payload,
+        {
+          ...payload,
+          activityId: convertExpenseActivity?.id,
+        },
       );
       const createdExpenseId = response.data?.data?.id;
 
       if (convertExpenseActivity && createdExpenseId) {
+        const nextSpent =
+          (Number(convertExpenseActivity.actualSpent) || 0) +
+          Number(payload.amount || 0);
+        const shouldComplete =
+          convertExpenseActivity.estimatedCost > 0 &&
+          nextSpent >= convertExpenseActivity.estimatedCost;
+
         await axiosClient.put(
           `/trip/${tripId}/plan/activities/${convertExpenseActivity.id}`,
           {
@@ -260,7 +270,7 @@ const PlanOverview = () => {
             estimatedCost: convertExpenseActivity.estimatedCost,
             note: convertExpenseActivity.note || undefined,
             expenseId: createdExpenseId,
-            status: 'COMPLETED',
+            status: shouldComplete ? 'COMPLETED' : convertExpenseActivity.status,
           },
         );
       }
@@ -497,10 +507,15 @@ const PlanOverview = () => {
           tripId={tripId}
           initialData={{
             title: convertExpenseActivity.title,
-            amount:
-              convertExpenseActivity.estimatedCost > 0
-                ? convertExpenseActivity.estimatedCost
-                : undefined,
+            amount: (() => {
+              const estimated =
+                Number(convertExpenseActivity.estimatedCost) || 0;
+              const spent = Number(convertExpenseActivity.actualSpent) || 0;
+              const remaining = estimated - spent;
+              if (remaining > 0) return remaining;
+              if (estimated > 0 && spent === 0) return estimated;
+              return undefined;
+            })(),
             category: convertExpenseActivity.category,
             expenseDate:
               overview?.days.find((d) => d.id === convertExpenseActivity.dayId)

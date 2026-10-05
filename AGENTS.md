@@ -2145,8 +2145,40 @@ If the user has already supplied a specific task, do not block on a broad questi
     - **Kiểm thử chất lượng**:
       - `export PATH="/home/hanbiro/.nvm/versions/node/v20.20.2/bin:$PATH" && npx tsc --noEmit && npm run lint` -> **0 errors, 0 warnings**.
 
+55. **Tính Năng Tải Ảnh Bìa Chuyến Đi & Hiển Thị Đồ Họa Dạng Thẻ Grid (Trip Cover Image Upload & Grid Display)**:
+    - **Yêu cầu & Mục tiêu**:
+      - Cho phép người dùng tải ảnh từ máy tính (JPG, PNG, WebP) làm ảnh bìa cho chuyến đi (`coverUrl`).
+      - Hiển thị ảnh bìa trên thẻ Grid (`TripCardItem.tsx`) theo tỉ lệ chuẩn 16:9 với hiệu ứng hover zoom mượt mà.
+      - Nếu chưa có ảnh bìa, hiển thị placeholder "Chưa có ảnh" chuẩn mực với icon máy ảnh.
+      - Hỗ trợ đổi hoặc tải ảnh bìa trực tiếp ngay trên thẻ chuyến đi ở chế độ Grid (Hover overlay `📷 Đổi ảnh bìa`, hoặc click vào vùng trống "Tải ảnh bìa lên", hoặc chọn từ menu thao tác 3 chấm `AppActionMenu`).
+      - Hỗ trợ tải/đổi/xóa ảnh bìa trong cả form tạo chuyến đi (`CreateTripDialog.tsx`) và form chỉnh sửa (`EditTripForm.tsx`).
+      - Tối ưu hóa dung lượng: Nén ảnh tự động bằng HTML5 Canvas API xuống tỉ lệ và chất lượng lý tưởng (~50-100KB), lưu trữ đồng bộ mượt mà qua `useSyncExternalStore` mà không gây re-render thừa hoặc vi phạm quy tắc React Hooks.
+    - **Kiến trúc triển khai & Giải pháp kỹ thuật**:
+      - **Tiện ích Nén & Đồng Bộ Bộ Nhớ Trình Duyệt (`src/features/trip/utils/tripCoverStorage.ts`)**:
+        - `compressImageFile(file, maxWidth, maxHeight, quality)`: Nén ảnh client-side bằng Canvas API trước khi lưu trữ, chống tràn quota `localStorage`.
+        - `getTripCover`, `setTripCover`, `removeTripCover`: Quản lý lưu trữ với khóa `tb_trip_cover_{id}`, phát sự kiện toàn cục `tb_trip_cover_changed`.
+        - `useTripCover(tripId, initialCoverUrl)`: Hook đồng bộ ảnh bìa phản ứng tức thì (Reactive) sử dụng `useSyncExternalStore` của React 18, đảm bảo 0 lỗi cascading render và cập nhật tức thì trên mọi thẻ trong trang.
+      - **Component Tải Ảnh Tái Sử Dụng (`src/features/trip/components/TripCoverUploader.tsx`)**:
+        - Giao diện kéo thả (Drag & Drop) hoặc click để chọn ảnh, kiểm tra định dạng và dung lượng tối đa 5MB.
+        - Hiển thị xem trước (Preview) 16:9 với các nút "Đổi ảnh" và "Xóa ảnh" trực quan.
+      - **Tích Hợp Thẻ Lưới (`TripCardItem.tsx`)**:
+        - Hiển thị `coverUrl` thực tế với `objectFit: 'cover'`.
+        - Hover overlay dành cho chủ chuyến đi (`isOwner`): Nút bo tròn viên thuốc kính mờ `📷 Đổi ảnh bìa`.
+        - Placeholder "Tải ảnh bìa lên" hỗ trợ click mở hộp thoại chọn file tức thì.
+        - Menu 3 chấm bổ sung 2 hành động: "Đổi ảnh bìa" và "Xóa ảnh bìa" (kèm toast thông báo kết quả).
+      - **Tích Hợp Form Tạo & Chỉnh Sửa Chuyến Đi (`CreateTripDialog.tsx`, `EditTripForm.tsx`)**:
+        - Nhúng `TripCoverUploader` vào luồng tạo và cập nhật chuyến đi, cập nhật state và đồng bộ lưu trữ khi thành công.
+      - **Cập Nhật Types & Localization (`types/index.ts`, `messages/vi.json`, `messages/en.json`)**:
+        - Thêm trường `coverUrl?: string | null` vào `Trip`, `CreateTripPayload`, `UpdateTripPayload`.
+        - Bổ sung chuỗi ngôn ngữ đầy đủ cho cả tiếng Việt và tiếng Anh.
+      - **Database Migration (`tripbudget-core/src/main/resources/db/migration/V3__add_cover_url_to_trips.sql`)**:
+        - Cung cấp script migration sẵn sàng cho backend core: `ALTER TABLE trip_core.trips ADD COLUMN IF NOT EXISTS cover_url TEXT;`.
+    - **Kiểm thử chất lượng**:
+      - `npx tsc --noEmit && npm run lint` -> **0 errors, 0 warnings**.
+
 ### Immediate likely next tasks:
 
 1. **Xuất Báo Cáo Kế Hoạch & Chi Tiêu Chuyến Đi (Export PDF / Excel)**: Xuất file lịch trình du lịch và bảng kê quyết toán chia tiền.
 2. **Offline-first & Service Worker Caching**: Hỗ trợ xem lại lịch trình và hóa đơn khi mất kết nối mạng.
+
 

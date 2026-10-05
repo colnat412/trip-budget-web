@@ -1,5 +1,5 @@
 import axios, { type InternalAxiosRequestConfig } from 'axios';
-import { API_URL } from '../constants';
+import { API_URL, PUBLIC_PATHS } from '../constants';
 
 interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;
@@ -84,7 +84,15 @@ axiosClient.interceptors.response.use(
 
         if (typeof window !== 'undefined') {
           const currentPath = window.location.pathname;
-          if (currentPath !== '/login' && currentPath !== '/register') {
+          const isPublicPage = PUBLIC_PATHS.some(
+            (path) =>
+              currentPath === path || currentPath.startsWith(`${path}/`),
+          );
+          if (
+            currentPath !== '/login' &&
+            currentPath !== '/register' &&
+            !isPublicPage
+          ) {
             // eslint-disable-next-line @next/next/no-location-assign-relative-destination
             window.location.href = '/login';
           }

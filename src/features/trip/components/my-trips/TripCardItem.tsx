@@ -1,6 +1,5 @@
 'use client';
 
-import React, { useState } from 'react';
 import { Box, IconButton, Stack, Tooltip, Typography } from '@mui/material';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
@@ -36,7 +35,6 @@ const TripCardItem = ({
 }: TripCardItemProps) => {
   const t = useTranslations('myTrips');
   const { user } = useUserContext();
-  const [imageError, setImageError] = useState(false);
 
   const isOwner =
     user?.id !== undefined &&
@@ -68,13 +66,9 @@ const TripCardItem = ({
             theme.palette.mode === 'dark'
               ? '0 10px 24px rgba(0, 0, 0, 0.45)'
               : '0 10px 24px rgba(30, 58, 138, 0.09)',
-          '& .trip-cover-img': {
-            transform: 'scale(1.04)',
-          },
         },
       }}
     >
-      {/* Media / Cover Section (Aspect Ratio 16:9) */}
       <Box
         sx={{
           position: 'relative',
@@ -84,24 +78,6 @@ const TripCardItem = ({
           bgcolor: 'action.hover',
         }}
       >
-        {/* {hasValidPhoto ? (
-          <Box
-            component="img"
-            src={photoUrl as string}
-            alt={trip.destination || trip.name}
-            className="trip-cover-img"
-            onError={() => setImageError(true)}
-            sx={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-              transition: 'transform 0.3s ease-out',
-            }}
-          />
-        ) : ( */}
         <Box
           sx={{
             position: 'absolute',
@@ -114,19 +90,17 @@ const TripCardItem = ({
             alignItems: 'center',
             justifyContent: 'center',
             gap: 0.75,
-            bgcolor: 'action.hover',
             color: 'text.secondary',
           }}
         >
           <PhotoCameraOutlinedIcon sx={{ fontSize: 28, opacity: 0.45 }} />
           <Typography
             variant="caption"
-            sx={{ fontWeight: 600, fontSize: '11.5px', opacity: 0.75 }}
+            sx={{ fontWeight: 600, fontSize: '11.5px', opacity: 0.85 }}
           >
             {t('noPhoto') || 'Chưa có ảnh'}
           </Typography>
         </Box>
-        {/* )} */}
 
         <Box sx={{ position: 'absolute', top: 8, left: 8, zIndex: 1 }}>
           <TripStatusChip status={trip.status} />
@@ -319,7 +293,7 @@ const TripCardItem = ({
               {t('viewTrip')}
             </AppButton>
 
-            {isOwner && (onEdit || onDelete) && (
+            {isOwner && (
               <Box onClick={(e) => e.stopPropagation()}>
                 <AppActionMenu
                   items={[

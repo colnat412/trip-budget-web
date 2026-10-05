@@ -573,9 +573,9 @@
     "addActivity": "Thêm hoạt động",
     "aiPlannerBtn": "AI Kế hoạch",
     "resetDayBtn": "Đặt lại",
-    "checklistBtn": "Chuẩn bị hành lý",
+    "checklistBtn": "Hành lý",
     "shareBtn": "Chia sẻ",
-    "activityLogBtn": "Lịch sử thay đổi",
+    "activityLogBtn": "Lịch sử",
     "activityLog": {
       "title": "Lịch sử thay đổi lịch trình",
       "subtitle": "Nhật ký ghi lại các thao tác tạo, chỉnh sửa hoặc xóa hoạt động của các thành viên",

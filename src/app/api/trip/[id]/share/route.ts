@@ -1,6 +1,8 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import axios from 'axios';
 
+import { expirePublicTripCache } from '@/features/trip/api/public-trip.server';
+
 const NEXT_PUBLIC_CORE_SERVICE_URL =
   process.env.NEXT_PUBLIC_CORE_SERVICE_URL || 'http://localhost:8081';
 
@@ -89,6 +91,8 @@ export async function PUT(request: NextRequest, context: RouteContext) {
         },
       },
     );
+
+    expirePublicTripCache(response.data?.data?.shareToken);
 
     return NextResponse.json(response.data, { status: response.status });
   } catch (error) {

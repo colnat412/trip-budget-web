@@ -1,7 +1,7 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
-  --font-comfortaa: var(--font-comfortaa);
+
   --font-sans:
     var(--font-comfortaa), 'Comfortaa', ui-sans-serif, system-ui, sans-serif,
     'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';

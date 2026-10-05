@@ -75,7 +75,7 @@ const ActivityTimelineCard = ({
               },
             ]
           : []),
-        ...(onConvertToExpense && !activity.expenseId
+        ...(onConvertToExpense
           ? [
               {
                 id: 'convert',
@@ -315,8 +315,8 @@ const ActivityTimelineCard = ({
                 }}
               />
 
-              {activity.expenseId &&
-                activity.actualSpent != null &&
+              {activity.actualSpent != null &&
+                activity.estimatedCost > 0 &&
                 activity.actualSpent >= activity.estimatedCost && (
                   <Chip
                     icon={

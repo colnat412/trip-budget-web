@@ -1,6 +1,11 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import axios from 'axios';
 
+import {
+  expirePublicTripCache,
+  getTripShareToken,
+} from '@/features/trip/api/public-trip.server';
+
 const NEXT_PUBLIC_CORE_SERVICE_URL =
   process.env.NEXT_PUBLIC_CORE_SERVICE_URL || 'http://localhost:8081';
 
@@ -25,6 +30,7 @@ export async function PUT(request: NextRequest, context: RouteContext) {
 
     const { id } = await context.params;
     const body = await request.json().catch(() => ({}));
+    const shareToken = await getTripShareToken(id, accessToken);
 
     const response = await axios.put(
       `${NEXT_PUBLIC_CORE_SERVICE_URL}/api/trip/delete/${id}`,
@@ -37,6 +43,8 @@ export async function PUT(request: NextRequest, context: RouteContext) {
         },
       },
     );
+
+    expirePublicTripCache(shareToken);
 
     return NextResponse.json(response.data, { status: response.status });
   } catch (error) {

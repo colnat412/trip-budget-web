@@ -41,7 +41,7 @@ export interface UpdateShareSettingsPayload {
   publicRole: TripPublicRole;
 }
 
-import type { TripMemberStatus } from './member.types';
+import type { TripPlanOverview } from '@/features/plan/types';
 
 export interface PublicTripData {
   shareToken: string;
@@ -54,7 +54,12 @@ export interface PublicTripData {
   status: TripStatus;
   visibility: TripVisibility;
   publicRole: TripPublicRole;
-  currentUserStatus?: TripMemberStatus;
+}
+
+export interface PublicTripSnapshot {
+  trip: PublicTripData;
+  plan: TripPlanOverview;
+  generatedAt: string;
 }
 
 export interface Pagination {

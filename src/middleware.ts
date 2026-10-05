@@ -5,10 +5,20 @@ import {
   DEFAULT_AUTH_REDIRECT_PATH,
   DEFAULT_UNAUTH_REDIRECT_PATH,
   PUBLIC_AUTH_PATHS,
+  PUBLIC_PATHS,
 } from './base/constants';
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  // Not auth with public path
+  const isPublicPath = PUBLIC_PATHS.some(
+    (publicPath) =>
+      pathname === publicPath || pathname.startsWith(`${publicPath}/`),
+  );
+  if (isPublicPath) {
+    return NextResponse.next();
+  }
 
   const isAuthenticated = AUTH_COOKIE_NAMES.some((cookieName) =>
     Boolean(request.cookies.get(cookieName)?.value),
