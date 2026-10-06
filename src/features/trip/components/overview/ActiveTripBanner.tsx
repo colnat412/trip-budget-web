@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl';
 
 import GroupRoundedIcon from '@mui/icons-material/GroupRounded';
 import TripSummaryMetric from './TripSummaryMetric';
+import { AppButton } from '@/base/components/ui';
 import { formatCurrency, formatDateRange } from '@/base/utils';
 import { useTripContext } from '../../context/TripContext';
 import useTripBudgetSummary from '@/features/expense/hooks/useTripBudgetSummary';
@@ -32,10 +33,10 @@ const ActiveTripBanner = ({ trip }: ActiveTripBannerProps) => {
   const isOver = totalSpent > totalBudget;
 
   const donutBorderColor = isOver
-    ? '#EF4444'
+    ? 'error.main'
     : (summary?.percentageUsed ?? 0) > 85
-      ? '#F59E0B'
-      : '#10B981';
+      ? 'secondary.main'
+      : 'success.main';
 
   let days = 1;
   if (trip.startDate && trip.endDate) {
@@ -93,13 +94,14 @@ const ActiveTripBanner = ({ trip }: ActiveTripBannerProps) => {
               <Box
                 component="span"
                 sx={{
-                  px: 1,
-                  py: 0.25,
+                  px: '8px',
+                  py: '2px',
                   borderRadius: '999px',
-                  bgcolor: 'rgba(74,222,128,0.2)',
-                  color: '#86EFAC',
+                  bgcolor: 'rgba(22, 163, 74, 0.25)',
+                  color: 'success.light',
                   fontSize: '11px',
                   fontWeight: 700,
+                  fontFamily: 'var(--font-body)',
                 }}
               >
                 ● {tTrip('inProgress')}
@@ -131,45 +133,46 @@ const ActiveTripBanner = ({ trip }: ActiveTripBannerProps) => {
               {trip.baseCurrency ? ` · ${trip.baseCurrency}` : ''}
             </Typography>
 
-            <Box
-              component="button"
+            <AppButton
+              size="small"
               onClick={() => openMembers(false)}
+              startIcon={<GroupRoundedIcon sx={{ fontSize: '14px' }} />}
               sx={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 0.75,
-                px: 1.25,
-                py: 0.4,
+                minHeight: '28px',
+                px: '10px',
+                py: '4px',
                 borderRadius: '8px',
                 bgcolor: 'rgba(255,255,255,0.15)',
                 color: '#FFFFFF',
                 border: '1px solid rgba(255,255,255,0.25)',
-                cursor: 'pointer',
                 fontSize: '12px',
                 fontWeight: 700,
+                lineHeight: 1.4,
+                textTransform: 'none',
                 transition: 'all 0.2s',
                 '&:hover': {
                   bgcolor: 'rgba(255,255,255,0.28)',
+                  borderColor: 'rgba(255,255,255,0.4)',
                 },
               }}
             >
-              <GroupRoundedIcon sx={{ fontSize: '12px' }} />
               {tMembers('dialogTitle')}
-            </Box>
+            </AppButton>
           </Stack>
         </Stack>
 
         <Box
           sx={{
-            minWidth: 140,
-            height: 140,
-            p: 1,
+            width: '140px',
+            height: '140px',
+            p: '8px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             flexShrink: 0,
             borderRadius: '50%',
-            border: `10px solid ${donutBorderColor}`,
+            border: '10px solid',
+            borderColor: donutBorderColor,
             bgcolor: 'rgba(7,18,37,0.18)',
             textAlign: 'center',
           }}
@@ -189,7 +192,7 @@ const ActiveTripBanner = ({ trip }: ActiveTripBannerProps) => {
             <Typography
               sx={{
                 fontFamily: 'var(--font-mono)',
-                fontSize: '16px',
+                fontSize: '14px',
                 fontWeight: 800,
                 lineHeight: 1.2,
               }}
@@ -199,7 +202,7 @@ const ActiveTripBanner = ({ trip }: ActiveTripBannerProps) => {
             <Typography
               sx={{
                 color: 'rgba(255,255,255,0.7)',
-                fontSize: '10px',
+                fontSize: '12px',
                 fontFamily: 'var(--font-mono)',
               }}
             >
@@ -214,8 +217,8 @@ const ActiveTripBanner = ({ trip }: ActiveTripBannerProps) => {
           display: 'flex',
           flexWrap: 'wrap',
           gap: 2,
-          px: 2,
-          py: 1.5,
+          px: '16px',
+          py: '12px',
           borderRadius: '14px',
           bgcolor: 'rgba(255,255,255,0.1)',
         }}
