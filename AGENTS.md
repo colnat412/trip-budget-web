@@ -2175,6 +2175,17 @@ If the user has already supplied a specific task, do not block on a broad questi
         - Cung cấp script migration sẵn sàng cho backend core: `ALTER TABLE trip_core.trips ADD COLUMN IF NOT EXISTS cover_url TEXT;`.
     - **Kiểm thử chất lượng**:
       - `npx tsc --noEmit && npm run lint` -> **0 errors, 0 warnings**.
+56. **Lazy Load (Infinite Scroll) Cho Nhật Ký Hoạt Động & Timeline Hoạt Động Theo Ngày**:
+    - **Backend (`tripbudget-core`)**:
+      - `GET /trip/{tripId}/plan/activities/logs?page=&size=` (mặc định `size=20`, tối đa 100) trả `PageResponse<PlanActivityLogResponse>` (sort `createdAt DESC, id DESC`).
+      - `GET /trip/{tripId}/plan/days/{dayId}/activities?page=&size=` (mặc định `size=10`, tối đa 100) trả `PageResponse<PlanActivityResponse>` kèm `actualSpent`; repository `findPageByDayIdSorted` giữ thứ tự `startTime NULLS LAST, orderIndex, createdAt` + `id` làm tie-breaker.
+      - `GET /trip/{tripId}/plan?includeActivities=false`: trả metadata + tổng của từng ngày (`PlanDayResponse.summary`, `activities: []`). Mặc định `true` để giữ tương thích (AI Planner dùng bản đầy đủ).
+    - **BFF**: các route `plan`, `plan/activities/logs` forward query params; thêm `GET` cho `plan/days/[dayId]/activities`.
+    - **Base dùng chung**:
+      - `useInfiniteQueryGet<TItem>` (`src/base/hooks/use-infinite-query-get.ts`): tải theo trang trên `ApiResponse<PageResponse<T>>`, có `fetchNextPage`, `fetchAllPages`, `refetch` (tải lại đúng số trang đã tải để giữ vị trí cuộn), `getItemKey` để loại trùng, bỏ qua response cũ khi đổi key.
+      - `AppInfiniteScrollTrigger` (`src/base/components/ui/`): sentinel dùng `IntersectionObserver` (root = viewport, vẫn hoạt động trong container cuộn của dialog).
+      - Types `PageResponse<T>`, `PagePagination` trong `src/base/api/types.ts`.
+    - **Feature Plan**: `usePlanActivityLogs` chuyển sang infinite; thêm `useDayActivities`; `PlanOverview` gọi overview với `includeActivities: false`, lazy load activities của ngày đang chọn, mở Tối ưu lộ trình sẽ `fetchAllPages` trước; `DayTimelineList` hiển thị tổng từ `PlanDay.totalActivities/totalEstimatedCost`.
 
 ### Immediate likely next tasks:
 

@@ -24,10 +24,13 @@ export async function GET(request: NextRequest, context: RouteContext) {
     }
 
     const { id } = await context.params;
+    const { searchParams } = new URL(request.url);
+    const query = Object.fromEntries(searchParams.entries());
 
     const response = await axios.get(
       `${NEXT_PUBLIC_CORE_SERVICE_URL}/api/trip/${id}/plan/activities/logs`,
       {
+        params: query,
         headers: {
           Authorization: `Bearer ${accessToken}`,
           Accept: 'application/json',

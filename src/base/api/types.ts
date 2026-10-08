@@ -9,3 +9,16 @@ export interface ApiErrorResponse {
   message?: string;
   data?: unknown;
 }
+
+export interface PagePagination {
+  page: number;
+  size: number;
+  totalElements: number;
+  totalPages: number;
+  hasNext: boolean;
+}
+
+export interface PageResponse<TItem> {
+  items: TItem[];
+  pagination: PagePagination;
+}

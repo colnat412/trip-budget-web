@@ -15,6 +15,8 @@ import { getConsecutiveDistances } from '../services/googleMapsService';
 
 export interface DayTimelineListProps {
   activities: PlanActivity[];
+  totalActivities?: number;
+  totalEstimatedCost?: number;
   currency: string;
   destinationContext?: string;
   onAddActivity?: () => void;
@@ -29,6 +31,8 @@ export interface DayTimelineListProps {
 
 const DayTimelineList = ({
   activities,
+  totalActivities,
+  totalEstimatedCost,
   currency,
   destinationContext,
   onAddActivity,
@@ -80,6 +84,16 @@ const DayTimelineList = ({
   // );
   // const canOptimize = locActivities.length >= 2;
 
+  const dayTotalActivities = totalActivities ?? activities.length;
+  const dayTotalCost =
+    totalEstimatedCost !== undefined
+      ? Number(totalEstimatedCost) || 0
+      : activities.reduce(
+          (sum, act) =>
+            sum + (act.estimatedCost ? Number(act.estimatedCost) : 0),
+          0,
+        );
+
   const segmentMap = new Map<string, RouteSegment>();
   distanceData?.segments.forEach((seg) => {
     segmentMap.set(`${seg.fromActivityId}->${seg.toActivityId}`, seg);
@@ -112,13 +126,9 @@ const DayTimelineList = ({
               color: 'text.secondary',
             }}
           >
-            {activities.length} {t('totalActivities').toLowerCase()}
+            {dayTotalActivities} {t('totalActivities').toLowerCase()}
           </Typography>
-          {activities.reduce(
-            (sum, act) =>
-              sum + (act.estimatedCost ? Number(act.estimatedCost) : 0),
-            0,
-          ) > 0 && (
+          {dayTotalCost > 0 && (
             <Typography
               sx={{
                 fontSize: '13px',
@@ -127,14 +137,7 @@ const DayTimelineList = ({
               }}
             >
               · {t('dayTotalCostLabel')}:{' '}
-              {formatCurrency(
-                activities.reduce(
-                  (sum, act) =>
-                    sum + (act.estimatedCost ? Number(act.estimatedCost) : 0),
-                  0,
-                ),
-                currency,
-              )}
+              {formatCurrency(dayTotalCost, currency)}
             </Typography>
           )}
         </Stack>

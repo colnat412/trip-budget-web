@@ -1,8 +1,9 @@
 'use client';
 
-import type { ApiResponse } from '@/base/api';
-import { useQueryGet } from '@/base/hooks';
+import { useInfiniteQueryGet } from '@/base/hooks';
 import type { PlanActivityLog } from '../types';
+
+export const ACTIVITY_LOGS_PAGE_SIZE = 20;
 
 export interface UsePlanActivityLogsParams {
   tripId?: number | string | null;
@@ -13,15 +14,17 @@ const usePlanActivityLogs = ({
   tripId,
   enabled = true,
 }: UsePlanActivityLogsParams) => {
-  const query = useQueryGet<ApiResponse<PlanActivityLog[]>>({
+  const query = useInfiniteQueryGet<PlanActivityLog>({
     queryKey: ['trip', 'plan', 'activity-logs', tripId ?? 'none'],
     endPoint: `/trip/${tripId}/plan/activities/logs`,
+    pageSize: ACTIVITY_LOGS_PAGE_SIZE,
     enabled: Boolean(tripId) && enabled,
+    getItemKey: (log) => log.id,
   });
 
   return {
     ...query,
-    logs: query.data?.data ?? [],
+    logs: query.items,
   };
 };
 

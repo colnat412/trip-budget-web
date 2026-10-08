@@ -10,6 +10,7 @@ import {
   AppPageContainer,
   AppToast,
   AppConfirmDialog,
+  AppInfiniteScrollTrigger,
   type AppToastSeverity,
 } from '@/base/components/ui';
 import { useTripContext } from '@/features/trip/context/TripContext';
@@ -19,6 +20,7 @@ import AddExpenseDialog from '@/features/expense/components/AddExpenseDialog';
 import type { CreateExpensePayload } from '@/features/expense/types';
 import ShareTripDialog from '@/features/trip/components/ShareTripDialog';
 import useTripPlan from '../hooks/useTripPlan';
+import useDayActivities from '../hooks/useDayActivities';
 import {
   useCreateActivity,
   useCreateChecklist,
@@ -50,7 +52,12 @@ const PlanOverview = () => {
   const { activeTrip } = useTripContext();
   const tripId = activeTrip?.id;
 
-  const { plan: overview, isLoading, refetch } = useTripPlan({ tripId });
+  // only get selected day
+  const {
+    plan: overview,
+    isLoading,
+    refetch,
+  } = useTripPlan({ tripId, includeActivities: false });
   const { user } = useUserContext();
   const { members } = useTripMembers({ tripId });
 
@@ -117,6 +124,27 @@ const PlanOverview = () => {
   const selectedDay =
     days.find((d) => String(d.id) === String(activeDayId)) ?? days[0] ?? null;
 
+  const {
+    activities: dayActivities,
+    isLoading: isLoadingActivities,
+    error: activitiesError,
+    hasNextPage: hasMoreActivities,
+    isFetchingNextPage: isFetchingMoreActivities,
+    fetchNextPage: fetchMoreActivities,
+    fetchAllPages: fetchAllDayActivities,
+    refetch: refetchDayActivities,
+  } = useDayActivities({ tripId, dayId: selectedDay?.id });
+
+  const refreshPlan = () => {
+    void refetch().catch(() => undefined);
+    void refetchDayActivities();
+  };
+
+  const handleOpenOptimizeRoute = async () => {
+    await fetchAllDayActivities();
+    setOptimizeDialogOpen(true);
+  };
+
   const { createActivityAsync, isPending: isCreatingActivity } =
     useCreateActivity({
       tripId: tripId ?? '',
@@ -125,7 +153,7 @@ const PlanOverview = () => {
         onSuccess: () => {
           showToast(t('toasts.createActivitySuccess'));
           setAddActivityOpen(false);
-          refetch();
+          refreshPlan();
         },
         onError: () => {
           showToast(t('toasts.error'), 'error');
@@ -141,7 +169,7 @@ const PlanOverview = () => {
         onSuccess: () => {
           showToast(t('toasts.updateActivitySuccess'));
           setEditingActivity(null);
-          refetch();
+          refreshPlan();
         },
         onError: () => {
           showToast(t('toasts.error'), 'error');
@@ -157,7 +185,7 @@ const PlanOverview = () => {
         onSuccess: () => {
           showToast(t('toasts.deleteActivitySuccess'));
           setDeletingActivity(null);
-          refetch();
+          refreshPlan();
         },
         onError: () => {
           showToast(t('toasts.error'), 'error');
@@ -173,7 +201,7 @@ const PlanOverview = () => {
         onSuccess: () => {
           showToast(t('toasts.resetDaySuccess'));
           setResetDayConfirmOpen(false);
-          refetch();
+          refreshPlan();
         },
         onError: () => {
           showToast(t('toasts.error'), 'error');
@@ -187,7 +215,7 @@ const PlanOverview = () => {
       options: {
         onSuccess: () => {
           showToast(t('toasts.createChecklistSuccess'));
-          refetch();
+          refreshPlan();
         },
         onError: () => {
           showToast(t('toasts.error'), 'error');
@@ -207,7 +235,7 @@ const PlanOverview = () => {
         },
       );
       showToast(t('toasts.statusUpdateSuccess'));
-      refetch();
+      refreshPlan();
     } catch {
       showToast(t('toasts.error'), 'error');
     }
@@ -218,7 +246,7 @@ const PlanOverview = () => {
       await axiosClient.patch(
         `/trip/${tripId}/plan/checklists/${item.id}/toggle`,
       );
-      refetch();
+      refreshPlan();
     } catch {
       showToast(t('toasts.error'), 'error');
     }
@@ -228,7 +256,7 @@ const PlanOverview = () => {
     try {
       await axiosClient.delete(`/trip/${tripId}/plan/checklists/${item.id}`);
       showToast(t('toasts.deleteChecklistSuccess'));
-      refetch();
+      refreshPlan();
     } catch {
       showToast(t('toasts.error'), 'error');
     }
@@ -242,13 +270,10 @@ const PlanOverview = () => {
     payload: CreateExpensePayload,
   ) => {
     try {
-      const response = await axiosClient.post(
-        `/trip/${tripId}/expenses`,
-        {
-          ...payload,
-          activityId: convertExpenseActivity?.id,
-        },
-      );
+      const response = await axiosClient.post(`/trip/${tripId}/expenses`, {
+        ...payload,
+        activityId: convertExpenseActivity?.id,
+      });
       const createdExpenseId = response.data?.data?.id;
 
       if (convertExpenseActivity && createdExpenseId) {
@@ -270,13 +295,15 @@ const PlanOverview = () => {
             estimatedCost: convertExpenseActivity.estimatedCost,
             note: convertExpenseActivity.note || undefined,
             expenseId: createdExpenseId,
-            status: shouldComplete ? 'COMPLETED' : convertExpenseActivity.status,
+            status: shouldComplete
+              ? 'COMPLETED'
+              : convertExpenseActivity.status,
           },
         );
       }
       showToast(t('toasts.updateActivitySuccess'));
       setConvertExpenseActivity(null);
-      refetch();
+      refreshPlan();
     } catch {
       showToast(t('toasts.error'), 'error');
     }
@@ -303,7 +330,7 @@ const PlanOverview = () => {
 
       await Promise.all(updates);
       showToast(t('toasts.optimizeSuccess'));
-      refetch();
+      refreshPlan();
     } catch {
       showToast(t('toasts.error'), 'error');
     }
@@ -414,7 +441,7 @@ const PlanOverview = () => {
         />
       ) : null}
 
-      {isLoading ? (
+      {isLoading || isLoadingActivities ? (
         <Stack spacing={2}>
           {[1, 2, 3].map((i) => (
             <Skeleton
@@ -427,7 +454,9 @@ const PlanOverview = () => {
         </Stack>
       ) : (
         <DayTimelineList
-          activities={selectedDay?.activities ?? []}
+          activities={dayActivities}
+          totalActivities={selectedDay?.totalActivities}
+          totalEstimatedCost={selectedDay?.totalEstimatedCost}
           currency={overview?.baseCurrency ?? activeTrip?.baseCurrency ?? 'VND'}
           destinationContext={activeTrip?.destination}
           onAddActivity={() => setAddActivityOpen(true)}
@@ -435,9 +464,17 @@ const PlanOverview = () => {
           onDeleteActivity={(activity) => setDeletingActivity(activity)}
           onToggleStatus={handleToggleActivityStatus}
           onConvertToExpense={handleConvertToExpense}
-          onOpenOptimizeRoute={() => setOptimizeDialogOpen(true)}
+          onOpenOptimizeRoute={() => void handleOpenOptimizeRoute()}
           onResetDayActivities={() => setResetDayConfirmOpen(true)}
           readOnly={isViewer}
+        />
+      )}
+
+      {!isLoading && !isLoadingActivities && (
+        <AppInfiniteScrollTrigger
+          hasMore={hasMoreActivities && !activitiesError}
+          loading={isFetchingMoreActivities}
+          onLoadMore={() => void fetchMoreActivities()}
         />
       )}
 
@@ -491,7 +528,7 @@ const PlanOverview = () => {
         open={optimizeDialogOpen}
         onClose={() => setOptimizeDialogOpen(false)}
         dayNumber={selectedDay?.dayNumber ?? 1}
-        activities={selectedDay?.activities ?? []}
+        activities={dayActivities}
         destinationContext={activeTrip?.destination}
         onApplyRoute={handleApplyOptimizedRoute}
       />
@@ -563,7 +600,7 @@ const PlanOverview = () => {
           currency={overview?.baseCurrency ?? activeTrip?.baseCurrency ?? 'VND'}
           onSuccess={() => {
             showToast(t('toasts.aiGenerateSuccess'));
-            refetch();
+            refreshPlan();
           }}
           onError={(msg) => showToast(msg, 'error')}
         />

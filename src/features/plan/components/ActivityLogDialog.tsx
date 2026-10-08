@@ -18,7 +18,11 @@ import SwapVertRoundedIcon from '@mui/icons-material/SwapVertRounded';
 import AccessTimeRoundedIcon from '@mui/icons-material/AccessTimeRounded';
 import { useTranslations } from 'next-intl';
 
-import { AppDialog, AppButton } from '@/base/components/ui';
+import {
+  AppDialog,
+  AppButton,
+  AppInfiniteScrollTrigger,
+} from '@/base/components/ui';
 import usePlanActivityLogs from '../hooks/usePlanActivityLogs';
 import type { ActivityLogAction, PlanActivityLog } from '../types';
 
@@ -94,7 +98,14 @@ const ActivityLogDialog = ({
   tripId,
 }: ActivityLogDialogProps) => {
   const t = useTranslations('plan');
-  const { logs, isLoading } = usePlanActivityLogs({ tripId, enabled: open });
+  const {
+    logs,
+    isLoading,
+    error,
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
+  } = usePlanActivityLogs({ tripId, enabled: open });
 
   const getActionConfig = (action: ActivityLogAction) => {
     return ACTION_CONFIGS[action] ?? ACTION_CONFIGS.DEFAULT;
@@ -356,6 +367,12 @@ const ActivityLogDialog = ({
               </Box>
             );
           })}
+
+          <AppInfiniteScrollTrigger
+            hasMore={hasNextPage && !error}
+            loading={isFetchingNextPage}
+            onLoadMore={() => void fetchNextPage()}
+          />
         </Box>
       )}
     </AppDialog>

@@ -51,6 +51,9 @@ export type {
   AppFilterChipOption,
 } from './AppFilterChip';
 
+export { default as AppInfiniteScrollTrigger } from './AppInfiniteScrollTrigger';
+export type { AppInfiniteScrollTriggerProps } from './AppInfiniteScrollTrigger';
+
 export * from '../table';
 export * from '../layout';
 export * from '../icons';
