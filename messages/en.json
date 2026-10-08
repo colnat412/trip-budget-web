@@ -19,7 +19,7 @@
     "ai": { "title": "AI assistant" }
   },
   "overview": {
-    "activeTrip": "Trip in progress",
+    "activeTrip": "Selected trip",
     "live": "Live",
     "tripMeta": "4 – 8 August, 2025 · 5 days · 4 members",
     "spent": "Spent",
@@ -53,7 +53,7 @@
     "expenses": "Expenses",
     "scan": "Scan receipt",
     "settlement": "Settlement",
-    "currentTrip": "Current trip",
+    "currentTrip": "Selected trip",
     "expenseCount": "expenses",
     "budget": "Budget",
     "personalSection": "Personal & Utilities",

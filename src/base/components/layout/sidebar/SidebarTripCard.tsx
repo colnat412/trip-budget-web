@@ -23,6 +23,8 @@ import {
 } from '@/base/utils';
 import { useTripContext } from '@/features/trip/context/TripContext';
 import useTripBudgetSummary from '@/features/expense/hooks/useTripBudgetSummary';
+import TripStatusBadge from '@/features/trip/components/TripStatusBadge';
+import TripStatusChip from '@/features/trip/components/my-trips/TripStatusChip';
 import type { Trip } from '@/features/trip/types';
 
 const SidebarTripCard = () => {
@@ -32,17 +34,12 @@ const SidebarTripCard = () => {
   const { trips, activeTrip, selectTrip, openCreateTrip, isLoading } =
     useTripContext();
 
-  const inProgressTrips = useMemo(
-    () => (trips || []).filter((t) => t.status === 'IN_PROGRESS'),
-    [trips],
-  );
-
   const currentTrip = useMemo(() => {
-    if (activeTrip && activeTrip.status === 'IN_PROGRESS') {
+    if (activeTrip) {
       return activeTrip;
     }
-    return inProgressTrips[0] ?? null;
-  }, [activeTrip, inProgressTrips]);
+    return trips && trips.length > 0 ? trips[0] : null;
+  }, [activeTrip, trips]);
 
   const { summary } = useTripBudgetSummary({ tripId: currentTrip?.id });
 
@@ -86,7 +83,7 @@ const SidebarTripCard = () => {
     );
   }
 
-  if (!trips || trips.length === 0 || inProgressTrips.length === 0) {
+  if (!trips || trips.length === 0) {
     return (
       <Box
         sx={{
@@ -106,21 +103,17 @@ const SidebarTripCard = () => {
             color: 'text.primary',
           }}
         >
-          {!trips || trips.length === 0
-            ? tTrip('noTrips')
-            : t('noInProgressTrip')}
+          {tTrip('noTrips')}
         </Typography>
         <Typography sx={{ fontSize: '11px', color: 'text.secondary' }}>
-          {!trips || trips.length === 0
-            ? tTrip('createDescription')
-            : t('noInProgressTripDesc')}
+          {tTrip('createDescription')}
         </Typography>
         <AppButton
           size="small"
           intent="primary"
           startIcon={<AddRoundedIcon fontSize="small" />}
           onClick={openCreateTrip}
-          sx={{ fontSize: '12px', minHeight: 36 }}
+          sx={{ fontSize: '12px', minHeight: '36px' }}
         >
           {tTrip('createTrip')}
         </AppButton>
@@ -131,7 +124,6 @@ const SidebarTripCard = () => {
   if (!currentTrip) return null;
 
   const dateRange = formatDateRange(currentTrip.startDate, currentTrip.endDate);
-  const isLive = currentTrip.status === 'IN_PROGRESS';
 
   return (
     <Box
@@ -152,46 +144,26 @@ const SidebarTripCard = () => {
           },
         }}
       >
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
           <Stack
             direction="row"
             sx={{
               alignItems: 'center',
               justifyContent: 'space-between',
+              gap: 1,
             }}
           >
-            <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-              <Typography
-                variant="caption"
-                sx={{ opacity: 0.85, fontSize: '11px' }}
-              >
-                {t('currentTrip')}
-              </Typography>
-              {isLive && (
-                <Box
-                  component="span"
-                  sx={{
-                    px: 0.75,
-                    py: 0.1,
-                    borderRadius: '999px',
-                    bgcolor: 'rgba(74,222,128,0.25)',
-                    color: '#86EFAC',
-                    fontSize: '10px',
-                    fontWeight: 700,
-                  }}
-                >
-                  ● {tTrip('inProgress')}
-                </Box>
-              )}
-            </Stack>
+            <TripStatusBadge status={currentTrip.status} size="small" />
 
             <IconButton
               size="small"
               onClick={handleOpenMenu}
               aria-label="Select trip"
+              title={t('currentTrip')}
               sx={{
                 color: 'common.white',
-                p: 0.5,
+                p: '4px',
+                borderRadius: '8px',
                 bgcolor: 'rgba(255, 255, 255, 0.15)',
                 '&:hover': { bgcolor: 'rgba(255, 255, 255, 0.25)' },
               }}
@@ -200,30 +172,36 @@ const SidebarTripCard = () => {
             </IconButton>
           </Stack>
 
-          <Typography
-            sx={{
-              fontFamily: 'var(--font-display)',
-              fontWeight: 700,
-              fontSize: '16px',
-              lineHeight: 1.2,
-              color: 'common.white',
-            }}
-          >
-            {currentTrip.name}
-          </Typography>
-          <Typography
-            variant="caption"
-            sx={{ opacity: 0.85, fontSize: '11px' }}
-          >
-            {currentTrip.destination}
-          </Typography>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+            <Typography
+              noWrap
+              sx={{
+                fontFamily: 'var(--font-display)',
+                fontWeight: 700,
+                fontSize: '16px',
+                lineHeight: 1.25,
+                color: 'common.white',
+              }}
+            >
+              {currentTrip.name}
+            </Typography>
+            <Typography
+              noWrap
+              variant="caption"
+              sx={{ opacity: 0.85, fontSize: '11px' }}
+            >
+              {currentTrip.destination}
+            </Typography>
 
-          <Typography
-            variant="caption"
-            sx={{ opacity: 0.85, fontSize: '11px' }}
-          >
-            {dateRange ? ` ${dateRange}` : ''}
-          </Typography>
+            {dateRange && (
+              <Typography
+                variant="caption"
+                sx={{ opacity: 0.85, fontSize: '11px' }}
+              >
+                {dateRange}
+              </Typography>
+            )}
+          </Box>
         </Box>
       </Box>
 
@@ -234,18 +212,18 @@ const SidebarTripCard = () => {
         slotProps={{
           paper: {
             sx: {
-              minWidth: 220,
-              maxHeight: 320,
+              minWidth: 260,
+              maxHeight: 340,
               borderRadius: '12px',
-              p: 0.5,
+              p: '4px',
             },
           },
         }}
       >
         <Typography
           sx={{
-            px: 1.5,
-            py: 0.75,
+            px: '12px',
+            py: '8px',
             fontSize: '11px',
             fontWeight: 800,
             textTransform: 'uppercase',
@@ -253,10 +231,10 @@ const SidebarTripCard = () => {
             letterSpacing: '0.5px',
           }}
         >
-          {tTrip('inProgress')} ({inProgressTrips.length})
+          {tTrip('allTrips')} ({trips.length})
         </Typography>
 
-        {inProgressTrips.map((item) => {
+        {trips.map((item) => {
           const isSelected = String(item.id) === String(currentTrip?.id);
           return (
             <MenuItem
@@ -268,11 +246,12 @@ const SidebarTripCard = () => {
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 borderRadius: '8px',
-                py: 1,
-                gap: 1,
+                py: '8px',
+                px: '12px',
+                gap: 1.5,
               }}
             >
-              <Box sx={{ minWidth: 0 }}>
+              <Box sx={{ minWidth: 0, display: 'flex', flexDirection: 'column', gap: '2px' }}>
                 <Typography
                   noWrap
                   sx={{
@@ -283,13 +262,16 @@ const SidebarTripCard = () => {
                 >
                   {item.name}
                 </Typography>
-                <Typography
-                  noWrap
-                  variant="caption"
-                  sx={{ fontSize: '11px', color: 'text.secondary' }}
-                >
-                  {item.destination}
-                </Typography>
+                <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+                  <Typography
+                    noWrap
+                    variant="caption"
+                    sx={{ fontSize: '11px', color: 'text.secondary' }}
+                  >
+                    {item.destination}
+                  </Typography>
+                  <TripStatusChip status={item.status} />
+                </Stack>
               </Box>
 
               {isSelected && (
@@ -304,11 +286,11 @@ const SidebarTripCard = () => {
 
         <Box
           sx={{
-            pt: 1,
-            mt: 0.5,
+            pt: '8px',
+            mt: '4px',
             borderTop: 1,
             borderColor: 'divider',
-            px: 0.5,
+            px: '4px',
           }}
         >
           <AppButton
@@ -317,7 +299,7 @@ const SidebarTripCard = () => {
             intent="secondary"
             startIcon={<AddRoundedIcon fontSize="small" />}
             onClick={handleCreateNew}
-            sx={{ fontSize: '12px', minHeight: 34 }}
+            sx={{ fontSize: '12px', minHeight: '34px' }}
           >
             {tTrip('createTrip')}
           </AppButton>

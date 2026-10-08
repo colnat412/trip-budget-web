@@ -19,7 +19,7 @@
     "ai": { "title": "Trợ lý AI" }
   },
   "overview": {
-    "activeTrip": "Chuyến đi đang diễn ra",
+    "activeTrip": "Chuyến đi đang chọn",
     "live": "Đang đi",
     "tripMeta": "4 – 8 tháng 8, 2025 · 5 ngày · 4 thành viên",
     "spent": "Đã chi",
@@ -53,7 +53,7 @@
     "expenses": "Chi tiêu",
     "scan": "Quét hóa đơn",
     "settlement": "Quyết toán",
-    "currentTrip": "Đang đi",
+    "currentTrip": "Chuyến đi đang chọn",
     "expenseCount": "khoản chi",
     "budget": "Ngân sách",
     "personalSection": "Cá nhân & Tiện ích",

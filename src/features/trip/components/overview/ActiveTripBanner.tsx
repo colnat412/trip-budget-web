@@ -10,6 +10,7 @@ import { formatCurrency, formatDateRange } from '@/base/utils';
 import { useTripContext } from '../../context/TripContext';
 import useTripBudgetSummary from '@/features/expense/hooks/useTripBudgetSummary';
 import useTripExpenses from '@/features/expense/hooks/useTripExpenses';
+import TripStatusBadge from '../TripStatusBadge';
 import type { Trip } from '../../types';
 
 interface ActiveTripBannerProps {
@@ -18,11 +19,9 @@ interface ActiveTripBannerProps {
 
 const ActiveTripBanner = ({ trip }: ActiveTripBannerProps) => {
   const t = useTranslations('overview');
-  const tTrip = useTranslations('trip');
   const tMembers = useTranslations('members');
   const { openMembers } = useTripContext();
   const dateRangeStr = formatDateRange(trip.startDate, trip.endDate);
-  const isLive = trip.status === 'IN_PROGRESS';
 
   const { summary } = useTripBudgetSummary({ tripId: trip.id });
   const { pagination } = useTripExpenses({ tripId: trip.id, page: 0, size: 1 });
@@ -90,23 +89,7 @@ const ActiveTripBanner = ({ trip }: ActiveTripBannerProps) => {
             >
               {t('activeTrip')}
             </Typography>
-            {isLive && (
-              <Box
-                component="span"
-                sx={{
-                  px: '8px',
-                  py: '2px',
-                  borderRadius: '999px',
-                  bgcolor: 'rgba(22, 163, 74, 0.25)',
-                  color: 'success.light',
-                  fontSize: '11px',
-                  fontWeight: 700,
-                  fontFamily: 'var(--font-body)',
-                }}
-              >
-                ● {tTrip('inProgress')}
-              </Box>
-            )}
+            <TripStatusBadge status={trip.status} />
           </Stack>
 
           <Typography

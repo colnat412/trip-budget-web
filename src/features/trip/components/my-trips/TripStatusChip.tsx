@@ -11,6 +11,8 @@ interface TripStatusChipProps {
 
 type StatusThemeVariant =
   | 'success'
+  | 'warning'
+  | 'info'
   | 'primary'
   | 'secondary'
   | 'neutral'
@@ -31,10 +33,10 @@ interface StatusConfig {
 }
 
 const STATUS_CONFIG_MAP: Record<TripStatus, StatusConfig> = {
-  IN_PROGRESS: { variant: 'success', labelKey: 'inProgress' },
-  PLANNING: { variant: 'primary', labelKey: 'planning' },
+  COMPLETED: { variant: 'success', labelKey: 'completed' },
+  IN_PROGRESS: { variant: 'warning', labelKey: 'inProgress' },
+  PLANNING: { variant: 'info', labelKey: 'planning' },
   CONFIRMED: { variant: 'primary', labelKey: 'confirmed' },
-  COMPLETED: { variant: 'secondary', labelKey: 'completed' },
   ARCHIVED: { variant: 'neutral', labelKey: 'archived' },
   CANCELLED: { variant: 'error', labelKey: 'cancelled' },
   DELETED: { variant: 'error', labelKey: 'cancelled' },
@@ -62,10 +64,14 @@ const TripStatusChip = ({ status }: TripStatusChipProps) => {
             ml: '6px !important',
             mr: '-2px !important',
             bgcolor: (theme) => {
-              const palette = theme.vars?.palette ?? theme.palette;
+              const palette = theme.palette;
               switch (config.variant) {
                 case 'success':
                   return palette.success.main;
+                case 'warning':
+                  return palette.warning.main;
+                case 'info':
+                  return palette.info.main;
                 case 'primary':
                   return palette.primary.main;
                 case 'secondary':
@@ -90,6 +96,10 @@ const TripStatusChip = ({ status }: TripStatusChipProps) => {
           switch (config.variant) {
             case 'success':
               return alpha(theme.palette.success.main, 0.12);
+            case 'warning':
+              return alpha(theme.palette.warning.main, 0.12);
+            case 'info':
+              return alpha(theme.palette.info.main, 0.12);
             case 'primary':
               return alpha(theme.palette.primary.main, 0.12);
             case 'secondary':
@@ -98,14 +108,18 @@ const TripStatusChip = ({ status }: TripStatusChipProps) => {
               return alpha(theme.palette.error.main, 0.12);
             case 'neutral':
             default:
-              return (theme.vars?.palette ?? theme.palette).action.hover;
+              return theme.palette.action.hover;
           }
         },
         color: (theme) => {
-          const palette = theme.vars?.palette ?? theme.palette;
+          const palette = theme.palette;
           switch (config.variant) {
             case 'success':
               return palette.success.dark;
+            case 'warning':
+              return palette.warning.dark;
+            case 'info':
+              return palette.info.dark;
             case 'primary':
               return palette.primary.main;
             case 'secondary':

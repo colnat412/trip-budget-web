@@ -27,6 +27,18 @@ const brandPalette = {
     dark: '#991B1B',
     contrastText: '#FFFFFF',
   },
+  warning: {
+    main: '#F59E0B',
+    light: '#FEF3C7',
+    dark: '#D97706',
+    contrastText: '#1F2937',
+  },
+  info: {
+    main: '#0284C7',
+    light: '#E0F2FE',
+    dark: '#0369A1',
+    contrastText: '#FFFFFF',
+  },
 } as const;
 
 const appTheme = createTheme({
@@ -50,6 +62,18 @@ const appTheme = createTheme({
           main: '#60A5FA',
           light: '#38BDF8',
           dark: '#1E3A8A',
+        },
+        info: {
+          main: '#38BDF8',
+          light: '#7DD3FC',
+          dark: '#0284C7',
+          contrastText: '#0F172A',
+        },
+        warning: {
+          main: '#FBBF24',
+          light: '#FDE68A',
+          dark: '#D97706',
+          contrastText: '#1F2937',
         },
         background: { default: '#071225', paper: '#0F1D33' },
         text: { primary: '#F8FAFC', secondary: '#B6C2D2' },
